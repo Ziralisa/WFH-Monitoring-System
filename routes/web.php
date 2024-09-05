@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Livewire\Admin\ApproveUsers;
 use App\Http\Livewire\Dashboard1;
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +43,7 @@ Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-passwo
 
 Route::get('/reset-password/{id}',ResetPassword::class)->name('reset-password')->middleware('signed');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('role:admin,staff')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/billing', Billing::class)->name('billing');
     Route::get('/profile', Profile::class)->name('profile');
@@ -55,4 +56,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
+Route::get('/wait-page', function(){
+    return view('livewire.auth.wait-page');
+});
+Route::get('/approve-users', ApproveUsers::class)->name('approve-users');
+
 
