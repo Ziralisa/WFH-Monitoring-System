@@ -49,4 +49,11 @@ class User extends Authenticatable
             return 0;
     }
 
+    public function isUser(){
+        if ($this->hasRole('user'))
+            return 1;
+        else
+            return 0;
+    }
+
 }

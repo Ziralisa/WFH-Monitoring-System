@@ -40,13 +40,14 @@ Route::get('/', function() {
 Route::get('/sign-up', SignUp::class)->name('sign-up');
 Route::get('/login', Login::class)->name('login');
 
+Route::get('/new-user-homepage', NewUserHomepage::class)->name('new-user-homepage');
+
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
 
 Route::get('/reset-password/{id}',ResetPassword::class)->name('reset-password')->middleware('signed');
 
 Route::middleware('role:admin,staff')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::get('/new-user-homepage', NewUserHomepage::class)->name('new-user-homepage');
     Route::get('/billing', Billing::class)->name('billing');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/tables', Tables::class)->name('tables');
@@ -58,9 +59,7 @@ Route::middleware('role:admin,staff')->group(function () {
 });
 
 Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
-Route::get('/wait-page', function(){
-    return view('livewire.auth.wait-page');
-});
+
 Route::get('/approve-users', ApproveUsers::class)->name('approve-users');
 
 

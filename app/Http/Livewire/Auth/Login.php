@@ -17,9 +17,14 @@ class Login extends Component
     ];
 
     public function mount() {
-        if(auth()->user()){
+        $user = auth()->user();
+
+        if(! $user === null && $user->hasRole('user')){
+            redirect('/new-user-homepage');
+        } elseif (!$user === null && $user->hasRole('staff') || $user->hasRole('admin')){
             redirect('/dashboard');
         }
+
         $this->fill(['email' => 'admin@softui.com', 'password' => 'secret']);
     }
 

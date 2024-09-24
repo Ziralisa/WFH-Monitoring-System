@@ -61,90 +61,87 @@
                             </thead>
                             <tbody>
                                 @forelse ($users as $user)
-                                    @if (!$user->hasRole('staff') && !$user->hasRole('admin'))
-                                        <tr>
-                                            <td class="ps-4">
-                                                <p class="text-xs font-weight-bold mb-0">{{ $user->id }}</p>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <img src="../assets/img/team-{{ $user->id }}.jpg"
-                                                        class="avatar avatar-sm me-3">
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <p class="text-xs font-weight-bold mb-0">{{ $user->name }}</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <p class="text-xs font-weight-bold mb-0">{{ $user->email }}</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ $user->getRoleNames()->first() }}</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $user->created_at }}</span>
-                                            </td>
+                                <tr>
+                                    <td class="ps-4">
+                                        <p class="text-xs font-weight-bold mb-0">{{ $user->id }}</p>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <img src="../assets/img/team-{{ $user->id }}.jpg"
+                                                class="avatar avatar-sm me-3">
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">{{ $user->name }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">{{ $user->email }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            {{ $user->getRoleNames()->first() }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        <span
+                                            class="text-secondary text-xs font-weight-bold">{{ $user->created_at }}</span>
+                                    </td>
 
-                                            <td class="text-center">
+                                    <td class="text-center">
 
-                                                @include('livewire.admin.approvemodal')
-                                                <!-- Button trigger modal -->
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#approveUserModal"
-                                                    wire:click="approve({{ $user }})">
-                                                    Approve
-                                                </button>
+                                        @include('livewire.admin.approvemodal')
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#approveUserModal"
+                                            wire:click="approve({{ $user }})">
+                                            Approve
+                                        </button>
 
 
-                                                <!-- Button trigger modal -->
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#rejectUserModal">
-                                                    Reject
-                                                </button>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#rejectUserModal">
+                                            Reject
+                                        </button>
 
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="rejectUserModal" tabindex="-1"
-                                                    aria-labelledby="rejectUserModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="rejectUserModalLabel">
-                                                                    Are you
-                                                                    sure you want to reject this user?</h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                This action cannot be undone.
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="button"
-                                                                    class="btn btn-primary">Yes</button>
-                                                            </div>
-                                                        </div>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="rejectUserModal" tabindex="-1"
+                                            aria-labelledby="rejectUserModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="rejectUserModalLabel">
+                                                            Are you
+                                                            sure you want to reject this user?</h1>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        This action cannot be undone.
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="button"
+                                                            class="btn btn-primary">Yes</button>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
 
-                                                <a href="#" class="mx-3" data-bs-toggle="tooltip"
-                                                    data-bs-original-title="Approve User">
-                                                    <i class="fas fa-user-edit text-secondary"></i>
-                                                </a>
-                                                <span>
-                                                    <a href="#" class="mx-3" data-bs-toggle="tooltip"
-                                                        data-bs-original-title="Reject User">
-                                                        <i class="cursor-pointer fas fa-trash text-secondary"></i>
-                                                    </a>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endif
-
-                                    @empty
-                                    <p>There are no users record found.</p>
+                                        <a href="#" class="mx-3" data-bs-toggle="tooltip"
+                                            data-bs-original-title="Approve User">
+                                            <i class="fas fa-user-edit text-secondary"></i>
+                                        </a>
+                                        <span>
+                                            <a href="#" class="mx-3" data-bs-toggle="tooltip"
+                                                data-bs-original-title="Reject User">
+                                                <i class="cursor-pointer fas fa-trash text-secondary"></i>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <p>No users found.</p>
                                 @endforelse
                             </tbody>
                         </table>

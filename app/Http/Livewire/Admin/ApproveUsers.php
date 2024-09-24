@@ -18,6 +18,7 @@ class ApproveUsers extends Component
     public function confirmApprove() {
         $user = User::find($this->user_id);
         $user->assignRole('staff');
+        $user->removeRole('user');
         session()->flash('success', 'User '.$user->name.' approved successfully!');
     }
 
@@ -32,7 +33,8 @@ class ApproveUsers extends Component
 
     public function render()
     {
-        $users = User::all();
+        $users = User::role('user')->get();
+        //dd($users);
         return view('livewire.admin.approve-users', compact('users'));
     }
 }

@@ -22,6 +22,9 @@ class EnsureUserRole
 
         $user = Auth::user();
 
+        if($user->isUser())
+            return redirect('new-user-homepage');
+
         if($user->isAdmin())
             return $next($request);
 
