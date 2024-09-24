@@ -18,9 +18,11 @@ class UserRoleSeeder extends Seeder
 
         $staff = User::find(2);
         $staff->assignRole('staff');
+        $staff->removeRole('user');
 
         $admin = User::find(3);
         $admin->assignRole('admin');
+        $admin->removeRole('user');
 
     }
 }

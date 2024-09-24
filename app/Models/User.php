@@ -49,6 +49,13 @@ class User extends Authenticatable
             return 0;
     }
 
+    public function isStaff(){
+        if ($this->hasRole('staff'))
+            return 1;
+        else
+            return 0;
+    }
+
     public function isUser(){
         if ($this->hasRole('user'))
             return 1;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Auth;
 
+use Auth;
 use Livewire\Component;
 use App\Models\User;
 
@@ -17,15 +18,22 @@ class Login extends Component
     ];
 
     public function mount() {
-        $user = auth()->user();
-
-        if(! $user === null && $user->hasRole('user')){
-            redirect('/new-user-homepage');
-        } elseif (!$user === null && $user->hasRole('staff') || $user->hasRole('admin')){
-            redirect('/dashboard');
+        if (auth()->user()) {
+            redirect('new-user-homepage');
         }
 
-        $this->fill(['email' => 'admin@softui.com', 'password' => 'secret']);
+        /*
+        $user = Auth::user();
+
+        if (auth()->user()) {
+            if($user->hasRole('user'))
+                return redirect('new-user-homepage');
+            else
+               return redirect('dashboard');
+        }
+        */
+
+        $this->fill(['email' => '@gmail.com', 'password' => '1234567']);
     }
 
     public function login() {
@@ -33,7 +41,11 @@ class Login extends Component
         if(auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember_me)) {
             $user = User::where(["email" => $this->email])->first();
             auth()->login($user, $this->remember_me);
-            return redirect()->intended('/dashboard');
+            
+            if($user->hasRole('user'))
+                return redirect()->intended(default: 'new-user-homepage');
+            else
+                return redirect()->intended(default: 'dashboard');
         }
         else{
             return $this->addError('email', trans('auth.failed'));

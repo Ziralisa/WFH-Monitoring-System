@@ -40,7 +40,7 @@ Route::get('/', function() {
 Route::get('/sign-up', SignUp::class)->name('sign-up');
 Route::get('/login', Login::class)->name('login');
 
-Route::get('/new-user-homepage', NewUserHomepage::class)->name('new-user-homepage');
+Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
 
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
 
