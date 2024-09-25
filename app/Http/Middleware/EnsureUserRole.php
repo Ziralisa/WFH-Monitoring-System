@@ -16,13 +16,29 @@ class EnsureUserRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        $user = auth()->user();
 
-        if (!Auth::check())
-            return redirect('login');
+        // If accessing the new-user-homepage, skip the role check to avoid the loop.
+        if ($request->route()->getName() === 'new-user-homepage') {
+            if($user->hasRole('user'))
+                return $next($request);
+            else
+                return redirect()->route('dashboard1');
+        }
 
-        $user = Auth::user();
+        // If the user is an admin, let them proceed.
+        if ($user->hasRole('admin')) {
+            return $next($request);
+        }
 
-        return $next($request);
+        // Check if the user has any of the required roles.
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                return $next($request);
+            }
+        }
 
+        // If the user does not have the required role, redirect them.
+        return redirect('new-user-homepage');
     }
 }

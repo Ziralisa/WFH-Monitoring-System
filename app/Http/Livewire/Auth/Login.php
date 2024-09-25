@@ -18,20 +18,20 @@ class Login extends Component
     ];
 
     public function mount() {
-        if (auth()->user()) {
-            redirect('new-user-homepage');
-        }
-
         /*
-        $user = Auth::user();
+            if (auth()->user()) {
+                redirect('new-user-homepage');
+            }
+        */
 
         if (auth()->user()) {
+            $user = auth()->user();
             if($user->hasRole('user'))
-                return redirect('new-user-homepage');
+                return redirect()->route('new-user-homepage');
             else
-               return redirect('dashboard');
+               return redirect()->route('dashboard1');
         }
-        */
+
 
         $this->fill(['email' => '@gmail.com', 'password' => '1234567']);
     }
@@ -41,11 +41,11 @@ class Login extends Component
         if(auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember_me)) {
             $user = User::where(["email" => $this->email])->first();
             auth()->login($user, $this->remember_me);
-            
+
             if($user->hasRole('user'))
                 return redirect()->intended(default: 'new-user-homepage');
             else
-                return redirect()->intended(default: 'dashboard');
+                return redirect()->intended(default: 'dashboard1');
         }
         else{
             return $this->addError('email', trans('auth.failed'));

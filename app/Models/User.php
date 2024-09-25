@@ -42,25 +42,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function isAdmin(){
-        if ($this->hasRole('admin'))
-            return 1;
-        else
-            return 0;
-    }
-
-    public function isStaff(){
-        if ($this->hasRole('staff'))
-            return 1;
-        else
-            return 0;
-    }
-
-    public function isUser(){
-        if ($this->hasRole('user'))
-            return 1;
-        else
-            return 0;
-    }
-
 }
