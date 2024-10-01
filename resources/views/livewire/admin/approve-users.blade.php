@@ -1,7 +1,7 @@
 <div>
     <!-- Check if there are no users to approve -->
     @if ($noUsersToApprove)
-        <div class="alert alert-info">
+        <div class="alert alert-info" style="color: white;">
             All users have been reviewed. No users awaiting approval at the moment.
         </div>
     @else
