@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-
 
 class User extends Authenticatable
 {
@@ -20,7 +18,6 @@ class User extends Authenticatable
      *
      * @var array
      */
-
     protected $guarded = [];
 
     /**
@@ -41,5 +38,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+     // Assuming you have a role column
+     protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location'];
+
+     // Add a method to check if the user is an admin
+     public function isAdmin()
+     {
+         return $this->role === 'admin'; // Adjust this based on your role definitions
+     }
 
 }

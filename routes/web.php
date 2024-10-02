@@ -4,13 +4,14 @@ use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
 use App\Http\Livewire\Dashboard1;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Livewire\Auth\ForgotPassword;
 use App\Http\Livewire\Auth\ResetPassword;
 use App\Http\Livewire\Auth\SignUp;
 use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\NewUserHomepage;
+use App\Http\Livewire\Admin\StaffList;
 use App\Http\Livewire\Billing;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\Tables;
@@ -63,5 +64,16 @@ Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
 Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
 
 Route::get('/approve-users', ApproveUsers::class)->name('approve-users');
+Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
+
+Route::get('/admin/staff-list', [App\Http\Controllers\Admin\StaffController::class, 'index'])->name('admin.staff-list');
+
+Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
+
+Route::get('/admin/edit-staff', [StaffController::class, 'index'])->name('admin.edit-staff');
+
+Route::get('admin/staff/{id}/edit', [StaffController::class, 'edit'])->name('admin.edit-staff');
+Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
+Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
 
 
