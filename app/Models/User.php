@@ -38,4 +38,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+     // Assuming you have a role column
+     protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location'];
+
+     // Add a method to check if the user is an admin
+     public function isAdmin()
+     {
+         return $this->role === 'admin'; // Adjust this based on your role definitions
+     }
+
 }
