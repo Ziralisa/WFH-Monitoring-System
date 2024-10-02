@@ -36,7 +36,6 @@ class StaffController extends Controller
     public function update(Request $request, $id)
     {
         // Debugging line to see incoming request data
-        \Log::info($request->all()); // Logs request data to the Laravel log
 
         $request->validate([
             'name' => 'required|string|max:255',
