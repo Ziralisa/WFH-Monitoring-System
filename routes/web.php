@@ -65,6 +65,5 @@ Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user
 
 Route::get('/approve-users', ApproveUsers::class)->name('approve-users');
 Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
-Route::get('admin/staff/{id}/edit', [StaffController::class, 'edit'])->name('admin.edit-staff');
 Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
 Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');

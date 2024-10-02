@@ -25,17 +25,9 @@ class StaffController extends Controller
         return view('livewire.admin.staff-list', compact('staff'));
     }
 
-    // Show the edit form
-    public function edit($id)
-    {
-        $staff = User::findOrFail($id);
-        return view('livewire.admin.edit-staff', compact('staff'));
-    }
-
     // Update staff info
     public function update(Request $request, $id)
     {
-        // Debugging line to see incoming request data
 
         $request->validate([
             'name' => 'required|string|max:255',
