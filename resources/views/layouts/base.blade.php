@@ -13,6 +13,8 @@
     <title>
         {{config('app.name')}}
     </title>
+    <!-- Include CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
 use App\Http\Livewire\Dashboard1;
 use Illuminate\Support\Facades\Route;
@@ -52,7 +53,8 @@ Route::middleware('role:admin,staff')->group(function () {
     Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
     Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
     Route::get('/rtl', Rtl::class)->name('rtl');
-    Route::get('/laravel-user-profile', UserProfile::class)->name('user-profile');
+    Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
+    Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
     Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
 });
 

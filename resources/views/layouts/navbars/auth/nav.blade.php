@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="nav-item d-flex align-self-end mx-2">
-                    <a href="https://www.creative-tim.com/product/soft-ui-dashboard-laravel-livewire" target="_blank"
+                    <a href="{{route('user-profile')}}"
                         class="btn btn-primary active mb-0 text-white" role="button" aria-pressed="true">
                         {{Auth::user()->name}}
                     </a>
