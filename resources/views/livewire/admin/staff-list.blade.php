@@ -1,10 +1,8 @@
 <x-layouts.base>
     @include('layouts.navbars.auth.sidebar') <!-- Sidebar component inclusion -->
 
-    <!-- Main Content -->
-    <main class="main-content mt-1 border-radius-lg">
-        <!-- Navbar -->
-        @include('layouts.navbars.auth.nav') <!-- Corrected navbar component inclusion -->
+    <main class="main-content mt-1 border-radius-lg"> <!-- Main Content -->
+        @include('layouts.navbars.auth.nav')  <!-- Navbar -->
 
         <div class="container mt-5">
             <h1 class="mb-4">Staff List</h1>
@@ -102,7 +100,7 @@
                     <div class="modal-body">
                         <form id="editStaffForm" method="POST" action="">
                             @csrf
-                            @method('PUT') <!-- Use PUT for updates -->
+                            @method('PUT') 
 
                             <div class="form-group">
                                 <label for="name">Name</label>

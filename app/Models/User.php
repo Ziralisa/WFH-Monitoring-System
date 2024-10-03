@@ -12,7 +12,6 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -39,13 +38,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-     // Assuming you have a role column
+     // Role column
      protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location'];
 
-     // Add a method to check if the user is an admin
+     // Method to check if the user is an admin
      public function isAdmin()
      {
-         return $this->role === 'admin'; // Adjust this based on your role definitions
+         return $this->role === 'admin'; 
      }
 
 }

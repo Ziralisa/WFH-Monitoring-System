@@ -9,23 +9,25 @@ use Illuminate\Http\Request;
 class StaffController extends Controller
 {
     public function index(Request $request)
-    {
-        // Fetch users based on the filter applied
-        if ($request->get('filter') == 'resigned') {
-            // Fetch users with the 'resign' role
-            $staffQuery = User::role('resign');
-        } else {
-            // Fetch users with the 'staff' role by default
-            $staffQuery = User::role('staff');
-        }
-
-        // Get the final result
-        $staff = $staffQuery->get();
-
-        return view('livewire.admin.staff-list', compact('staff'));
+{
+    // Ensure the user has the admin role
+    if (!auth()->user()->hasRole('admin')) {
+        abort(403, 'Unauthorized');
     }
 
-    // Update staff info
+    // Fetch users based on the filter applied
+    if ($request->get('filter') == 'resigned') {
+        // Fetch users with the 'resign' role
+        $staffQuery = User::role('resign');
+    } else {
+        // Fetch users with the 'staff' role by default
+        $staffQuery = User::role('staff');
+    }
+
+    $staff = $staffQuery->get();
+    return view('livewire.admin.staff-list', compact('staff'));
+}
+
     public function update(Request $request, $id)
     {
 
@@ -42,10 +44,9 @@ class StaffController extends Controller
         return redirect()->route('admin.staff-list')->with('success', 'Staff updated successfully');
     }
 
-    // Remove staff role and reassign to 'resign'
     public function removeRole($id)
     {
-        // Find the user by their ID
+
         $staff = User::findOrFail($id);
 
         // Check if the user has the 'staff' role

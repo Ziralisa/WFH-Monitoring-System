@@ -41,12 +41,13 @@
                 </a>
             </li>
             <!-- Dashboard Button ends here..-->
-
+            @if (auth()->user()->hasRole('admin'))
             <!-- Below is project pages -->
             <li class="nav-item mt-2">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Pages</h6>
             </li>
             <!-- Project pages ends here.. -->
+           
             <li class="nav-item">
                 <li class="nav-item pb-2">
                     <a class="nav-link {{ Route::currentRouteName() == 'approve-users' ? 'active' : '' }}"
@@ -59,18 +60,19 @@
                         <span class="nav-link-text ms-1">Approve Users</span>
                     </a>
                 </li>
+               
+    <li class="nav-item">
+        <a class="nav-link {{ Route::currentRouteName() == 'admin.staff-list' ? 'active' : '' }}" href="{{ route('admin.staff-list') }}">
+            <div class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center
+                {{ in_array(request()->route()->getName(), ['admin.staff-list']) ? 'text-white' : 'text-dark' }}"></i>
+            </div>
+            <span class="nav-link-text ms-1">Staff List</span>
+        </a>
+    </li>
+@endif
 
-                <li class="nav-item">
-                <li class="nav-item pb-2">
-                    <a class="nav-link {{ Route::currentRouteName() == 'admin.staff-list' ? 'active' : '' }}" href="{{ route('admin.staff-list') }}">
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center
-                            {{ in_array(request()->route()->getName(),['admin.staff-list']) ? 'text-white' : 'text-dark' }}"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Staff List</span>
-                    </a>
-                </li>
+
 
 
             <!-- Below is example templates -->
