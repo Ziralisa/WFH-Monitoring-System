@@ -13,15 +13,16 @@ class UserRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::find(1);
-        $user->assignRole('user');
+        // $user = User::find(1);
+        // $user->assignRole('user');
 
-        $staff = User::find(2);
-        $staff->assignRole('staff');
-        $staff->removeRole('user');
+        // $staff = User::find(2);
+        // $staff->assignRole('staff');
+        // $staff->removeRole('user');
 
-        $admin = User::find(3);
+        $admin = User::find(1);
         $admin->assignRole('admin');
+        $admin->assignRole('staff');
         $admin->removeRole('user');
 
     }
