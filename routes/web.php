@@ -35,7 +35,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect('/login');
 });
 
@@ -44,31 +44,36 @@ Route::get('/login', Login::class)->name('login');
 
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
 
-Route::get('/reset-password/{id}',ResetPassword::class)->name('reset-password')->middleware('signed');
+Route::get('/reset-password/{id}', ResetPassword::class)
+    ->name('reset-password')
+    ->middleware('signed');
 
-Route::middleware('role:admin,staff')->group(function () {
+//STAFF/ADMIN ROUTES
+Route::middleware('role:staff')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::get('/billing', Billing::class)->name('billing');
-    Route::get('/profile', Profile::class)->name('profile');
-    Route::get('/tables', Tables::class)->name('tables');
-    Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
-    Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
-    Route::get('/rtl', Rtl::class)->name('rtl');
-    Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
+    Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
-    Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
 });
 
-Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
+Route::middleware('role:user')->group(function () {
+    Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
+});
 
-Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
-
-Route::get('/approve-users', ApproveUsers::class)->name('approve-users');
-Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
-Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
-Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
+//ADMIN ROUTES
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
-    Route::get('/admin/approved-user', [YourController::class, 'approvedUser'])->name('admin.approved-user');
+    Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
+
+    Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
+    Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
 });
 
+//DEMO PAGES ROUTES
+Route::get('/billing', Billing::class)->name('billing');
+Route::get('/profile', Profile::class)->name('profile');
+Route::get('/tables', Tables::class)->name('tables');
+Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
+Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
+Route::get('/rtl', Rtl::class)->name('rtl');
+Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
+Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
