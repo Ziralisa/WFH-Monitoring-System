@@ -39,27 +39,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($staff as $member)
-                        <tr class="{{ $member->hasRole('resign') ? 'resigned' : '' }}">
-                            <td>{{ $member->name }}</td>
-                            <td>{{ $member->email }}</td>
-                            <td>{{ implode(', ', $member->getRoleNames()->toArray()) }}</td>
-                            <td>
-                                @if ($member->hasRole('staff'))
-                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal" onclick="setFormAction('{{ route('admin.staff.remove-role', $member->id) }}')">
-                                        Remove Role
-                                    </button>
-                                @else
-                                    <span class="text-muted">No Staff Role</span>
-                                @endif
+    @foreach ($staff as $member)
+        <tr class="{{ $member->hasRole('resign') ? 'resigned' : '' }}">
+            <td>{{ $member->name }}</td>
+            <td>{{ $member->email }}</td>
+            <td>{{ implode(', ', $member->getRoleNames()->toArray()) }}</td>
+            <td>
+                @if ($member->hasRole('staff'))
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal" onclick="setFormAction('{{ route('admin.staff.remove-role', $member->id) }}')">
+                        Remove Role
+                    </button>
+                @endif
 
-                                <button type="button" class="btn btn-warning edit-button btn-sm" data-id="{{ $member->id }}" data-name="{{ $member->name }}" data-email="{{ $member->email }}" data-phone="{{ $member->phone }}" data-location="{{ $member->location }}" data-toggle="modal" data-target="#editStaffModal">
-                                    Edit Info
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
+                <button type="button" class="btn btn-warning edit-button btn-sm" data-id="{{ $member->id }}" data-name="{{ $member->name }}" data-email="{{ $member->email }}" data-phone="{{ $member->phone }}" data-location="{{ $member->location }}" data-toggle="modal" data-target="#editStaffModal">
+                    Edit Info
+                </button>
+
+                <!-- Show Delete button if the user does not have the 'staff' role -->
+                @if (!$member->hasRole('staff'))
+                <form action="{{ route('admin.staff.delete', $member->id) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this staff member?')">
+        Delete
+    </button>
+</form>
+
+@endif
+
+            </td>
+        </tr>
+    @endforeach
+</tbody>
             </table>
         </div>
 
