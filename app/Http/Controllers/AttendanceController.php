@@ -11,71 +11,95 @@ class AttendanceController extends Controller
 {
     public function clockIn()
     {
-        $now = Carbon::now();
-        $clockInDeadline = Carbon::today()->setHour(9); // Example: 9 AM
+        $now = Carbon::now('Asia/Kuala_Lumpur');
+        $clockInDeadline = Carbon::today('Asia/Kuala_Lumpur')->setHour(9);
 
-        $clockInPoints = ($now->lte($clockInDeadline)) ? 20 : 10;
+        $isBefore9am = $now->diffInMinutes($clockInDeadline, false) > 0;
 
-        Attendance::create([
+        // Assign points based on clock-in time
+        $clockInPoints = $isBefore9am ? 20 : 10; //20 points for before 9am, 10 points after 9am
+
+        $attendance = Attendance::create([
             'user_id' => Auth::id(),
             'clock_in' => $now,
             'clock_in_points' => $clockInPoints,
         ]);
+
+        // Calculate total points after clocking in
+        $this->calculateTotalPoints($attendance);
 
         return redirect()->back()->with('success', 'Clocked in successfully!');
     }
 
     public function clockOut()
     {
-        $now = Carbon::now();
-        $endOfDay = Carbon::today()->setHour(17); // Example: 5 PM
+        try {
+            $now = Carbon::now('Asia/Kuala_Lumpur');
+            $endOfDay = Carbon::today('Asia/Kuala_Lumpur')->setHour(18); // 6:00 PM
 
-        $clockOutPoints = ($now->gte($endOfDay)) ? 20 : 10;
+            // Retrieve the latest attendance record for the current user and today's date
+            $attendance = Attendance::where('user_id', Auth::id())
+                ->whereDate('created_at', Carbon::today())
+                ->latest('clock_in')  // Get the latest clock-in
+                ->first();
 
-        $attendance = Attendance::where('user_id', Auth::id())
-                                ->whereDate('created_at', Carbon::today())
-                                ->firstOrFail();
+            if (!$attendance) {
+                return redirect()->back()->withErrors('Clock-in record not found. Please clock in first.');
+            }
 
-        $attendance->update([
-            'clock_out' => $now,
-            'clock_out_points' => $clockOutPoints,
-        ]);
+            // Calculate total working hours between clock-in and clock-out
+            $workingHours = $attendance->clock_in->diffInHours($now);
 
-        return redirect()->back()->with('success', 'Clocked out successfully!');
+            // Assign points based on working hours
+            $workingHoursPoints = ($workingHours >= 9) ? 10 : 0; // 10 points for >= 9 hours
+
+            // Determine clock-out points based on clock-out time
+            $clockOutPoints = ($now->gte($endOfDay)) ? 20 : 10; //20 points for 6pm above, 10 points for lesst than 6pm
+
+            // Update the attendance record with clock-out and working hours details
+            $attendance->update([
+                'clock_out' => $now,
+                'clock_out_points' => $clockOutPoints,
+                'working_hours_points' => $workingHoursPoints,
+            ]);
+
+            // Calculate total points after clocking out
+            $this->calculateTotalPoints($attendance);
+
+            return redirect()->back()->with('success', 'Clocked out successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Error: ' . $e->getMessage());
+        }
     }
 
-    public function calculateWorkHoursPoints()
+    public function calculateTotalPoints(Attendance $attendance)
     {
-        $attendance = Attendance::where('user_id', Auth::id())
-                                ->whereDate('created_at', Carbon::today())
-                                ->firstOrFail();
+        $totalPoints = $attendance->clock_in_points
+            + ($attendance->clock_out_points ?? 0)
+            + ($attendance->working_hours_points ?? 0);
 
-        $hoursWorked = $attendance->clock_in->diffInHours($attendance->clock_out);
-
-        $workHourPoints = ($hoursWorked >= 8) ? 20 : 0;
-
-        $attendance->update(['work_hour_points' => $workHourPoints]);
-
-        return redirect()->back()->with('success', 'Work hours points calculated!');
+        $attendance->update(['total_points' => $totalPoints]);
     }
 
-    public function evaluatePerformance($userId, $startDate, $endDate)
-{
-    $attendances = Attendance::where('user_id', $userId)
-                             ->whereBetween('created_at', [$startDate, $endDate])
-                             ->get();
+    public function showReport()
+    {
+        // Paginate attendance records for the authenticated user (e.g., 10 records per page)
+        $attendances = Attendance::where('user_id', Auth::id())->paginate(10);
+        return view('livewire.staff.report', compact('attendances'));
+    }
 
-    $totalPoints = $attendances->sum(function ($attendance) {
-        return $attendance->clock_in_points 
-             + $attendance->clock_out_points 
-             + $attendance->work_hour_points;
-    });
+    public function showDashboard()
+    {
+        // Retrieve the last 5 attendance records for the authenticated user
+        $attendances = Attendance::where('user_id', Auth::id())->latest()->take(5)->get();
 
-    $totalPossiblePoints = $attendances->count() * 60; // 20 + 20 + 20 points per day
+        // Check if the user has clocked in today
+        $hasClockedIn = $attendances->where('created_at', today())->whereNull('clock_out')->isNotEmpty();
 
-    $performanceScore = ($totalPoints / $totalPossiblePoints) * 100;
+        // Check if the user has clocked out today
+        $hasClockedOut = $attendances->where('created_at', today())->whereNotNull('clock_out')->isNotEmpty();
 
-    return ($performanceScore >= 80) ? 'Good Performance' : 'Bad Performance';
-}
-
+        // Return the dashboard view with attendance data
+        return view('dashboard1', compact('attendances', 'hasClockedIn', 'hasClockedOut'));
+    }
 }

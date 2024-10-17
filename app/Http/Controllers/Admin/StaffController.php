@@ -40,7 +40,7 @@ class StaffController extends Controller
         $staff = User::findOrFail($id);
         $staff->update($request->only('name', 'email', 'phone', 'location'));
 
-        return redirect()->route('admin.staff-list')->with('success', 'Staff updated successfully');
+        return redirect()->route('staff-list')->with('success', 'Staff updated successfully');
     }
 
     public function removeRole($id)
@@ -55,10 +55,10 @@ class StaffController extends Controller
             // Assign the 'resign' role to the user
             $staff->assignRole('resign');
 
-            return redirect()->route('admin.staff-list')->with('success', 'Staff role removed and reassigned to resigned successfully');
+            return redirect()->route('staff-list')->with('success', 'Staff role removed and reassigned to resigned successfully');
         }
 
-        return redirect()->route('admin.staff-list')->with('error', 'User does not have the staff role');
+        return redirect()->route('staff-list')->with('error', 'User does not have the staff role');
     }
 
     public function delete($id)
@@ -68,7 +68,7 @@ class StaffController extends Controller
         // Perform the deletion
         $staff->delete();
 
-        return redirect()->route('admin.staff-list')->with('success', 'Staff member deleted successfully');
+        return redirect()->route('staff-list')->with('success', 'Staff member deleted successfully');
     }
 }
 

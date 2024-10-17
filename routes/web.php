@@ -18,11 +18,10 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\StaticSignIn;
 use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Rtl;
-
+use App\Http\Controllers\AttendanceController;
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
-
-use Illuminate\Http\Request;
+use App\Http\Livewire\Attendance\Index as AttendanceIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,25 +34,18 @@ use Illuminate\Http\Request;
 |
 */
 
+// Redirect to login page by default
 Route::get('/', function () {
     return redirect('/login');
 });
 
+// Public Routes
 Route::get('/sign-up', SignUp::class)->name('sign-up');
 Route::get('/login', Login::class)->name('login');
-
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
-
 Route::get('/reset-password/{id}', ResetPassword::class)
     ->name('reset-password')
     ->middleware('signed');
-
-//STAFF/ADMIN ROUTES
-Route::middleware('role:staff')->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
-    Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
-});
 
 Route::middleware('role:user')->group(function () {
     Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
@@ -61,11 +53,26 @@ Route::middleware('role:user')->group(function () {
 
 //ADMIN ROUTES
 Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
+    Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('staff-list');
     Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
-
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
     Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
+    Route::delete('/admin/staff/{id}', [StaffController::class, 'destroy'])->name('admin.staff.delete');
+
+});
+
+// Attendance Routes (Staff Only)
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/attendance/index', AttendanceIndex::class)->name('attendance.index');
+    Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
+    Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
+    Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])
+        ->name('attendance.calculate-points');
+    Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('attendance.report');
+    Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('report');
+    Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
+    Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
 });
 
 //DEMO PAGES ROUTES

@@ -10,15 +10,14 @@ class CreateAttendancesTable extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamp('clock_in')->nullable();
             $table->timestamp('clock_out')->nullable();
             $table->integer('clock_in_points')->default(0);
             $table->integer('clock_out_points')->default(0);
-            $table->integer('work_hour_points')->default(0);
+            $table->integer('working_hours_points')->nullable();
+            $table->integer('total_points')->default(0);
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -27,3 +26,4 @@ class CreateAttendancesTable extends Migration
         Schema::dropIfExists('attendances');
     }
 }
+
