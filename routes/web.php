@@ -50,20 +50,6 @@ Route::get('/reset-password/{id}', ResetPassword::class)
     ->name('reset-password')
     ->middleware('signed');
 
-<<<<<<< HEAD
-//STAFF/ADMIN ROUTES
-Route::middleware('role:staff')->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
-    Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
-
-    Route::get('/attendance', Attendance::class)->name('take-attendance');
-    Route::post('/save-location', [LocationController::class, 'saveLocation'])->name('attendance.save-location');
-
-});
-
-=======
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
 Route::middleware('role:user')->group(function () {
     Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
 });
@@ -89,7 +75,9 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('attendance.report');
     Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('report');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
-    Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
+    Route::get('/user-profile', UserProfile1::class)->name('user-profile');
+    Route::get('/take-attendance', Attendance::class)->name('take-attendance');
+    Route::POST('/save-location', [LocationController::class, 'saveLocation']);
 });
 
 //DEMO PAGES ROUTES
@@ -101,6 +89,6 @@ Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
 Route::get('/rtl', Rtl::class)->name('rtl');
 Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
 Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
-
 Route::get('/counter', Counter::class);
+
 

@@ -95,7 +95,6 @@ class Attendance extends Component
     // Clock-in button method
     public function clockIn()
     {
-        //Checks location first; if in range, then attendance session event starts..
         $this->dispatch('check-location-clockin');
         $this->clockInTime = Carbon::now()->format('g:i A , d F Y');
     }

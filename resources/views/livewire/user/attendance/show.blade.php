@@ -20,7 +20,6 @@
                                         homeLat,
                                         homeLng
                                     } = response; // Destructure only if response is not null
-                                    alert(homeLat, homeLng);
 
                                     if (locationType === "in" || locationType === "active") {
                                         alert("Detected active attendance session, do you wish to continue the session?");
@@ -54,7 +53,7 @@
                                         (locationStatus) => {
 
                                             if (locationStatus) {
-                                                alert("User is in range.. registering clock-out");
+                                                alert("User is in range.. registering clock-in");
                                                 $wire.set('isClockInDisabled', true);
                                                 $wire.set('isClockOutDisabled', false);
                                                 $wire.set('attendanceSession', 'active');
@@ -77,6 +76,7 @@
                             if (navigator.geolocation) {
 
                                 navigator.geolocation.getCurrentPosition((position) => {
+                                    console.log("Inside getCurrentPosition..");
                                     const userPosition = {
                                         lat: position.coords.latitude,
                                         lng: position.coords.longitude,

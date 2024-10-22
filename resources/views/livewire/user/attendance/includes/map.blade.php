@@ -139,6 +139,14 @@
             }
         }
 
+        function checkIfInRange(userPosition, targetPosition) {
+            const maxDistance = 50; // Define the maximum range in meters (adjust this value as needed)
+            const distance = calculateDistance(userPosition, targetPosition);
+
+            return distance <= maxDistance;
+        }
+
+
         // Calculate the distance between two points (in meters)
         function calculateDistance(pos1, pos2) {
             const R = 6371e3; // Earth radius in meters
