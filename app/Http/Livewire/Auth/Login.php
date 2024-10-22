@@ -18,38 +18,42 @@ class Login extends Component
     ];
 
     public function mount() {
-        /*
-            if (auth()->user()) {
-                redirect('new-user-homepage');
-            }
-        */
-
-        if (auth()->user()) {
-            $user = auth()->user();
-            if($user->hasRole('user'))
-                return redirect()->route('new-user-homepage');
-            else
-               return redirect()->route('dashboard1');
+        // If the user is already logged in, redirect them based on their role.
+        if (auth()->check()) {
+            $this->redirectByRole(auth()->user());
         }
 
-
+        // Pre-fill email and password for easier testing
         $this->fill(['email' => '@gmail.com', 'password' => '1234567']);
     }
 
     public function login() {
         $credentials = $this->validate();
-        if(auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember_me)) {
-            $user = User::where(["email" => $this->email])->first();
-            auth()->login($user, $this->remember_me);
 
-            if($user->hasRole('user'))
-                return redirect()->intended(default: 'new-user-homepage');
-            else
-                return redirect()->intended(default: 'dashboard1');
-        }
-        else{
+        // Attempt to log in the user
+        if (auth()->attempt($credentials, $this->remember_me)) {
+            $user = auth()->user();
+
+            // Redirect the logged-in user based on their role
+            return $this->redirectByRole($user);
+        } else {
+            // Add error message for invalid credentials
             return $this->addError('email', trans('auth.failed'));
         }
+    }
+
+    // Redirect user based on their role
+    private function redirectByRole($user) {
+        if ($user->hasRole('user')) {
+            return redirect()->route('new-user-homepage');
+        } elseif ($user->hasRole('staff')) {
+            return redirect()->route('dashboard1');
+        } elseif ($user->hasRole('admin')) {
+            return redirect()->route('dashboard');
+        }
+
+        // Default redirect if no role matches
+        return redirect()->route('login');
     }
 
     public function render()
