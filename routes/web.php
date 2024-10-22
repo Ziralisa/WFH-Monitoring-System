@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\LocationController;
+use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
 use App\Http\Livewire\Dashboard1;
+use App\Http\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Livewire\Auth\ForgotPassword;
@@ -53,6 +56,10 @@ Route::middleware('role:staff')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/user-profile', UserProfile1::class)->name(name: 'user-profile');
+
+    Route::get('/attendance', Attendance::class)->name('take-attendance');
+    Route::post('/save-location', [LocationController::class, 'saveLocation'])->name('attendance.save-location');
+
 });
 
 Route::middleware('role:user')->group(function () {
@@ -77,3 +84,6 @@ Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
 Route::get('/rtl', Rtl::class)->name('rtl');
 Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
 Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
+
+Route::get('/counter', Counter::class);
+
