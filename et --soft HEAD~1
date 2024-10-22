@@ -1,0 +1,21 @@
+[33mdd6e179[m[33m ([m[1;36mHEAD[m[33m)[m Commit
+[33m8475f5c[m Fixed Auth guard [staff] is not defined error.
+[33m004b57f[m Restrict Staff List page to admin only
+[33me6d1f54[m fix bugs and ui design
+[33m0a503da[m staff controlle
+[33ma51f955[m fix bugs
+[33m4f60800[m modified ApproveUsers.php
+[33m1e2b1ac[m Merge branch 'main' of https://github.com/jihuen/wfh
+[33m8ff0331[m Added profile page
+[33m79a5615[m  View User/Staff List (Admin) Page
+[33m114c1d9[m user approval
+[33ma086af4[m admin-approve user
+[33mdf6cd7b[m Fixed login redirect for 'user' and 'admin','staff' roles
+[33m8180668[m bugfixes
+[33m518dad4[m Merge branch 'main' of https://github.com/jihuen/wfh
+[33m7a7888f[m commit
+[33mfe358c2[m approve users
+[33m8026bfb[m Merge branch 'main' of https://github.com/jihuen/wfh
+[33mc18492d[m first push
+[33m7d242d6[m create new user page
+[33m94558ba[m Initial commit
