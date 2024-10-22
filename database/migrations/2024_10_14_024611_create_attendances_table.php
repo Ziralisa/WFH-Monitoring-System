@@ -15,6 +15,11 @@ class CreateAttendancesTable extends Migration
             $table->timestamp('clock_out')->nullable();
             $table->integer('clock_in_points')->default(0);
             $table->integer('clock_out_points')->default(0);
+<<<<<<< HEAD
+=======
+            $table->integer('working_hours_points')->nullable();
+            $table->integer('total_points')->default(0);
+>>>>>>> main
             $table->timestamps();
         });
     }
