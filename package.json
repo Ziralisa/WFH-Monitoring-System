@@ -22,6 +22,7 @@
     "dependencies": {
         "@googlemaps/js-api-loader": "^1.16.8",
         "async": ">=2.6.4",
+        "location-picker": "^1.1.1",
         "perfect-scrollbar": "^1.5.5"
     }
 }

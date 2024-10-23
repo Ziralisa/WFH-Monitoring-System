@@ -53,7 +53,7 @@
                     <span class="nav-link-text ms-1">Take Attendance</span>
                 </a>
             </li>
-            
+
             <li class="nav-item">
             <li class="nav-item pb-2">
                 <a class="nav-link {{ Route::currentRouteName() == 'report' ? 'active' : '' }}"
@@ -145,13 +145,8 @@
                 href="{{ route('dashboard') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>shop </title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF"
@@ -179,13 +174,8 @@
                 href="{{ route('laravel-user-profile') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>customer-support</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-1717.000000, -291.000000)" fill="#FFFFFF"
@@ -231,13 +221,8 @@
                 href="{{ route('tables') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>office</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF"
@@ -264,13 +249,8 @@
                 href="{{ route('billing') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>credit-card</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF"
@@ -296,13 +276,8 @@
             <a class="nav-link {{ Route::currentRouteName() == 'rtl' ? 'active' : '' }}" href="{{ route('rtl') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>settings</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-2020.000000, -442.000000)" fill="#FFFFFF"
@@ -333,13 +308,8 @@
                 href="{{ route('profile') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>customer-support</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-1717.000000, -291.000000)" fill="#FFFFFF"
@@ -368,13 +338,8 @@
             <a class="nav-link" href="{{ route('sign-in') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="12px" viewBox="0 0 40 44" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="12px" viewBox="0 0 40 44" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>document</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
@@ -400,13 +365,8 @@
             <a class="nav-link" href="{{ route('static-sign-up') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-<<<<<<< HEAD
-                    <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-=======
                     <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
->>>>>>> 414f61cdc7ade2a58f83e959b5323d62592e3faf
                         <title>spaceship</title>
                         <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g id="Rounded-Icons" transform="translate(-1720.000000, -592.000000)" fill="#FFFFFF"

@@ -177,7 +177,7 @@
             // Fetch CSRF token from meta tag
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            fetch('/save-location', {
+            fetch('/update-location-session', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

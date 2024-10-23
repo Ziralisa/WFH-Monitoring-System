@@ -3,11 +3,12 @@
 </div>
 <div class="card-body pt-4 p-3">
     <div class="row">
-        
+
         <div class="col-md-6">
             <div class="form-group">
                 <label for="user-id" class="form-control-label">{{ __('Employee ID') }}</label>
-                <input value="{{ $user->id }}" class="form-control" type="text" placeholder="10" id="user-id" readonly>
+                <input value="{{ $user->id }}" class="form-control" type="text" placeholder="10" id="user-id"
+                    readonly>
             </div>
         </div>
         <div class="col-md-6">
@@ -31,7 +32,8 @@
             <div class="form-group">
                 <label for="user-position" class="form-control-label">{{ __('Position') }}</label>
                 <div class="@error('user.position')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.position" class="form-control" type="text" placeholder="Programmer" id="user-position">
+                    <input wire:model="user.position" class="form-control" type="text" placeholder="Programmer"
+                        id="user-position">
                 </div>
                 @error('user.position')
                     <div class="text-danger">{{ $message }}</div>
@@ -55,7 +57,8 @@
             <div class="form-group">
                 <label for="user-work_email" class="form-control-label">{{ __('Work Email Address') }}</label>
                 <div class="@error('user.work_email')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.work_email" class="form-control" type="email" placeholder="youremail@example.com" id="user-work_email">
+                    <input wire:model="user.work_email" class="form-control" type="email"
+                        placeholder="youremail@example.com" id="user-work_email">
                 </div>
                 @error('user.work_email')
                     <div class="text-danger">{{ $message }}</div>
@@ -66,7 +69,8 @@
             <div class="form-group">
                 <label for="user.work_phone" class="form-control-label">{{ __('Work Phone Number') }}</label>
                 <div class="@error('user.work_phone')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.work_phone" class="form-control" type="tel" placeholder="e.g: 012-345-6789" id="user-work_phone">
+                    <input wire:model="user.work_phone" class="form-control" type="tel"
+                        placeholder="e.g: 012-345-6789" id="user-work_phone">
                 </div>
                 @error('user.work_phone')
                     <div class="text-danger">{{ $message }}</div>
@@ -74,4 +78,165 @@
             </div>
         </div>
     </div>
-</div>
+    <div class="container p-3">
+        <div class="row">
+            <div class="d-flex justify-content-center align-items-center col">
+                <label class="form-control-label">{{ __('Work From Home Location') }}</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center col-md-4">
+                    <button type="button" class="btn btn-block bg-gradient-primary mb-3" data-bs-toggle="modal"
+                        data-bs-target="#modal-default">Set Location</button>
+                    <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="modal-title-default">Select your home location</h6>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Hidden input fields to store user's home latitude and longitude -->
+                                    <input type="hidden" id="userHomeLat" value="{{ auth()->user()->home_lat ?? 0 }}">
+                                    <input type="hidden" id="userHomeLng" value="{{ auth()->user()->home_lng ?? 0 }}">
+                                    <!-- Google Map container -->
+                                    <div id="map" style="height: 246px; width: 100%;" wire:ignore></div>
+                                    <div class="pt-3">
+                                        <h6>Current Marker's Location:</h6>
+                                        <p><span id="onIdlePositionView"></span></p>
+                                        <h6>Selected Location:</h6>
+                                        <p><span id="onClickPositionView"></span></p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="saveLocationBtn" type="button" class="btn bg-gradient-primary">Save
+                                        changes</button>
+                                    <button id="selectLocationBtn" type="button" class="btn btn-secondary">Select
+                                        Location</button>
+                                    <button type="button" class="btn btn-link  ml-auto"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
+        defer></script>
+    <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
+    <script>
+        var lp;
+        var selectedLocation = null;
+
+        function initMap() {
+            // Retrieve the user's home location from hidden inputs
+            const userHomeLat = parseFloat(document.getElementById('userHomeLat').value) || 0;
+            const userHomeLng = parseFloat(document.getElementById('userHomeLng').value) || 0;
+            const homeLatLng = {
+                lat: userHomeLat,
+                lng: userHomeLng,
+            };
+
+            lp = new locationPicker('map', {
+                lat: userHomeLat,
+                lng: userHomeLng,
+            }, {
+                zoom: 15
+            });
+
+            // Create the control button to center the map
+            const controlButton = document.createElement("button");
+
+            // Set CSS for the control.
+            controlButton.style.backgroundColor = "#fff";
+            controlButton.style.border = "2px solid #fff";
+            controlButton.style.borderRadius = "3px";
+            controlButton.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
+            controlButton.style.color = "rgb(25,25,25)";
+            controlButton.style.cursor = "pointer";
+            controlButton.style.fontFamily = "Roboto,Arial,sans-serif";
+            controlButton.style.fontSize = "16px";
+            controlButton.style.lineHeight = "38px";
+            controlButton.style.margin = "8px 0 22px";
+            controlButton.style.padding = "0 5px";
+            controlButton.style.textAlign = "center";
+            controlButton.textContent = "Pan to Home📍";
+            controlButton.title = "Click to recenter the map";
+            controlButton.type = "button";
+
+            // Setup the click event listener to recenter the map
+            controlButton.addEventListener("click", () => {
+                lp.map.setCenter({ lat: userHomeLat, lng: userHomeLng });
+            });
+
+            // Create the DIV to hold the control.
+            const centerControlDiv = document.createElement("div");
+            // Append the button to the DIV.
+            centerControlDiv.appendChild(controlButton);
+            lp.map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+            google.maps.event.addListener(lp.map, 'idle', function(event) {
+                // Get current location and show it in HTML
+                var location = lp.getMarkerPosition();
+                console.log("Moved! Changed coordinates");
+                document.getElementById('onIdlePositionView').innerHTML = 'Latitude: ' + location.lat + 'Longitude: ' + location.lng;
+            });
+        }
+
+        window.initMap = initMap;
+
+        // Listen to button onclick event to select location
+        document.getElementById('selectLocationBtn').onclick = function() {
+            selectedLocation = lp.getMarkerPosition();
+            document.getElementById('onClickPositionView').innerHTML = 'Latitude: ' + selectedLocation.lat + 'Longitude: ' + selectedLocation.lng;
+        };
+
+        // Function to save user's location
+        function saveUserLocation() {
+            if (!selectedLocation) {
+                console.log("No location selected to save.");
+                return;
+            }
+
+            const locationData = {
+                home_lat: selectedLocation.lat,
+                home_lng: selectedLocation.lng,
+            };
+
+            // Fetch CSRF token from meta tag
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch('/save-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                },
+                body: JSON.stringify(locationData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("User location saved!");
+                window.location.href = '/user-profile'; 
+            })
+            .catch(error => {
+                console.log("Error saving location", error);
+            });
+        }
+
+        // Button to save new home location
+        document.getElementById('saveLocationBtn').onclick = function() {
+            if (confirm("Confirm save new home location?")) {
+                saveUserLocation();
+            } else {
+                console.log("Cancelled!");
+            }
+        };
+    </script>
+

@@ -41,6 +41,7 @@
 
                         //CLOCK IN BUTTON LISTENER
                         window.addEventListener('check-location-clockin', () => {
+
                             if (navigator.geolocation) {
 
                                 navigator.geolocation.getCurrentPosition((position) => {
@@ -73,6 +74,7 @@
 
                         //CLOCK OUT BUTTON LISTENER
                         window.addEventListener('check-location-clockout', () => {
+                            console.log("Listened check clock-out");
                             if (navigator.geolocation) {
 
                                 navigator.geolocation.getCurrentPosition((position) => {

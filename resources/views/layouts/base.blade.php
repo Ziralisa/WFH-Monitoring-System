@@ -14,6 +14,8 @@
         {{ config('app.name') }}
     </title>
     @livewireStyles
+    {{-- Location Picker --}}
+    <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
     <!-- Include CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Fonts and icons     -->
@@ -26,13 +28,13 @@
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1" rel="stylesheet" />
-    @livewireStyles
 
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
 
     {{ $slot }}
+
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>

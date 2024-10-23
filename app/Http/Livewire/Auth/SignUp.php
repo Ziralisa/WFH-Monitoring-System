@@ -29,7 +29,10 @@ class SignUp extends Component
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
-            'password' => Hash::make($this->password)
+            'password' => Hash::make($this->password),
+            //Kodewave location by default
+            'home_lat' => 3.0922698086381923,
+            'home_lng' => 101.54353889438191,
         ]);
 
         $user->assignRole('user');
