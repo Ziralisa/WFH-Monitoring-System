@@ -1,4 +1,4 @@
-<div class="card card-body blur shadow-blur mx-4 mt-6">
+v  <div class="card card-body blur shadow-blur mx-4 mt-6">
     <div class="container-fluid py-4">
         <!-- CLOCK BUTTONS -->
         <div class="m-3 row">
