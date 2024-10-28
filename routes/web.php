@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LocationController;
+use App\Http\Livewire\Auth\Logout;
 use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
@@ -45,6 +46,7 @@ Route::get('/', function () {
 // Public Routes
 Route::get('/sign-up', SignUp::class)->name('sign-up');
 Route::get('/login', Login::class)->name('login');
+Route::get('/logout', [Logout::class, 'logout'])->name('logout');
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
 Route::get('/reset-password/{id}', ResetPassword::class)
     ->name('reset-password')
@@ -56,7 +58,7 @@ Route::middleware('role:user')->group(function () {
 
 //ADMIN ROUTES
 Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('staff-list');
+    Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
     Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');

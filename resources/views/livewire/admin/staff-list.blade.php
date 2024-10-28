@@ -10,10 +10,10 @@
                 <div class="col-12">
                     <div class="card mb-4 mx-4">
                         <div class="card-header pb-0">
-                            
-                        
 
-                        <form method="GET" action="{{ route('staff-list') }}" class="mb-3">
+
+
+                        <form method="GET" action="{{ route('admin.staff-list') }}" class="mb-3">
                             <div class="form-group d-flex align-items-center">
                                 <label for="filter" class="me-0 mb-0">Filter Staff:</label>
                                 <select name="filter" id="filter" class="form-select form-select-sm"
@@ -143,7 +143,7 @@
                                     <div class="modal-body">
                                         <form id="editStaffForm" method="POST" action="">
                                             @csrf
-                                            @method('PUT') 
+                                            @method('PUT')
 
                                             <div class="form-group">
                                                 <label for="name">Name</label>

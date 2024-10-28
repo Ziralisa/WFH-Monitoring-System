@@ -21,7 +21,6 @@ class Attendance extends Component
     //CHECK FOR ACTIVE SESSION, (TAKSIAP, MUST ADD TODAY'S DATE CONSIDERATION AND CLOCK OUT CONSIDERATION)
     public function checkClockStatus()
     {
-
         $userId = auth()->id();
         $today = now()->toDateString();
         // Check if a location record for today exists
@@ -85,8 +84,8 @@ class Attendance extends Component
         // If distance is within 50 meters, return success, otherwise fail
         //return $distance <= 50 ? 'User in range' : 'User out of range';
         if ($distance <= 50) {
-                $this->attendanceSession = 'active';
-                return true;
+            $this->attendanceSession = 'active';
+            return true;
         } else {
             return false;
         }
@@ -102,9 +101,12 @@ class Attendance extends Component
     // Clock-out button method
     public function clockOut()
     {
+        $userId = auth()->id();
+        $today = now()->toDateString();
+        $clockInTime = Location::where('user_id', $userId)->whereDate('created_at', $today)->where('type', 'in')->first();
+                $this->clockInTime = $clockInTime->created_at->format('g:i A, d F Y');
         $this->dispatch('check-location-clockout');
         $this->clockOutTime = Carbon::now()->format('g:i A , d F Y');
-
     }
 
     public function render()

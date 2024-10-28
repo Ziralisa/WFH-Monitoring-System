@@ -18,6 +18,7 @@
     <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
     <!-- Include CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://kit.fontawesome.com/4ddfaa0297.js" crossorigin="anonymous"></script>
     <!-- Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->

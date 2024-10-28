@@ -8,5 +8,5 @@
         Your account has been created successfully. Please wait for the admin to approve your account.
         We will notify you via email once your account is activated.
     </p>
-    <a href="{{ route('login') }}" class="btn btn-primary mt-3">Return to Sign In</a>
+    <a href="{{ route('logout') }}" class="btn btn-primary mt-3">Return to Sign In</a>
 </div>
