@@ -1,25 +1,30 @@
 <div class="card-body px-0 pt-0 pb-2">
     <!-- Google Map container -->
+    <input type="hidden" id="userHomeLat" value="{{ auth()->user()->home_lat ?? 0 }}">
+    <input type="hidden" id="userHomeLng" value="{{ auth()->user()->home_lng ?? 0 }}">
     <div id="map" style="height: 400px; width: 100%;" wire:ignore></div>
 
     <!-- Last updated -->
-    <div class="p-5 text-gray-900">
+    <div class="p-3 text-gray-900">
         Last updated: <span id="lastUpdated">N/A</span>
-        <br><br>
+        <br>
         <em>*Note: Keep this page running at all time during attendance session!</em>
     </div>
 
-    <!-- Google Maps Initialization Script -->
     <script>
         let watchInstance;
         let map;
         let marker;
+        let cityCircle;
         let lastPosition = null;
         let lastSaved = 0;
+        // Retrieve the user's home location from hidden inputs
+        const userHomeLat = parseFloat(document.getElementById('userHomeLat').value) || 0;
+        const userHomeLng = parseFloat(document.getElementById('userHomeLng').value) || 0;
         const targetPosition = {
-            lat: 3.246537321303,
-            lng: 101.424133288264
-        }; // Replace with your target position
+            lat: userHomeLat,
+            lng: userHomeLng,
+        };
 
 
         // Initialize the map when the document is fully loaded
@@ -194,23 +199,29 @@
                 });
         }
 
-        // Function to initialize the Google Map
         function initMap() {
             if (!map) { // Ensure the map is initialized only once
-                const latLng = {
-                    lat: 3.134091756749581,
-                    lng: 101.6860704197634
-                };
                 const mapOptions = {
-                    zoom: 15,
-                    center: latLng
+                    zoom: 17,
+                    center: targetPosition
                 };
                 map = new google.maps.Map(document.getElementById("map"), mapOptions);
                 marker = new google.maps.Marker({
-                    position: latLng,
+                    position: targetPosition,
                     map: map,
                     title: "Welcome to KL CENTRAL",
                 });
+                var sunCircle = {
+                    strokeColor: "#c3fc49",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: "#c3fc49",
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: targetPosition,
+                    radius: 50 // in meters
+                };
+                cityCircle = new google.maps.Circle(sunCircle);
             }
         }
 

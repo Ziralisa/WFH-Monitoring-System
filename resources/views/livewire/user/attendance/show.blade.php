@@ -1,9 +1,9 @@
 <div class="card card-body blur shadow-blur mx-4 mt-6">
-    <div class="container-fluid py-4">
-        <!-- CLOCK BUTTONS -->
+    <div class="container-fluid pb-3">
+        <!-- CLOCK IN BUTTON  -->
         <div class="m-3 row">
             <div class="d-flex justify-content-center align-items-center col p-3">
-                <button id="clockInBtn" class="btn btn-primary btn-lg active mb-0 text-white" wire:click="clockIn" role="button"
+                <button id="clockInBtn" class="btn btn-success btn-lg w-100 active mb-0 text-white" style="height: 125%" wire:click="clockIn" role="button"
                     aria-pressed="true" wire:confirm="Clock-in now?" {{ $isClockInDisabled ? 'disabled' : '' }}>
                     Clock-in
                 </button>
@@ -61,6 +61,8 @@
                                                 $wire.dispatch('start-attendance-session', {
                                                     locationType: 'in',
                                                     rangeStatus: 'in range'
+
+
                                                 });
 
                                             } else
@@ -91,6 +93,8 @@
                                                 $wire.set('isClockOutDisabled', true);
                                                 $wire.set('attendanceSession', 'ended');
                                                 $wire.dispatch('stop-attendance-session');
+
+                                                //
                                             } else
                                                 alert("Out of range! Go in range first to take clock-in/out!");
                                         })
@@ -102,36 +106,39 @@
                     </script>
                 @endscript
             </div>
+
+            <!-- CLOCK OUT BUTTON-->
             <div class="d-flex justify-content-center align-items-center col p-3">
-                <button id="clockOutBtn" class="btn btn-primary btn-lg active mb-0 text-white" wire:click="clockOut" role="button"
+                <button id="clockOutBtn" class="btn btn-primary btn-lg w-100 active mb-0 text-white" style="height: 125%" wire:click="clockOut" role="button"
                     aria-pressed="true" wire:confirm="End your attendance session?"
                     {{ $isClockOutDisabled ? 'disabled' : '' }}>
                     Clock-out
                 </button>
             </div>
         </div>
+
         <!-- CLOCK BUTTON ROW ENDS -->
         <div class="row">
             @if ($attendanceSession == 'ended')
-                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-6">
+                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7">
                     Attendance Session: Ended <br>
                     Your clock-in time: {{ $clockInTime ?? 'N/A' }} <br>
                     Your clock-out time: {{ $clockOutTime ?? 'N/A' }}
                 </h6>
             @elseif ($attendanceSession == 'active')
-                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-6">
+                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-3">
                     Attendance Session: Active <br>
                     Your clock-in time: {{ $clockInTime ?? 'N/A' }}
                 </h6>
             @else
-                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-6">
+                <h6 class=" text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-3">
                     Click CLOCK IN to start record your attendance
                 </h6>
             @endif
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card mt-n2">
                     <div class="card-header pb-0">
                         <h6 class="py-3">Home Location</h6>
                     </div>
