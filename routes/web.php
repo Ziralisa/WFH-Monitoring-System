@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LocationController;
 use App\Http\Livewire\Auth\Logout;
+use App\Http\Livewire\Attendance\AttendanceComponent;
 use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
@@ -69,13 +70,13 @@ Route::group(['middleware' => ['role:admin']], function () {
 
 // Attendance Routes (Staff Only)
 Route::middleware(['auth', 'role:staff'])->group(function () {
-    Route::get('/attendance/index', AttendanceIndex::class)->name('attendance.index');
+    Route::get('/attendance/component', AttendanceComponent::class)->name('attendance.component');
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
     Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])
         ->name('attendance.calculate-points');
-    Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('attendance.report');
-    Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('report');
+    Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('attendance.report');
+    Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/user-profile', UserProfile1::class)->name('user-profile');
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
