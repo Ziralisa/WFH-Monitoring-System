@@ -47,7 +47,7 @@ class Login extends Component
         if ($user->hasRole('user')) {
             return redirect()->route('new-user-homepage');
         } elseif ($user->hasRole('staff')) {
-            return redirect()->route('dashboard1');
+            return redirect()->route('take-attendance');
         } elseif ($user->hasRole('admin')) {
             return redirect()->route('dashboard');
         }

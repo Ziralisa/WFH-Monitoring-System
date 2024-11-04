@@ -15,7 +15,7 @@ class Attendance extends Component
     public $totalHours;
     public $isClockInDisabled = true;
     public $isClockOutDisabled = true;
-    public $attendanceSession = 'inactive';
+    public $attendanceSession = 'active';
     public $homeLocationLat;
     public $homeLocationLng;
 
@@ -160,9 +160,8 @@ class Attendance extends Component
 
     public function render()
 {
-    // Fetch the latest location record for the user
     $location = Location::where('user_id', Auth::id())->latest()->first();
-
+    
     return view('livewire.user.attendance.show', [
         'clockInTime' => $location && $location->type === 'clock_in' ? $location->created_at->format('Y-m-d H:i:s') : 'N/A',
         'clockOutTime' => $this->clockOutTime ? $this->clockOutTime->format('g:i A , d F Y') : 'N/A',
@@ -171,8 +170,11 @@ class Attendance extends Component
         'totalPoints' => $location->total_points ?? 'N/A',
         'isClockInDisabled' => $this->isClockInDisabled,
         'isClockOutDisabled' => $this->isClockOutDisabled,
+        'attendanceSession' => $this->attendanceSession, // Add this line to pass the variable
     ]);
 }
+
+    
 
     
     
@@ -183,9 +185,10 @@ class Attendance extends Component
                                   ->orderBy('created_at', 'desc') // Order by most recent
                                   ->paginate(10); // Adjust pagination as needed
     
-        return view('livewire.user.attendance.show', [
-            'userLocations' => $userLocations,
-        ]);
+        // return view('livewire.user.attendance.show', [
+        //     'userLocations' => $userLocations,
+        // $attendances = Attendance::where('user_id', Auth::id())->paginate(10);
+        return view('livewire.staff.report', compact('userLocations'));
     }
     
 }
