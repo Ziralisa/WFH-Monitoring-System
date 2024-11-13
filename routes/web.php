@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\LocationController;
+use App\Http\Livewire\Admin\RoleSettings;
+use App\Http\Livewire\Admin\UserSettings;
 use App\Http\Livewire\Auth\Logout;
 use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
@@ -65,7 +68,22 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
     Route::delete('/admin/staff/{id}', [StaffController::class, 'destroy'])->name('admin.staff.delete');
 
+    //User Settings page
+    Route::get('/admin/user', UserSettings::class)->name('admin.user-settings');
+    Route::get('/admin/user-list', [UserSettings::class, 'index'])->name('admin.user-list');
+    Route::put('admin/user/{id}', [UserSettings::class, 'update'])->name('admin.user.update');
+    Route::delete('/admin/user/{id}', [UserSettings::class, 'destroy'])->name('admin.user.delete');
+
+    //Role Settings page
+    Route::get('/admin/role', RoleSettings::class)->name('admin.role');
+    Route::post('/admin/role/new', [RoleSettings::class, 'store'])->name('admin.role.store');
+    Route::put('/admin/role/{id}', [RoleSettings::class, 'update'])->name('admin.role.update');
+    Route::delete('/admin/role/{id}', [RoleSettings::class, 'delete'])->name('admin.role.delete');
+
+
 });
+
+
 
 // Attendance Routes (Staff Only)
 Route::middleware(['auth', 'role:staff'])->group(function () {
@@ -74,7 +92,6 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
     Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])
         ->name('attendance.calculate-points');
-    Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('attendance.report');
     Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('report');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/user-profile', UserProfile1::class)->name('user-profile');
