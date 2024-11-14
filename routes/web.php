@@ -5,6 +5,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Livewire\Admin\RoleSettings;
 use App\Http\Livewire\Admin\UserSettings;
 use App\Http\Livewire\Auth\Logout;
+use App\Http\Livewire\Attendance\AttendanceComponent;
 use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
@@ -87,7 +88,6 @@ Route::group(['middleware' => ['role:admin']], function () {
 
 // Attendance Routes (Staff Only)
 Route::middleware(['auth', 'role:staff'])->group(function () {
-    Route::get('/attendance/index', AttendanceIndex::class)->name('attendance.index');
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
     Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])

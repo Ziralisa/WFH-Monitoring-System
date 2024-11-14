@@ -28,7 +28,7 @@
 
 
         // Initialize the map when the document is fully loaded
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("lastUpdated").textContent = "N/A";
         });
 
@@ -80,48 +80,48 @@
                         }
                     );
                 } else
-                if (locationType == 'active') {
+                    if (locationType == 'active') {
 
-                    console.log("Running code for active session");
-                    //ACTIVE SESSION CODE
-                    //watchInstance STARTS HERE..
-                    watchInstance = navigator.geolocation.watchPosition(
-                        (position) => {
-                            const userPosition = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude,
-                            };
+                        console.log("Running code for active session");
+                        //ACTIVE SESSION CODE
+                        //watchInstance STARTS HERE..
+                        watchInstance = navigator.geolocation.watchPosition(
+                            (position) => {
+                                const userPosition = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude,
+                                };
 
-                            // Check if the position has changed significantly
-                            const distanceMoved = lastPosition ? calculateDistance(lastPosition, userPosition) : 0;
-                            const currentTime = Date.now();
+                                // Check if the position has changed significantly
+                                const distanceMoved = lastPosition ? calculateDistance(lastPosition, userPosition) : 0;
+                                const currentTime = Date.now();
 
-                            // Determine range status
-                            const isInRange = checkIfInRange(userPosition, targetPosition);
+                                // Determine range status
+                                const isInRange = checkIfInRange(userPosition, targetPosition);
 
-                            // Save every time there's a significant move or after a set interval
-                            if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
-                                saveLocationToDatabase(userPosition, 'active', isInRange ? 'in range' :
-                                    'out of range');
-                                console.log("Location saved! Session active..");
-                                lastSaved = currentTime;
-                            } else {
-                                console.log("Location is not saved due to minimal/lack of movement!");
+                                // Save every time there's a significant move or after a set interval
+                                if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
+                                    saveLocationToDatabase(userPosition, 'active', isInRange ? 'in range' :
+                                        'out of range');
+                                    console.log("Location saved! Session active..");
+                                    lastSaved = currentTime;
+                                } else {
+                                    console.log("Location is not saved due to minimal/lack of movement!");
+                                }
+
+                                console.log("Distance moved from last position", distanceMoved, "meters.");
+                                lastPosition = userPosition;
+                                map.setCenter(lastPosition);
+                                marker.setPosition(lastPosition);
+                                marker.setTitle("User found!");
+                                document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
+                            },
+                            () => {
+                                console.log("Failed to retrieve location");
                             }
-
-                            console.log("Distance moved from last position", distanceMoved, "meters.");
-                            lastPosition = userPosition;
-                            map.setCenter(lastPosition);
-                            marker.setPosition(lastPosition);
-                            marker.setTitle("User found!");
-                            document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
-                        },
-                        () => {
-                            console.log("Failed to retrieve location");
-                        }
-                    );
-                    //watchInstance ENDS HERE...
-                }
+                        );
+                        //watchInstance ENDS HERE...
+                    }
 
             } else {
                 console.log("Geolocation not supported");
@@ -183,13 +183,13 @@
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('/update-location-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': token, // CSRF token from the meta tag
-                    },
-                    body: JSON.stringify(locationData)
-                })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token, // CSRF token from the meta tag
+                },
+                body: JSON.stringify(locationData)
+            })
                 .then(response => response.json())
                 .then(data => {
                     console.log("Location saved", data);
@@ -230,6 +230,6 @@
     </script>
 
     <!-- Load Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
-        defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap"
+        async defer></script>
 </div>
