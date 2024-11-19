@@ -96,7 +96,7 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/user-profile', UserProfile1::class)->name('user-profile');
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
-    Route::POST('/update-location-session', [LocationController::class, 'saveLocation']);
+    Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
 
 });

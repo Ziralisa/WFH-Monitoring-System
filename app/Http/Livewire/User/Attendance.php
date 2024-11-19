@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Illuminate\Http\Request;
 
 class Attendance extends Component
 {
@@ -30,10 +31,7 @@ class Attendance extends Component
         $today = now()->toDateString();
 
         // Check if a location record for today exists
-        $location = Location::where('user_id', $userId)
-            ->whereDate('created_at', $today)
-            ->latest()
-            ->first();
+        $location = Location::where('user_id', $userId)->whereDate('created_at', $today)->latest()->first();
 
         // Fetch user's home location
         $this->homeLocationLat = User::where('id', $userId)->value('home_lat');
@@ -42,13 +40,14 @@ class Attendance extends Component
         if ($location) {
             if ($location->type == 'clock_in' && $location->status == 'active') {
                 $this->attendanceSession = 'active';
-                $this->isClockInDisabled = true;  // Disable Clock In
+                $this->dispatch('start-attendance-session', 'active');
+                $this->isClockInDisabled = true; // Disable Clock In
                 $this->isClockOutDisabled = false; // Enable Clock Out
                 $this->clockInTime = $location->created_at;
             } elseif ($location->type == 'clock_out') {
                 $this->attendanceSession = 'ended';
-                $this->isClockInDisabled = true;  // Disable Clock In
-                $this->isClockOutDisabled = true;  // Disable Clock Out
+                $this->isClockInDisabled = true; // Disable Clock In
+                $this->isClockOutDisabled = true; // Disable Clock Out
                 $this->clockOutTime = $location->updated_at;
                 $this->clockInTime = $location->created_at;
 
@@ -69,7 +68,6 @@ class Attendance extends Component
         }
     }
 
-
     public function checkLocation($userLat, $userLng)
     {
         $homeLat = deg2rad($this->homeLocationLat);
@@ -85,22 +83,24 @@ class Attendance extends Component
         $distance = 2 * atan2(sqrt($a), sqrt(1 - $a)) * $earthRadius;
 
         // Log for debugging
-        logger()->info("Distance: " . $distance);
-        logger()->info("Home Location Lat: " . $this->homeLocationLat);
-        logger()->info("Home Location Lng: " . $this->homeLocationLng);
+        logger()->info('Distance: ' . $distance);
+        logger()->info('Home Location Lat: ' . $this->homeLocationLat);
+        logger()->info('Home Location Lng: ' . $this->homeLocationLng);
 
-        return $distance <= 100; // within 100 meters
+        return $distance <= 50; // within 50 meters
     }
 
     public function clockIn()
     {
+        logger()->info('Inside clockIn()!');
+
         $now = Carbon::now('Asia/Kuala_Lumpur');
         $clockInDeadline = Carbon::today('Asia/Kuala_Lumpur')->setHour(9);
         $clockInPoints = $now->lessThan($clockInDeadline) ? 20 : 10;
 
         // Debugging log
-        logger()->info("Clocking in, current time: " . $now);
-        logger()->info("Clock-in deadline: " . $clockInDeadline);
+        logger()->info('Clocking in, current time: ' . $now);
+        logger()->info('Clock-in deadline: ' . $clockInDeadline);
 
         if ($this->checkLocation($this->homeLocationLat, $this->homeLocationLng)) {
             Location::create([
@@ -116,22 +116,18 @@ class Attendance extends Component
             $this->isClockInDisabled = true;
             $this->isClockOutDisabled = false;
             $this->attendanceSession = 'active';
+            $this->dispatch('start-attendance-session', 'clock_in');
         } else {
-            logger()->warning("User is out of range for clock-in.");
+            logger()->warning('User is out of range for clock-in.');
         }
     }
-
-
 
     public function clockOut()
     {
         $now = Carbon::now('Asia/Kuala_Lumpur');
 
         if ($this->checkLocation($this->homeLocationLat, $this->homeLocationLng)) {
-            $location = Location::where('user_id', Auth::id())
-                ->where('type', 'clock_in')
-                ->latest()
-                ->first();
+            $location = Location::where('user_id', Auth::id())->where('type', 'clock_in')->latest()->first();
 
             if ($location) {
                 // Calculate working hours
@@ -152,10 +148,45 @@ class Attendance extends Component
 
                 $this->calculateTotalPoints($location);
             } else {
-                logger()->warning("No clock-in record found for user ID " . Auth::id() . " to clock out.");
+                logger()->warning('No clock-in record found for user ID ' . Auth::id() . ' to clock out.');
             }
         } else {
-            logger()->warning("Clock-out location check failed for user ID " . Auth::id());
+            logger()->warning('Clock-out location check failed for user ID ' . Auth::id());
+        }
+    }
+
+    public function updateLocationSession(Request $request)
+    {
+
+        $validated = $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'in_range' => 'required|integer|in:0,1',
+        ]);
+
+        $location = Location::where('user_id', Auth::id())->where('type', 'clock_in')->latest()->first();
+
+        if ($location) {
+            $location->update([
+                'latitude' => $validated['latitude'],
+                'longitude' => $validated['longitude'],
+                'in_range' => $validated['in_range'],
+            ]);
+
+            logger()->info('User location updated successfully.', [
+                'user_id' => Auth::id(),
+                'latitude' => $validated['latitude'],
+                'longitude' => $validated['longitude'],
+                'in_range' => $validated['in_range'],
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Location updated successfully.']);
+        } else {
+            logger()->warning('Update user location failed. No clock-in record found.', [
+                'user_id' => Auth::id(),
+            ]);
+
+            return response()->json(['success' => false, 'message' => 'No clock-in record found.'], 404);
         }
     }
 
@@ -164,7 +195,6 @@ class Attendance extends Component
         $totalPoints = ($location->clockinpoints ?? 0) + ($location->workinghourpoints ?? 0);
         $location->update(['total_points' => $totalPoints]);
     }
-
 
     public function calculateTotalHours($location)
     {
@@ -187,10 +217,6 @@ class Attendance extends Component
         ]);
     }
 
-
-
-
-
     public function showReport()
     {
         // Fetch data from the Location model instead of Attendance model
@@ -203,5 +229,4 @@ class Attendance extends Component
         // $attendances = Attendance::where('user_id', Auth::id())->paginate(10);
         return view('livewire.staff.report', compact('userLocations'));
     }
-
 }

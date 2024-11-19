@@ -43,8 +43,6 @@
                     });
 
 
-
-                    // CLOCK OUT BUTTON LISTENER
                     // CLOCK OUT BUTTON LISTENER
                     document.getElementById('clockOutBtn').addEventListener('click', () => {
                         if (navigator.geolocation) {
