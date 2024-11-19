@@ -28,17 +28,17 @@
 
 
         // Initialize the map when the document is fully loaded
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("lastUpdated").textContent = "N/A";
         });
 
         // Listen for the start attendance session event triggered by clock-in
         window.addEventListener('start-attendance-session', (event) => {
-            const locationType = event.detail.locationType;
-            const rangeStatus = event.detail.rangeStatus;
-            console.log("Event Start Session: ", locationType, rangeStatus);
-            trackUserLocation(locationType, rangeStatus);
+            //console.log("start-attendance-session listened! calling trackUserLocation with type:", sessionType);
+            const sessionType = event.detail[0];
+            trackUserLocation(sessionType); // Pass the actual value of sessionType
         });
+
 
         // Listen for the stop attendance session event triggered by clock-out
         window.addEventListener('stop-attendance-session', () => {
@@ -47,11 +47,14 @@
         });
 
         // Function to update the map to the current geolocation
-        function trackUserLocation(locationType, rangeStatus) {
+        function trackUserLocation(sessionType) {
+            console.log("Inside trackUserLocation with sessionType: ", sessionType);
+
             if (navigator.geolocation) {
-                if (locationType == 'in') {
+                if (sessionType == 'clock_in') {
 
                     //START SESSION CODE HERE..
+                    console.log("Running code for starting session..");
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const userPosition = {
@@ -60,9 +63,9 @@
                             };
 
                             const currentTime = Date.now();
-                            saveLocationToDatabase(userPosition, 'in', rangeStatus);
-                            console.log("Location saved! Session started..");
                             lastSaved = currentTime;
+                            // saveLocationToDatabase(userPosition, 'in', rangeStatus);
+                            // console.log("Location saved! Session started..");
 
                             //UPDATE MAPS
                             lastPosition = userPosition;
@@ -80,48 +83,49 @@
                         }
                     );
                 } else
-                    if (locationType == 'active') {
+                if (sessionType == 'active') {
 
-                        console.log("Running code for active session");
-                        //ACTIVE SESSION CODE
-                        //watchInstance STARTS HERE..
-                        watchInstance = navigator.geolocation.watchPosition(
-                            (position) => {
-                                const userPosition = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
+                    console.log("Running code for active session..");
 
-                                // Check if the position has changed significantly
-                                const distanceMoved = lastPosition ? calculateDistance(lastPosition, userPosition) : 0;
-                                const currentTime = Date.now();
+                    //ACTIVE SESSION CODE
+                    //watchInstance STARTS HERE..
+                    watchInstance = navigator.geolocation.watchPosition(
+                        (position) => {
+                            const userPosition = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
 
-                                // Determine range status
-                                const isInRange = checkIfInRange(userPosition, targetPosition);
+                            // Check if the position has changed significantly
+                            const distanceMoved = lastPosition ? calculateDistance(lastPosition, userPosition) : 0;
+                            const currentTime = Date.now();
 
-                                // Save every time there's a significant move or after a set interval
-                                if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
-                                    saveLocationToDatabase(userPosition, 'active', isInRange ? 'in range' :
-                                        'out of range');
-                                    console.log("Location saved! Session active..");
-                                    lastSaved = currentTime;
-                                } else {
-                                    console.log("Location is not saved due to minimal/lack of movement!");
-                                }
+                            // Determine range status
+                            const isInRange = checkIfInRange(userPosition, targetPosition);
+                            console.log("User isInRange value: ", isInRange);
 
-                                console.log("Distance moved from last position", distanceMoved, "meters.");
-                                lastPosition = userPosition;
-                                map.setCenter(lastPosition);
-                                marker.setPosition(lastPosition);
-                                marker.setTitle("User found!");
-                                document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
-                            },
-                            () => {
-                                console.log("Failed to retrieve location");
+                            // Save every time there's a significant move or after a set interval
+                            if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
+                                saveLocationToDatabase(userPosition, isInRange ? 1 : 0);
+                                console.log("Location saved! Session active..");
+                                lastSaved = currentTime;
+                            } else {
+                                console.log("Location is not saved due to minimal/lack of movement!");
                             }
-                        );
-                        //watchInstance ENDS HERE...
-                    }
+
+                            console.log("Distance moved from last position", distanceMoved, "meters.");
+                            lastPosition = userPosition;
+                            map.setCenter(lastPosition);
+                            marker.setPosition(lastPosition);
+                            marker.setTitle("User found!");
+                            document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
+                        },
+                        () => {
+                            console.log("Failed to retrieve location");
+                        }
+                    );
+                    //watchInstance ENDS HERE...
+                }
 
             } else {
                 console.log("Geolocation not supported");
@@ -169,27 +173,26 @@
         }
 
         // Simulate saving the location to the database (e.g., via an AJAX request)
-        function saveLocationToDatabase(position, locationType, rangeStatus) {
+        function saveLocationToDatabase(position, rangeStatus) {
             const locationData = {
                 latitude: position.lat,
                 longitude: position.lng,
-                type: locationType, // Clockin or clockout; in - clockin, out - clockout, active - in session
-
+                in_range: rangeStatus,
                 //UNFINISHED, ADD RANGE DETECTION LOGICS!!
-                status: rangeStatus, // In range @ out of range; "home", "client", "office", "out of range"
+                //status: rangeStatus, // In range @ out of range; "home", "client", "office", "out of range"
             }
 
             // Fetch CSRF token from meta tag
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('/update-location-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token, // CSRF token from the meta tag
-                },
-                body: JSON.stringify(locationData)
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token, // CSRF token from the meta tag
+                    },
+                    body: JSON.stringify(locationData)
+                })
                 .then(response => response.json())
                 .then(data => {
                     console.log("Location saved", data);
@@ -230,6 +233,6 @@
     </script>
 
     <!-- Load Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap"
-        async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
+        defer></script>
 </div>
