@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\LocationController;
+use App\Http\Livewire\Admin\RoleSettings;
+use App\Http\Livewire\Admin\UserSettings;
 use App\Http\Livewire\Auth\Logout;
 use App\Http\Livewire\Attendance\AttendanceComponent;
 use App\Http\Livewire\User\Attendance;
@@ -65,6 +67,18 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
     Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
     Route::delete('/admin/staff/{id}', [StaffController::class, 'destroy'])->name('admin.staff.delete');
+
+    //User settings page
+    Route::get('/admin/user', UserSettings::class)->name('admin.user-settings');
+    Route::get('/admin/user-list', [UserSettings::class, 'index'])->name('admin.user-list');
+    Route::put('admin/user/{id}', [UserSettings::class, 'update'])->name('admin.user.update');
+    Route::delete('/admin/user/{id}', [UserSettings::class, 'destroy'])->name('admin.user.delete');
+
+    //Role settings page
+    Route::get('/admin/role', RoleSettings::class)->name('admin.role');
+    Route::post('/admin/role/new', [RoleSettings::class, 'store'])->name('admin.role.store');
+    Route::put('/admin/role/{id}', [RoleSettings::class, 'update'])->name('admin.role.update');
+    Route::delete('/admin/role/{id}', [RoleSettings::class, 'delete'])->name('admin.role.delete');
 
 });
 
