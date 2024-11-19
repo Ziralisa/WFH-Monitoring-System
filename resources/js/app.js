@@ -5,8 +5,8 @@ import App from './App.vue';
 
 window.PerfectScrollbar = PerfectScrollbar;
 
-require('./bootstrap');
-require('./custom');
+import './bootstrap';
+import './custom';
 
 // Create the Vue application instance and mount it
 createApp(App)
