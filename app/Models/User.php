@@ -44,7 +44,12 @@ class User extends Authenticatable
      // Method to check if the user is an admin
      public function isAdmin()
      {
-         return $this->role === 'admin'; 
+         return $this->role === 'admin';
      }
+
+     public function locations(){
+        return $this->hasMany(Location::class);
+     }
+
 
 }

@@ -14,8 +14,6 @@
         {{ config('app.name') }}
     </title>
     @livewireStyles
-    {{-- Location Picker --}}
-    <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
     <!-- Include CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Fonts and icons     -->

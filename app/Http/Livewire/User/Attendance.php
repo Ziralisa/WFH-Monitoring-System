@@ -2,10 +2,13 @@
 
 namespace App\Http\Livewire\User;
 
+use App\Events\MyEvent;
+use App\Events\UserLocationUpdated;
 use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Http\Request;
 
@@ -19,10 +22,15 @@ class Attendance extends Component
     public $attendanceSession = 'active';
     public $homeLocationLat;
     public $homeLocationLng;
+    public $usersOnPage = [];
 
     public function mount()
     {
         $this->checkClockStatus();
+    }
+
+    public function fireEvent(){
+        event(new MyEvent('hello world'));
     }
 
     public function checkClockStatus()
@@ -215,6 +223,54 @@ class Attendance extends Component
             'isClockOutDisabled' => $this->isClockOutDisabled,
             'attendanceSession' => $this->attendanceSession, // Add this line to pass the variable
         ]);
+    }
+
+    //To update user data for admin's live monitoring
+    protected $rules = [
+        'usersOnPage.*.id' => 'required|integer',
+        'usersOnPage.*.name' => 'required|string',
+        'usersOnPage.*.email' => 'required|email',
+        'usersOnPage.*.locations' => 'nullable|array',
+        'usersOnPage.*.locations.*.created_at' => 'nullable|date',
+        'usersOnPage.*.locations.*.updated_at' => 'nullable|date',
+        'usersOnPage.*.locations.*.status' => 'nullable|string',
+    ];
+
+    public function updateUserData($users)
+    {
+        $userIds = collect($users)->pluck('id');
+
+        $this->usersOnPage = User::whereIn('id', $userIds)
+            ->with(['locations' => function ($query) {
+                $query->whereDate('created_at', today())
+                      ->orderBy('created_at', 'desc')
+                      ->limit(1);
+            }])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'locations' => $user->locations->map(function ($location) {
+                        return [
+                            'created_at' => $location->created_at,
+                            'updated_at' => $location->updated_at,
+                            'status' => $location->status,
+                            'type' => $location ->type,
+                            'in_range' => $location->in_range,
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray(); // Convert to plain array
+
+        //logger()->info($this->usersOnPage);
+    }
+
+    #[On('location-updated')]
+    public function callbackMethod(){
+        logger()->info('Location-updated dispatched!');
+        event(new UserLocationUpdated());
     }
 
     public function showReport()

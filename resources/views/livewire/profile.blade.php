@@ -7,7 +7,7 @@
         <div class="row gx-4">
             <div class="col-auto">
                 <div class="avatar avatar-xl position-relative">
-                    <img src="../assets/img/bruce-mars.jpg" alt="..." class="w-100 border-radius-lg shadow-sm">
+                    <img src="../assets/img/team-5.jpg" alt="..." class="w-100 border-radius-lg shadow-sm">
                     <a href="javascript:;"
                         class="btn btn-sm btn-icon-only bg-gradient-light position-absolute bottom-0 end-0 mb-n2 me-n2">
                         <i class="fa fa-pen top-0" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -256,7 +256,7 @@
                         </li>
                         <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
                             <div class="avatar me-3">
-                                <img src="../assets/img/ivana-square.jpg" alt="kal" class="border-radius-lg shadow">
+                                <img src="../assets/img/team-6.jpg" alt="kal" class="border-radius-lg shadow">
                             </div>
                             <div class="d-flex align-items-start flex-column justify-content-center">
                                 <h6 class="mb-0 text-sm">Ivanna</h6>

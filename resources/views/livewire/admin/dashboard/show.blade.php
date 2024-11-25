@@ -2,34 +2,50 @@
     <div class="container-fluid py-4">
         <!-- Top row-->
         <div class="row">
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <!--Card Money-->
-                <div class="card">
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Today's Money</p>
-                                    <h5 class="font-weight-bolder mb-0">
-                                        $53,000
-                                        <span class="text-success text-sm font-weight-bolder">+55%</span>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Card Money ends here..-->
+
+            <div class="page-header min-height-250 border-radius-xl mt-4"
+                style="background-image: url('../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
+                <h2 class="text-white font-weight-bolder mx-6 mb-4 pt-2"
+                    style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
+                    Hello, {{ auth()->user()->name }}!
+                </h2>
+                <h2 id="current-time" class="text-white font-weight-bolder mx-6 mb-4 pt-2"
+                    style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);"></h2>
+                <script>
+                    function updateTime() {
+                        const now = new Date();
+                        const options = {
+                            year: 'numeric',
+                            month: 'long',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: true
+                        };
+                        document.getElementById('current-time').textContent = now.toLocaleString('en-US', options);
+                    }
+
+                    // Initial call
+                    updateTime();
+
+                    // Update every second
+                    setInterval(updateTime, 1000);
+                </script>
             </div>
+
+
+
         </div>
         <!-- Top row ends here.. -->
 
+        @include('livewire.user-on-this-page')
+
+
         <!--Middle row-->
+        @include('livewire.admin.dashboard.components.online-users-table')
+
+
         <div class="row mt-4">
             <div class="col-lg-7 mb-lg-0 mb-4">
                 <div class="card">

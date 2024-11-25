@@ -1,11 +1,31 @@
+{{-- @push('child-scripts')
+    @script
+    <script>
+        console.log('inside attendance-session!');
+        var channel = window.Echo.channel('myapp-channel');
+        console.log('channel instance value:', channel);
+        channel.listen('.my-event', function(data) {
+            console.log("Listened my-event!");
+            alert(JSON.stringify(data));
+        });
+    </script>
+    @endscript
+@endpush --}}
+
+
 <div class="container-fluid py-4">
     <div class="page-header min-height-250 border-radius-xl mt-4"
         style="background-image: url('../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
-        <span class="mask bg-gradient-primary opacity-6"></span>
+        {{-- <span class="mask bg-gradient-primary opacity-6"></span> --}}
         <h3 class="text-white font-weight-bolder mx-6 mb-4 pt-2">Hello, {{ auth()->user()->name }}!</h3>
     </div>
+    @include('livewire.user-on-this-page')
 
     <div class="card card-body blur shadow-blur mx-4 mt-6">
+
+        {{-- <div class="m-3 row">
+            <button class="btn btn-primary" type="button" wire:click="fireEvent">Fire MyEvent</button>
+        </div> --}}
         <!-- CLOCK BUTTONS -->
         <div class="m-3 row">
             <div class="d-flex justify-content-center align-items-center col p-3">
@@ -15,64 +35,63 @@
                 </button>
 
                 @script
-                <script>
-                    // CLOCK IN BUTTON LISTENER
-                    document.getElementById('clockInBtn').addEventListener('click', () => {
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition((position) => {
-                                const userPosition = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
+                    <script>
 
-                                $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
-                                    (locationStatus) => {
-                                        console.log("Location Status: ", locationStatus);
-                                        if (locationStatus) {
-                                            alert("User is in range.. registering clock-in");
-                                            $wire.call('clockIn');
-                                        } else {
-                                            alert("Out of range! Go in range first to clock in!");
+                        // CLOCK IN BUTTON LISTENER
+                        document.getElementById('clockInBtn').addEventListener('click', () => {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition((position) => {
+                                    const userPosition = {
+                                        lat: position.coords.latitude,
+                                        lng: position.coords.longitude,
+                                    };
+
+                                    $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
+                                        (locationStatus) => {
+                                            console.log("Location Status: ", locationStatus);
+                                            if (locationStatus) {
+                                                alert("User is in range.. registering clock-in");
+                                                $wire.call('clockIn');
+                                            } else {
+                                                alert("Out of range! Go in range first to clock in!");
+                                            }
                                         }
-                                    }
-                                );
-                            });
-                        } else {
-                            console.log("Geolocation not supported");
-                        }
-                    });
+                                    );
+                                });
+                            } else {
+                                console.log("Geolocation not supported");
+                            }
+                        });
 
 
-                    // CLOCK OUT BUTTON LISTENER
-                    document.getElementById('clockOutBtn').addEventListener('click', () => {
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition((position) => {
-                                const userPosition = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
+                        // CLOCK OUT BUTTON LISTENER
+                        document.getElementById('clockOutBtn').addEventListener('click', () => {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition((position) => {
+                                    const userPosition = {
+                                        lat: position.coords.latitude,
+                                        lng: position.coords.longitude,
+                                    };
 
-                                $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
-                                    (locationStatus) => {
-                                        if (locationStatus) {
-                                            alert("User is in range.. registering clock-out");
-                                            // Only call the clockOut method when in range
-                                            $wire.call('clockOut');
-                                            $wire.set('isClockOutDisabled', true);
-                                            $wire.set('attendanceSession', 'ended');
-                                        } else {
-                                            alert("Out of range! Go in range first to clock out!");
+                                    $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
+                                        (locationStatus) => {
+                                            if (locationStatus) {
+                                                alert("User is in range.. registering clock-out");
+                                                // Only call the clockOut method when in range
+                                                $wire.call('clockOut');
+                                                $wire.set('isClockOutDisabled', true);
+                                                $wire.set('attendanceSession', 'ended');
+                                            } else {
+                                                alert("Out of range! Go in range first to clock out!");
+                                            }
                                         }
-                                    }
-                                );
-                            });
-                        } else {
-                            console.log("Geolocation not supported");
-                        }
-                    });
-
-
-                </script>
+                                    );
+                                });
+                            } else {
+                                console.log("Geolocation not supported");
+                            }
+                        });
+                    </script>
                 @endscript
             </div>
             <div class="d-flex justify-content-center align-items-center col p-3">
