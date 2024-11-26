@@ -29,10 +29,6 @@ class Attendance extends Component
         $this->checkClockStatus();
     }
 
-    public function fireEvent(){
-        event(new MyEvent('hello world'));
-    }
-
     public function checkClockStatus()
     {
         $userId = auth()->id();

@@ -1,18 +1,3 @@
-{{-- @push('child-scripts')
-    @script
-    <script>
-        console.log('inside attendance-session!');
-        var channel = window.Echo.channel('myapp-channel');
-        console.log('channel instance value:', channel);
-        channel.listen('.my-event', function(data) {
-            console.log("Listened my-event!");
-            alert(JSON.stringify(data));
-        });
-    </script>
-    @endscript
-@endpush --}}
-
-
 <div class="container-fluid py-4">
     <div class="page-header min-height-250 border-radius-xl mt-4"
         style="background-image: url('../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
@@ -22,10 +7,6 @@
     @include('livewire.user-on-this-page')
 
     <div class="card card-body blur shadow-blur mx-4 mt-6">
-
-        {{-- <div class="m-3 row">
-            <button class="btn btn-primary" type="button" wire:click="fireEvent">Fire MyEvent</button>
-        </div> --}}
         <!-- CLOCK BUTTONS -->
         <div class="m-3 row">
             <div class="d-flex justify-content-center align-items-center col p-3">
@@ -33,10 +14,8 @@
                     aria-pressed="true" {{ $isClockInDisabled ? 'disabled' : '' }}>
                     Clock-in
                 </button>
-
                 @script
                     <script>
-
                         // CLOCK IN BUTTON LISTENER
                         document.getElementById('clockInBtn').addEventListener('click', () => {
                             if (navigator.geolocation) {

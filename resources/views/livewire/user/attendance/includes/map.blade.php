@@ -34,7 +34,6 @@
 
         // Listen for the start attendance session event triggered by clock-in
         window.addEventListener('start-attendance-session', (event) => {
-            //console.log("start-attendance-session listened! calling trackUserLocation with type:", sessionType);
             const sessionType = event.detail[0];
             trackUserLocation(sessionType); // Pass the actual value of sessionType
         });
@@ -42,19 +41,15 @@
 
         // Listen for the stop attendance session event triggered by clock-out
         window.addEventListener('stop-attendance-session', () => {
-            // console.log(" Event Stop Session...");
             stopTrackSession();
         });
 
         // Function to update the map to the current geolocation
         function trackUserLocation(sessionType) {
-            // console.log("Inside trackUserLocation with sessionType: ", sessionType);
-
             if (navigator.geolocation) {
                 if (sessionType == 'clock_in') {
 
                     //START SESSION CODE HERE..
-                    // console.log("Running code for starting session..");
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const userPosition = {
@@ -64,8 +59,6 @@
 
                             const currentTime = Date.now();
                             lastSaved = currentTime;
-                            // saveLocationToDatabase(userPosition, 'in', rangeStatus);
-                            // console.log("Location saved! Session started..");
 
                             //UPDATE MAPS
                             lastPosition = userPosition;
@@ -84,9 +77,6 @@
                     );
                 } else
                 if (sessionType == 'active') {
-
-                    // console.log("Running code for active session..");
-
                     //ACTIVE SESSION CODE
                     //watchInstance STARTS HERE..
                     watchInstance = navigator.geolocation.watchPosition(
@@ -102,7 +92,6 @@
 
                             // Determine range status
                             const isInRange = checkIfInRange(userPosition, targetPosition);
-                            // console.log("User isInRange value: ", isInRange);
 
                             // Save every time there's a significant move or after a set interval
                             if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
