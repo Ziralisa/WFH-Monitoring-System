@@ -1,46 +1,43 @@
-<div class="modal fade" id="editRoleModal{{ $role->id }}" tabindex="-1" role="dialog"
-    aria-labelledby="editRoleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editRoleModalLabel">Edit Role Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<div wire:ignore.self class="modal fade" id="editRoleModal" tabindex="-1"
+                aria-labelledby="editRoleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editRoleModalLabel">Edit Role</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="roleName" class="form-label">Role Name</label>
+                                    <input type="text" class="form-control" id="roleName" wire:model="name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="roleDesc" class="form-label">Description</label>
+                                    <textarea class="form-control" id="roleDesc" wire:model="desc"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="permissions">Permissions</label>
+                                    @foreach ($permissions as $permission)
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="permission-{{ Str::slug($permission->name) }}"
+                                                wire:model="selectedPermissions" {{-- Bind to Livewire --}}
+                                                value="{{ $permission->name }}">
+                                            <label class="form-check-label"
+                                                for="permission-{{ Str::slug($permission->name) }}">
+                                                {{ ucwords(str_replace('_', ' ', $permission->name)) }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" wire:click="update">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="editRoleForm" method="POST" action="">
-                    @csrf
-                    @method('PUT')
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="edit-name" name="name" value="{{ $role->name }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <input type="text" class="form-control" id="edit-desc" name="desc" value="{{ $role->description }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="permissions">Permissions</label>
-                        @php
-                            $permissions = \Spatie\Permission\Models\Permission::all();
-                        @endphp
-                        @foreach ($permissions as $permission)
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" 
-                                    id="permission-{{ Str::slug($permission->name) }}"
-                                    name="permissions[]"
-                                    value="{{ $permission->name }}"
-                                    {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="permission-{{ Str::slug($permission->name) }}">
-                                    {{ ucwords(str_replace('_', ' ', $permission->name)) }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-                    <button type="submit" class="btn btn-success btn-block">Update Role</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
