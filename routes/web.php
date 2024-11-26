@@ -67,7 +67,7 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
     Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
     Route::delete('/admin/staff/{id}', [StaffController::class, 'destroy'])->name('admin.staff.delete');
-
+    Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
     //User settings page
     Route::get('/admin/user', UserSettings::class)->name('admin.user-settings');
     Route::get('/admin/user-list', [UserSettings::class, 'index'])->name('admin.user-list');
@@ -94,7 +94,7 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
     Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
-
+   
 });
 
 //DEMO PAGES ROUTES

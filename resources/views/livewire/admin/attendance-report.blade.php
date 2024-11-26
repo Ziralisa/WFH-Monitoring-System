@@ -11,10 +11,12 @@
             <form method="GET" action="{{ route('attendance-report') }}" class="mb-4">
                 <div class="row">
                     <div class="col-md-4">
-                        <input type="text" name="name" class="form-control" placeholder="Search by name" value="{{ request('name') }}">
+                        <input type="text" name="name" class="form-control" placeholder="Search by name"
+                            value="{{ request('name') }}">
                     </div>
                     <div class="col-md-4">
-                        <input type="date" name="date" class="form-control" placeholder="Search by date" value="{{ request('date') }}">
+                        <input type="date" name="date" class="form-control" placeholder="Search by date"
+                            value="{{ request('date') }}">
                     </div>
                     <div class="col-md-4">
                         <button type="submit" class="btn btn-primary">Filter</button>
@@ -44,7 +46,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($attendanceData as $record)
+                                @forelse($allUserLocations as $record)
                                     <tr>
                                         <td class="text-center">{{ $record->created_at->format('Y-m-d') }}</td>
                                         <td class="text-center">{{ $record->user->name ?? 'N/A' }}</td>
@@ -65,7 +67,7 @@
 
                     <!-- Pagination Links -->
                     <div class="d-flex justify-content-center mt-3">
-                        {{ $attendanceData->links() }}
+                        {{ $allUserLocations->links() }}
                     </div>
                 </div>
             </div>

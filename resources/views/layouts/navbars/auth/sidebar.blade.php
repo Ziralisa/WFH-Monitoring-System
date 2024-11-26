@@ -17,8 +17,8 @@
                         href="{{ route('dashboard') }}">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>shop </title>
                                 <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                     <g id="Rounded-Icons" transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF"
@@ -50,8 +50,8 @@
                         href="{{ route('dashboard1') }}">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>shop </title>
                                 <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                     <g id="Rounded-Icons" transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF"
@@ -87,9 +87,8 @@
                         href="{{ route('take-attendance') }}">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i
-                                class="fas fa-2xs fa-file-pen ps-2 pe-2 text-center
-                {{ in_array(request()->route()->getName(), ['take-attendance']) ? 'text-white' : 'text-dark' }}"></i>
+                            <i class="fas fa-2xs fa-file-pen ps-2 pe-2 text-center
+                        {{ in_array(request()->route()->getName(), ['take-attendance']) ? 'text-white' : 'text-dark' }}"></i>
                         </div>
                         <span class="nav-link-text ms-1">Take Attendance</span>
                     </a>
@@ -105,7 +104,7 @@
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i style="font-size: 1rem;"
                                 class="fas fa-xs fa-chart-line ps-2 pe-2 text-center
-                                {{ in_array(request()->route()->getName(), ['report']) ? 'text-white' : 'text-dark' }}"></i>
+                                        {{ in_array(request()->route()->getName(), ['report']) ? 'text-white' : 'text-dark' }}"></i>
                         </div>
                         <span class="nav-link-text ms-1">Attendance Report</span>
                     </a>
@@ -128,13 +127,26 @@
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i
                                 class="fas fa-lg fa-user-check ps-2 pe-2 text-center
-                                {{ in_array(request()->route()->getName(), ['approve-users']) ? 'text-white' : 'text-dark' }}"></i>
+                                        {{ in_array(request()->route()->getName(), ['approve-users']) ? 'text-white' : 'text-dark' }}"></i>
                         </div>
                         <span class="nav-link-text ms-1">Approve Users</span>
                     </a>
                 </li>
             @endcan
-
+            @can('view attendance report staff')
+                <li class="nav-item pb-2">
+                    <a class="nav-link {{ Route::currentRouteName() == 'attendance-report' ? 'active' : '' }}"
+                        href="{{ route('attendance-report') }}">
+                        <div
+                            class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i style="font-size: 1rem;"
+                                class="fas fa-xs fa-chart-line ps-2 pe-2 text-center
+                                        {{ in_array(request()->route()->getName(), ['attendance-report']) ? 'text-white' : 'text-dark' }}"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">Attendance Report</span>
+                    </a>
+                </li>
+            @endcan
             @can('view staff list')
                 <li class="nav-item">
                     <a class="nav-link {{ Route::currentRouteName() == 'admin.staff-list' ? 'active' : '' }}"
@@ -143,7 +155,7 @@
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i style="font-size: 1rem;"
                                 class="fas fa-xs fa-address-book ps-2 pe-2 text-center
-                    {{ in_array(request()->route()->getName(), ['admin.staff-list']) ? 'text-white' : 'text-dark' }}"></i>
+                            {{ in_array(request()->route()->getName(), ['admin.staff-list']) ? 'text-white' : 'text-dark' }}"></i>
                         </div>
                         <span class="nav-link-text ms-1">Staff List</span>
                     </a>
@@ -163,7 +175,7 @@
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i
                                 class="fas fa-xs fa-users-gear ps-2 pe-2 text-center
-                                {{ in_array(request()->route()->getName(), ['admin.user-settings']) ? 'text-white' : 'text-dark' }}"></i>
+                                        {{ in_array(request()->route()->getName(), ['admin.user-settings']) ? 'text-white' : 'text-dark' }}"></i>
                         </div>
                         <span class="nav-link-text ms-1">Users</span>
                     </a>
@@ -177,7 +189,7 @@
                             class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i
                                 class="fas fa-2xl fa-user-shield ps-2 pe-2 text-center
-                                    {{ in_array(request()->route()->getName(), ['admin.role']) ? 'text-white' : 'text-dark' }}"></i>
+                                            {{ in_array(request()->route()->getName(), ['admin.role']) ? 'text-white' : 'text-dark' }}"></i>
                         </div>
                         <span class="nav-link-text ms-1">Roles</span>
                     </a>
@@ -197,8 +209,8 @@
                     href="{{ route('dashboard') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>shop </title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF"
@@ -225,8 +237,8 @@
                     href="{{ route('laravel-user-profile') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>customer-support</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-1717.000000, -291.000000)" fill="#FFFFFF"
@@ -256,9 +268,8 @@
                     href="{{ route('user-management') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1rem;"
-                            class="fas fa-lg fa-list-ul ps-2 pe-2 text-center
-                {{ in_array(request()->route()->getName(), ['user-management']) ? 'text-white' : 'text-dark' }}"></i>
+                        <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center
+                    {{ in_array(request()->route()->getName(), ['user-management']) ? 'text-white' : 'text-dark' }}"></i>
                     </div>
                     <span class="nav-link-text ms-1">User Management</span>
                 </a>
@@ -268,8 +279,8 @@
                     href="{{ route('tables') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>office</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF"
@@ -296,8 +307,8 @@
                     href="{{ route('billing') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>credit-card</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF"
@@ -323,8 +334,8 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'rtl' ? 'active' : '' }}" href="{{ route('rtl') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>settings</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-2020.000000, -442.000000)" fill="#FFFFFF"
@@ -355,8 +366,8 @@
                     href="{{ route('profile') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>customer-support</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-1717.000000, -291.000000)" fill="#FFFFFF"
@@ -385,8 +396,8 @@
                 <a class="nav-link" href="{{ route('sign-in') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="12px" viewBox="0 0 40 44" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 40 44" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>document</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
@@ -412,8 +423,8 @@
                 <a class="nav-link" href="{{ route('static-sign-up') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>spaceship</title>
                             <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Rounded-Icons" transform="translate(-1720.000000, -592.000000)" fill="#FFFFFF"
