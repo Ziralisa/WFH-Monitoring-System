@@ -1,0 +1,19 @@
+{
+  "resources/js/app.js": {
+    "file": "assets/app.727ccbf9.js",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app.e3b0c442.css"
+    ]
+  },
+  "resources/js/app.css": {
+    "file": "assets/app.e3b0c442.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/scss/soft-ui-dashboard.scss": {
+    "file": "assets/soft-ui-dashboard.b1e4b7f2.css",
+    "src": "resources/scss/soft-ui-dashboard.scss",
+    "isEntry": true
+  }
+}

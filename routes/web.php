@@ -72,6 +72,7 @@ Route::group(['middleware' => ['can:view admin dashboard']], function () {
     Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
   });
   Route::group(['middleware' => ['can:view user settings']], function () {
+    //User settings page
     Route::get('/admin/user', UserSettings::class)->name('admin.user-settings');
     Route::get('/admin/user-list', [UserSettings::class, 'index'])->name('admin.user-list');
     Route::put('admin/user/{id}', [UserSettings::class, 'update'])->name('admin.user.update');
@@ -88,7 +89,6 @@ Route::group(['middleware' => ['can:view admin dashboard']], function () {
 Route::group(['middleware' => ['can:view profile']], function(){
     Route::get('/user-profile', UserProfile1::class)->name('user-profile');
 });
-
 Route::group(['middleware' => ['can:view staff dashboard']], function() {
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
 });
@@ -104,6 +104,10 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
     Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
+});
+
+Route::group(['middleware' => ['can:view attendance record']], function(){
+    Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
 });
 
 //DEMO PAGES ROUTES

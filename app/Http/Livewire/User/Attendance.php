@@ -237,11 +237,13 @@ class Attendance extends Component
         $userIds = collect($users)->pluck('id');
 
         $this->usersOnPage = User::whereIn('id', $userIds)
-            ->with(['locations' => function ($query) {
-                $query->whereDate('created_at', today())
-                      ->orderBy('created_at', 'desc')
-                      ->limit(1);
-            }])
+            ->with([
+                'locations' => function ($query) {
+                    $query->whereDate('created_at', today())
+                        ->orderBy('created_at', 'desc')
+                        ->limit(1);
+                }
+            ])
             ->get()
             ->map(function ($user) {
                 return [
@@ -253,7 +255,7 @@ class Attendance extends Component
                             'created_at' => $location->created_at,
                             'updated_at' => $location->updated_at,
                             'status' => $location->status,
-                            'type' => $location ->type,
+                            'type' => $location->type,
                             'in_range' => $location->in_range,
                         ];
                     })->toArray(),
@@ -264,21 +266,30 @@ class Attendance extends Component
     }
 
     #[On('location-updated')]
-    public function callbackMethod(){
+    public function callbackMethod()
+    {
         logger()->info('Location-updated dispatched!');
         event(new UserLocationUpdated());
     }
 
     public function showReport()
     {
-        // Fetch data from the Location model instead of Attendance model
+
         $userLocations = Location::where('user_id', Auth::id()) // Filter by logged-in user
             ->orderBy('created_at', 'desc') // Order by most recent
             ->paginate(10); // Adjust pagination as needed
 
-        // return view('livewire.user.attendance.show', [
-        //     'userLocations' => $userLocations,
-        // $attendances = Attendance::where('user_id', Auth::id())->paginate(10);
         return view('livewire.staff.report', compact('userLocations'));
     }
+
+    public function attendanceReport()
+    {
+        // Fetch all user locations (admin can see all)
+        $allUserLocations = Location::with('user') // Use relationships if `Location` belongs to `User`
+            ->orderBy('created_at', 'desc') // Order by most recent
+            ->paginate(10); // Adjust pagination as needed
+
+        return view('livewire.admin.attendance-report', compact('allUserLocations'));
+    }
+
 }
