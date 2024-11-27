@@ -1,11 +1,9 @@
-<div>
+<div class="mt-3 row">
     <h1 class="m-4">Roles</h1>
     <div class="row">
         <div class="col-12">
+            @include('components.alerts.success')
             <div class="card mb-4 mx-4">
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
                 <div class="card-header pb-0">
                     <button type="button" class="btn bg-gradient-info" data-bs-toggle="modal"
                         data-bs-target="#newRoleModal">
@@ -55,7 +53,7 @@
 
             <!-- New Role Modal -->
             @include('livewire.admin.role-settings.components.new-modal')
-            
+
         </div>
     </div>
 </div>

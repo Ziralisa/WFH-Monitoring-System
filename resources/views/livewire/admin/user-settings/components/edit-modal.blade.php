@@ -1,28 +1,31 @@
-<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
-    aria-hidden="true">
+<div wire:ignore.self class="modal fade" id="editUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editUserModalLabel">Edit User Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
-                <form id="editUserForm" method="POST" action="">
+                <form>
                     @csrf
                     @method('PUT')
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" id="edit-name" name="name" required>
+                        <input type="text" class="form-control" id="edit-name" wire:model="name" required>
+                        @error('name')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" id="edit-email" name="email" required>
+                        <input type="email" class="form-control" id="edit-email" wire:model="email" required>
+                        @error('email')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="role">Role</label>
-                        <select class="form-control" id="edit-role" name="role" required>
+                        <select class="form-select" id="edit-role" wire:model="role" required>
                             <option value="" disabled>Select a role</option>
                             <option value="admin">Admin</option>
                             <option value="staff">Staff</option>
@@ -31,7 +34,8 @@
                             <!-- Add more roles as needed -->
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success btn-block">Update User</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" wire:click="update">Save Changes</button>
                 </form>
             </div>
         </div>
