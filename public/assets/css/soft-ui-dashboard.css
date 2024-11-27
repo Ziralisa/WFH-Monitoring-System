@@ -635,6 +635,20 @@ progress {
   margin-left: auto;
 }
 
+.container,
+.container-fluid,
+.container-xxl,
+.container-xl,
+.container-lg,
+.container-md,
+.container-sm {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, 1.5rem);
+  padding-left: var(--bs-gutter-x, 1.5rem);
+  margin-right: auto;
+  margin-left: auto;
+}
+
 @media (min-width: 576px) {
   .container-sm, .container {
     max-width: 540px;
@@ -21573,7 +21587,8 @@ hr.horizontal.gray-light {
   opacity: 1;
 }
 
-@media (max-width: 1199.98px) {
+/* @media (max-width: 1199.98px) { */
+@media (max-width: 600px) {
   .g-sidenav-show.rtl .sidenav {
     transform: translateX(17.125rem);
   }
@@ -21587,6 +21602,22 @@ hr.horizontal.gray-light {
     transform: translateX(0);
   }
 }
+
+/* Added this code block for sidebar and content display justification - Shahrul */
+@media (min-width: 600px) and (max-width: 1199.98px) {
+    .g-sidenav-show:not(.rtl) .sidenav {
+        transform: translateX(0); /* Sidebar is visible */
+        max-width: 17.125rem; /* Ensure it takes its intended width */
+    }
+    .g-sidenav-show.rtl .sidenav {
+        transform: translateX(0); /* Sidebar visible for RTL layout */
+        max-width: 17.125rem;
+    }
+    .g-sidenav-show .sidenav.fixed-start ~ .main-content {
+        margin-left: 17.125rem; /* Push main content to the right */
+    }
+  }
+
 .navbar-vertical.bg-white {
   box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
 }

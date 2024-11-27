@@ -17,6 +17,8 @@ class AddPermissionsToPermissionsTable extends Migration
             'view approve users',
             'view user settings',
             'view role settings',
+            'view attendance report staff',
+            'view staff list',
             // Add more permissions as needed
         ];
 
@@ -36,6 +38,8 @@ class AddPermissionsToPermissionsTable extends Migration
             'view approve users',
             'view user settings',
             'view role settings',
+            'view attendance report staff',
+            'view staff list',
         ])->delete();
     }
 }

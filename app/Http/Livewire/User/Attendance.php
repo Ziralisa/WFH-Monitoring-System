@@ -2,10 +2,13 @@
 
 namespace App\Http\Livewire\User;
 
+use App\Events\MyEvent;
+use App\Events\UserLocationUpdated;
 use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Http\Request;
 
@@ -19,6 +22,7 @@ class Attendance extends Component
     public $attendanceSession = 'active';
     public $homeLocationLat;
     public $homeLocationLng;
+    public $usersOnPage = [];
 
     public function mount()
     {
@@ -217,16 +221,75 @@ class Attendance extends Component
         ]);
     }
 
+    //To update user data for admin's live monitoring
+    protected $rules = [
+        'usersOnPage.*.id' => 'required|integer',
+        'usersOnPage.*.name' => 'required|string',
+        'usersOnPage.*.email' => 'required|email',
+        'usersOnPage.*.locations' => 'nullable|array',
+        'usersOnPage.*.locations.*.created_at' => 'nullable|date',
+        'usersOnPage.*.locations.*.updated_at' => 'nullable|date',
+        'usersOnPage.*.locations.*.status' => 'nullable|string',
+    ];
+
+    public function updateUserData($users)
+    {
+        $userIds = collect($users)->pluck('id');
+
+        $this->usersOnPage = User::whereIn('id', $userIds)
+            ->with([
+                'locations' => function ($query) {
+                    $query->whereDate('created_at', today())
+                        ->orderBy('created_at', 'desc')
+                        ->limit(1);
+                }
+            ])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'locations' => $user->locations->map(function ($location) {
+                        return [
+                            'created_at' => $location->created_at,
+                            'updated_at' => $location->updated_at,
+                            'status' => $location->status,
+                            'type' => $location->type,
+                            'in_range' => $location->in_range,
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray(); // Convert to plain array
+
+        //logger()->info($this->usersOnPage);
+    }
+
+    #[On('location-updated')]
+    public function callbackMethod()
+    {
+        logger()->info('Location-updated dispatched!');
+        event(new UserLocationUpdated());
+    }
+
     public function showReport()
     {
-        // Fetch data from the Location model instead of Attendance model
+
         $userLocations = Location::where('user_id', Auth::id()) // Filter by logged-in user
             ->orderBy('created_at', 'desc') // Order by most recent
             ->paginate(10); // Adjust pagination as needed
 
-        // return view('livewire.user.attendance.show', [
-        //     'userLocations' => $userLocations,
-        // $attendances = Attendance::where('user_id', Auth::id())->paginate(10);
         return view('livewire.staff.report', compact('userLocations'));
     }
+
+    public function attendanceReport()
+    {
+        // Fetch all user locations (admin can see all)
+        $allUserLocations = Location::with('user') // Use relationships if `Location` belongs to `User`
+            ->orderBy('created_at', 'desc') // Order by most recent
+            ->paginate(10); // Adjust pagination as needed
+
+        return view('livewire.admin.attendance-report', compact('allUserLocations'));
+    }
+
 }

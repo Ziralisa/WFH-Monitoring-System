@@ -41,10 +41,7 @@ class User extends Authenticatable
      // Role column
      protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location'];
 
-     // Method to check if the user is an admin
-     public function isAdmin()
-     {
-         return $this->role === 'admin'; 
+     public function locations(){
+        return $this->hasMany(Location::class);
      }
-
 }

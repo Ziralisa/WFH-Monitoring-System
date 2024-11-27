@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\LocationController;
 use App\Http\Livewire\Admin\RoleSettings;
 use App\Http\Livewire\Admin\UserSettings;
@@ -60,56 +59,66 @@ Route::middleware('role:user')->group(function () {
     Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
 });
 
-//ADMIN ROUTES
-Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
-    Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
+Route::group(['middleware' => ['can:view admin dashboard']], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
+ });
+ Route::group(['middleware' => ['can:view staff list']], function () {
+    Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
     Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
     Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
     Route::delete('/admin/staff/{id}', [StaffController::class, 'destroy'])->name('admin.staff.delete');
-
-    //User Settings page
+  });
+  Route::group(['middleware' => ['can:view approve users']], function () {
+    Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
+  });
+  Route::group(['middleware' => ['can:view user settings']], function () {
+    //User settings page
     Route::get('/admin/user', UserSettings::class)->name('admin.user-settings');
     Route::get('/admin/user-list', [UserSettings::class, 'index'])->name('admin.user-list');
     Route::put('admin/user/{id}', [UserSettings::class, 'update'])->name('admin.user.update');
     Route::delete('/admin/user/{id}', [UserSettings::class, 'destroy'])->name('admin.user.delete');
-
-    //Role Settings page
+  });
+  Route::group(['middleware' => ['can:view role settings']], function () {
     Route::get('/admin/role', RoleSettings::class)->name('admin.role');
     Route::post('/admin/role/new', [RoleSettings::class, 'store'])->name('admin.role.store');
     Route::put('/admin/role/{id}', [RoleSettings::class, 'update'])->name('admin.role.update');
     Route::delete('/admin/role/{id}', [RoleSettings::class, 'delete'])->name('admin.role.delete');
+  });
 
 
+Route::group(['middleware' => ['can:view profile']], function(){
+    Route::get('/user-profile', UserProfile1::class)->name('user-profile');
+});
+Route::group(['middleware' => ['can:view staff dashboard']], function() {
+    Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
 });
 
-
-
-// Attendance Routes (Staff Only)
-Route::middleware(['auth', 'role:staff'])->group(function () {
+//TAKE ATTENDANCE ROUTES
+Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
     Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])
         ->name('attendance.calculate-points');
-    Route::get('/attendance/report', [AttendanceController::class, 'showReport'])->name('report');
+    Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
-    Route::get('/user-profile', UserProfile1::class)->name('user-profile');
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
     Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
+});
 
+Route::group(['middleware' => ['can:view attendance record']], function(){
+    Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
 });
 
 //DEMO PAGES ROUTES
-Route::get('/billing', Billing::class)->name('billing');
-Route::get('/profile', Profile::class)->name('profile');
-Route::get('/tables', Tables::class)->name('tables');
-Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
-Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
-Route::get('/rtl', Rtl::class)->name('rtl');
-Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
-Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
-Route::get('/counter', Counter::class);
-
-
+Route::group(['middleware' => ['can:view laravel examples']], function () {
+    Route::get('/billing', Billing::class)->name('billing');
+    Route::get('/profile', Profile::class)->name('profile');
+    Route::get('/tables', Tables::class)->name('tables');
+    Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
+    Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
+    Route::get('/rtl', Rtl::class)->name('rtl');
+    Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
+    Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
+    Route::get('/counter', Counter::class);
+});

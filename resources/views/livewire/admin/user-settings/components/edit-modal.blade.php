@@ -12,17 +12,14 @@
                 <form id="editUserForm" method="POST" action="">
                     @csrf
                     @method('PUT')
-
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="edit-name" name="name" required>
                     </div>
-
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" class="form-control" id="edit-email" name="email" required>
                     </div>
-
                     <div class="form-group">
                         <label for="role">Role</label>
                         <select class="form-control" id="edit-role" name="role" required>

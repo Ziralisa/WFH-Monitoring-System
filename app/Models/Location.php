@@ -14,4 +14,8 @@ class Location extends Model
         'user_id', 'latitude', 'longitude', 'type', 'status', 'clockinpoints', 'workinghourpoints', 'total_points', 'in_range'
     ];
 
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
 }

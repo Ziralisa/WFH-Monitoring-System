@@ -132,6 +132,13 @@
 
             </div>
         </div>
+        @push('child-scripts')
+            @script
+                {{-- Location Picker --}}
+                <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
+            @endscript
+        @endpush
+
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
             defer></script>
         <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>

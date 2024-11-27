@@ -13,7 +13,7 @@ class ApproveUsers extends Component
     public function render()
     {
         // Fetch all users with the role 'user'
-        $users = User::role('user')->get();
+        $users = $users = User::role('user')->paginate(10);
 
         // Check if there are no users to approve
         $noUsersToApprove = $users->isEmpty();

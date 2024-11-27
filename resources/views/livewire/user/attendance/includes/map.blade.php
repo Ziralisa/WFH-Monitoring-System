@@ -34,7 +34,6 @@
 
         // Listen for the start attendance session event triggered by clock-in
         window.addEventListener('start-attendance-session', (event) => {
-            //console.log("start-attendance-session listened! calling trackUserLocation with type:", sessionType);
             const sessionType = event.detail[0];
             trackUserLocation(sessionType); // Pass the actual value of sessionType
         });
@@ -42,19 +41,15 @@
 
         // Listen for the stop attendance session event triggered by clock-out
         window.addEventListener('stop-attendance-session', () => {
-            console.log(" Event Stop Session...");
             stopTrackSession();
         });
 
         // Function to update the map to the current geolocation
         function trackUserLocation(sessionType) {
-            console.log("Inside trackUserLocation with sessionType: ", sessionType);
-
             if (navigator.geolocation) {
                 if (sessionType == 'clock_in') {
 
                     //START SESSION CODE HERE..
-                    console.log("Running code for starting session..");
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const userPosition = {
@@ -64,8 +59,6 @@
 
                             const currentTime = Date.now();
                             lastSaved = currentTime;
-                            // saveLocationToDatabase(userPosition, 'in', rangeStatus);
-                            // console.log("Location saved! Session started..");
 
                             //UPDATE MAPS
                             lastPosition = userPosition;
@@ -84,9 +77,6 @@
                     );
                 } else
                 if (sessionType == 'active') {
-
-                    console.log("Running code for active session..");
-
                     //ACTIVE SESSION CODE
                     //watchInstance STARTS HERE..
                     watchInstance = navigator.geolocation.watchPosition(
@@ -102,7 +92,6 @@
 
                             // Determine range status
                             const isInRange = checkIfInRange(userPosition, targetPosition);
-                            console.log("User isInRange value: ", isInRange);
 
                             // Save every time there's a significant move or after a set interval
                             if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
@@ -133,7 +122,7 @@
         }
 
         function stopTrackSession() {
-            console.log('inside stopTrackSession()');
+            // console.log('inside stopTrackSession()');
             if (watchInstance) {
                 // Clear the watch instance to stop tracking the position
                 navigator.geolocation.clearWatch(watchInstance);
@@ -143,7 +132,7 @@
                 marker.setPosition(lastPosition);
                 marker.setTitle("User found!");
                 document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
-                console.log("Disabling clock out button...")
+                // console.log("Disabling clock out button...")
                 document.getElementById("clockOutBtn").disabled = true;
             }
         }
@@ -178,8 +167,6 @@
                 latitude: position.lat,
                 longitude: position.lng,
                 in_range: rangeStatus,
-                //UNFINISHED, ADD RANGE DETECTION LOGICS!!
-                //status: rangeStatus, // In range @ out of range; "home", "client", "office", "out of range"
             }
 
             // Fetch CSRF token from meta tag
@@ -196,6 +183,9 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log("Location saved", data);
+                    const event = new Event('location-updated');
+                    dispatchEvent(event);
+
                 })
                 .catch(error => {
                     console.log("Error saving location", error);
