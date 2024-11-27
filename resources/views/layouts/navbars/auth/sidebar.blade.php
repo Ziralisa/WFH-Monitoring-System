@@ -95,7 +95,8 @@
 
         {{-- Attendance Report button --}}
         {{-- ADJUST BALIK NANTI******** --}}
-        @can('view attendance record')
+        <!-- untuk staff -->
+        @can('view attendance report') 
             <li class="nav-item pb-2">
                 <a class="nav-link {{ Route::currentRouteName() == 'report' ? 'active' : '' }}"
                     href="{{ route('report') }}">
@@ -105,7 +106,7 @@
                             class="fas fa-xs fa-chart-line ps-2 pe-2 text-center
                                 {{ in_array(request()->route()->getName(), ['report']) ? 'text-white' : 'text-dark' }}"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Attendance Record</span>
+                    <span class="nav-link-text ms-1">Attendance Report</span>
                 </a>
             </li>
         @endcan
@@ -117,7 +118,8 @@
             <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Admin</h6>
         </li>
 
-        @can('view attendance report')
+        <!-- untuk admin -->
+        @can('view attendance report staff')
             <li class="nav-item pb-2">
                 <a class="nav-link {{ Route::currentRouteName() == 'attendance-report' ? 'active' : '' }}"
                     href="{{ route('attendance-report') }}">
