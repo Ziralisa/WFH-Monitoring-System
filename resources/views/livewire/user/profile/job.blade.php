@@ -215,8 +215,6 @@
         });
     }
 
-    window.initMap = initMap;
-
     // Listen to button onclick event to select location
     document.getElementById('selectLocationBtn').onclick = function() {
         selectedLocation = lp.getMarkerPosition();
@@ -266,6 +264,7 @@
         }
     };
 </script>
+<script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
     defer></script>
-<script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
+
