@@ -54,18 +54,19 @@ php artisan migrate
 ##  Features
 
 All Users:
-    -   Login & Registration
-    -   Edit Profile Information
+- Login & Registration
+- Edit Profile Information
 
 Staff:
-    -   Record attendance (user location info will be tracked)
-    -   View personal attendance report
+- Record attendance (user location info will be tracked)
+- View personal attendance report
+
 Admin:  
-    -   Track active staff location status
-    -   View staff attendance report
-    -   Approve new users
-    -   Edit user settings
-    -   Edit role settings
+- Track active staff location status
+- View staff attendance report
+- Approve new users
+- Edit user settings
+- Edit role settings
 
 
 ##  Dependencies
