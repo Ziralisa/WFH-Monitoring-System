@@ -1,68 +1,71 @@
 <?php
 namespace App\Http\Livewire\Admin;
+
 use App\Models\User;
-use Illuminate\Http\Request;
 use Livewire\Component;
+
 class UserSettings extends Component
 {
-    public function render(Request $request)
+    public $users;
+    public $filter = '';
+    public $name, $email, $role, $editUserId;
+
+    protected $rules = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'role' => 'required|in:admin,staff,resign,user',
+    ];
+
+    public function mount()
     {
-        // Ensure the user has the admin role
-        if (!auth()->user()->hasRole('admin')) {
-            abort(403, 'Unauthorized');
-        }
-        // Fetch users based on the filter applied
-        if ($request->get('filter') == 'resigned') {
-            $userQuery = User::role('resign');
-        } elseif ($request->get('filter') == 'admin') {
-            $userQuery = User::role('admin');
-        } elseif ($request->get('filter') == 'staff') {
-            $userQuery = User::role('staff');
-        } elseif ($request->get('filter') == 'user') {
-            $userQuery = User::role('user');
-        } else {
-            $userQuery = User::query();
-        }
-        $users = $userQuery->get();
-        return view('livewire.admin.user-settings.show', compact('users'));
+        $this->fetchUsers();
     }
-    public function index(Request $request)
+
+    public function updatedFilter()
     {
-        // Ensure the user has the admin role
-        if (!auth()->user()->hasRole('admin')) {
-            abort(403, 'Unauthorized');
-        }
-        $users = User::get();
-        return view('livewire.admin.user-settings', compact('users'));
+        $this->fetchUsers();
     }
-    public function update(Request $request, $id)
+
+    public function fetchUsers()
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'role' => 'required|in:admin,staff,resign,user',
-        ]);
+        $query = User::query();
+        if ($this->filter) {
+            $query = User::role($this->filter);
+        }
+        $this->users = $query->get();
+    }
+
+    public function edit($id)
+    {
         $user = User::findOrFail($id);
-        $user->update($request->only('name', 'email', 'phone', 'location'));
-        $user->syncRoles([]);
-        $selectedRole = $request->input('role');
-        if ($selectedRole == 'admin') {
-            $user->assignRole('admin');
-            $user->assignRole('staff');
-        } elseif ($selectedRole == 'staff') {
-            $user->assignRole('staff');
-        } elseif ($selectedRole == 'resign') {
-            $user->assignRole('resign');
-        } elseif ($selectedRole == 'user') {
-            $user->assignRole('user');
-        }
+        $this->editUserId = $id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->role = $user->getRoleNames()->first();
+        $this->confirmingEdit = true;
+    }
+
+    public function update()
+    {
+        $validated = $this->validate([
+            'name' => 'required|min:5',
+            'email' => 'required|email',
+        ]);
+        $user = User::findOrFail($this->editUserId);
+        $user->update($validated);
+        $user->syncRoles([$this->role]);
+        $this->fetchUsers();
         return redirect()->route('admin.user-settings')->with('success', 'User updated successfully');
     }
     public function delete($id)
     {
-        $user = User::findOrFail($id); // Find the user by their ID
-        // Perform the deletion
-        $user->delete();
+        User::findOrFail($id)->delete();
+        $this->fetchUsers();
         return redirect()->route('admin.user-settings')->with('success', 'User deleted successfully');
+    }
+
+    public function render()
+    {
+        return view('livewire.admin.user-settings.show');
     }
 }

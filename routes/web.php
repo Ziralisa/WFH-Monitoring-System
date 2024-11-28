@@ -30,16 +30,6 @@ use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\Attendance\Index as AttendanceIndex;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 // Redirect to login page by default
 Route::get('/', function () {
@@ -54,42 +44,31 @@ Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-passwo
 Route::get('/reset-password/{id}', ResetPassword::class)
     ->name('reset-password')
     ->middleware('signed');
-
 Route::middleware('role:user')->group(function () {
     Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
 });
-
 Route::group(['middleware' => ['can:view admin dashboard']], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
- });
- Route::group(['middleware' => ['can:view staff list']], function () {
+});
+Route::group(['middleware' => ['can:view staff list']], function () {
     Route::get('/admin/staff-list', [StaffController::class, 'index'])->name('admin.staff-list');
     Route::put('admin/staff/{id}', [StaffController::class, 'update'])->name('admin.staff.update');
     Route::post('/admin/staff/remove-role/{id}', [StaffController::class, 'removeRole'])->name('admin.staff.remove-role');
     Route::delete('/admin/staff/{id}', [StaffController::class, 'destroy'])->name('admin.staff.delete');
-  });
-  Route::group(['middleware' => ['can:view approve users']], function () {
+});
+Route::group(['middleware' => ['can:view approve users']], function () {
     Route::get('/admin/approve-users', ApproveUsers::class)->name('approve-users');
-  });
-  Route::group(['middleware' => ['can:view user settings']], function () {
-    //User settings page
+});
+Route::group(['middleware' => ['can:view user settings']], function () {
     Route::get('/admin/user', UserSettings::class)->name('admin.user-settings');
-    Route::get('/admin/user-list', [UserSettings::class, 'index'])->name('admin.user-list');
-    Route::put('admin/user/{id}', [UserSettings::class, 'update'])->name('admin.user.update');
-    Route::delete('/admin/user/{id}', [UserSettings::class, 'destroy'])->name('admin.user.delete');
-  });
-  Route::group(['middleware' => ['can:view role settings']], function () {
+});
+Route::group(['middleware' => ['can:view role settings']], function () {
     Route::get('/admin/role', RoleSettings::class)->name('admin.role');
-    Route::post('/admin/role/new', [RoleSettings::class, 'store'])->name('admin.role.store');
-    Route::put('/admin/role/{id}', [RoleSettings::class, 'update'])->name('admin.role.update');
-    Route::delete('/admin/role/{id}', [RoleSettings::class, 'delete'])->name('admin.role.delete');
-  });
-
-
-Route::group(['middleware' => ['can:view profile']], function(){
+});
+Route::group(['middleware' => ['can:view profile']], function () {
     Route::get('/user-profile', UserProfile1::class)->name('user-profile');
 });
-Route::group(['middleware' => ['can:view staff dashboard']], function() {
+Route::group(['middleware' => ['can:view staff dashboard']], function () {
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
 });
 
@@ -97,8 +76,7 @@ Route::group(['middleware' => ['can:view staff dashboard']], function() {
 Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
-    Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])
-        ->name('attendance.calculate-points');
+    Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])->name('attendance.calculate-points');
     Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
@@ -106,7 +84,7 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
 });
 
-Route::group(['middleware' => ['can:view attendance record']], function(){
+Route::group(['middleware' => ['can:view attendance report staff']], function () {
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
 });
 
