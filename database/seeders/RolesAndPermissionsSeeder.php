@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -17,25 +16,26 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
-        Permission::create(['name' => 'view profile']);
-        Permission::create(['name' => 'clock in']);
-        Permission::create(['name' => 'clock out']);
-        Permission::create(['name' => 'view attendance report']);
-        Permission::create(['name' => 'view admin dashboard']);
-        Permission::create(['name' => 'view staff dashboard']);
-        Permission::create(['name' => 'view staff list']);
-        Permission::create(['name' => 'view user list']);
-        Permission::create(['name' => 'view take attendance']);
-        Permission::create(['name' => 'view approve users']);
-        Permission::create(['name' => 'view attendance report staff']);
+        // Create permissions, using firstOrCreate to avoid duplicates
+        Permission::firstOrCreate(['name' => 'view profile']);
+        Permission::firstOrCreate(['name' => 'clock in']);
+        Permission::firstOrCreate(['name' => 'clock out']);
+        Permission::firstOrCreate(['name' => 'view attendance report']);
+        Permission::firstOrCreate(['name' => 'view admin dashboard']);
+        Permission::firstOrCreate(['name' => 'view staff dashboard']);
+        Permission::firstOrCreate(['name' => 'view staff list']);
+        Permission::firstOrCreate(['name' => 'view user list']);
+        Permission::firstOrCreate(['name' => 'view take attendance']);
+        Permission::firstOrCreate(['name' => 'view approve users']);
+        Permission::firstOrCreate(['name' => 'view attendance report staff']);
+
         // Create roles and assign created permissions
 
         // User role, no permissions needed for this role
-        Role::create(['name' => 'user']);
+        Role::firstOrCreate(['name' => 'user']);
 
         // Staff role
-        $staffRole = Role::create(['name' => 'staff']);
+        $staffRole = Role::firstOrCreate(['name' => 'staff']);
         $staffRole->givePermissionTo([
             'view profile',
             'clock in',
@@ -46,7 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // Admin role
-        $adminRole = Role::create(['name' => 'admin']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo([
             'view profile',
             'clock in',
@@ -55,6 +55,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view staff list',
             'view approve users',
             'view role settings',
+            'view user settings',
             'view attendance report staff',
         ]);
     }
