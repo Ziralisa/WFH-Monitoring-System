@@ -132,145 +132,140 @@
 
             </div>
         </div>
-        @push('child-scripts')
-            @script
-                {{-- Location Picker --}}
-                <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
-            @endscript
-        @endpush
+    </div>
+</div>
+<script>
+    var lp;
+    var selectedLocation = null;
 
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
-            defer></script>
-        <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
-        <script>
-            var lp;
-            var selectedLocation = null;
+    function initMap() {
+        // Retrieve the user's home location from hidden inputs
+        const userHomeLat = parseFloat(document.getElementById('userHomeLat').value) || 0;
+        const userHomeLng = parseFloat(document.getElementById('userHomeLng').value) || 0;
+        const homeLatLng = {
+            lat: userHomeLat,
+            lng: userHomeLng,
+        };
 
-            function initMap() {
-                // Retrieve the user's home location from hidden inputs
-                const userHomeLat = parseFloat(document.getElementById('userHomeLat').value) || 0;
-                const userHomeLng = parseFloat(document.getElementById('userHomeLng').value) || 0;
-                const homeLatLng = {
-                    lat: userHomeLat,
-                    lng: userHomeLng,
-                };
+        lp = new locationPicker('map', {
+            lat: userHomeLat,
+            lng: userHomeLng,
+        }, {
+            zoom: 17
+        });
 
-                lp = new locationPicker('map', {
-                    lat: userHomeLat,
-                    lng: userHomeLng,
-                }, {
-                    zoom: 17
-                });
+        // Create the circle object
+        var sunCircle = {
+            strokeColor: "#c3fc49",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#c3fc49",
+            fillOpacity: 0.35,
+            map: lp.map, // Bind the circle to the lp map
+            center: homeLatLng, // Initial center
+            radius: 50 // in meters
+        };
 
-                // Create the circle object
-                var sunCircle = {
-                    strokeColor: "#c3fc49",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#c3fc49",
-                    fillOpacity: 0.35,
-                    map: lp.map, // Bind the circle to the lp map
-                    center: homeLatLng, // Initial center
-                    radius: 50 // in meters
-                };
+        cityCircle = new google.maps.Circle(sunCircle);
 
-                cityCircle = new google.maps.Circle(sunCircle);
+        // Bind the circle's center to the location picker position
+        //cityCircle.bindTo('center', lp, 'position');
 
-                // Bind the circle's center to the location picker position
-                //cityCircle.bindTo('center', lp, 'position');
+        // Create the control button to center the map
+        const controlButton = document.createElement("button");
 
-                // Create the control button to center the map
-                const controlButton = document.createElement("button");
+        // Set CSS for the control.
+        controlButton.style.backgroundColor = "#fff";
+        controlButton.style.border = "2px solid #fff";
+        controlButton.style.borderRadius = "3px";
+        controlButton.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
+        controlButton.style.color = "rgb(25,25,25)";
+        controlButton.style.cursor = "pointer";
+        controlButton.style.fontFamily = "Roboto,Arial,sans-serif";
+        controlButton.style.fontSize = "16px";
+        controlButton.style.lineHeight = "38px";
+        controlButton.style.margin = "8px 0 22px";
+        controlButton.style.padding = "0 5px";
+        controlButton.style.textAlign = "center";
+        controlButton.textContent = "Pan to Home📍";
+        controlButton.title = "Click to recenter the map";
+        controlButton.type = "button";
 
-                // Set CSS for the control.
-                controlButton.style.backgroundColor = "#fff";
-                controlButton.style.border = "2px solid #fff";
-                controlButton.style.borderRadius = "3px";
-                controlButton.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
-                controlButton.style.color = "rgb(25,25,25)";
-                controlButton.style.cursor = "pointer";
-                controlButton.style.fontFamily = "Roboto,Arial,sans-serif";
-                controlButton.style.fontSize = "16px";
-                controlButton.style.lineHeight = "38px";
-                controlButton.style.margin = "8px 0 22px";
-                controlButton.style.padding = "0 5px";
-                controlButton.style.textAlign = "center";
-                controlButton.textContent = "Pan to Home📍";
-                controlButton.title = "Click to recenter the map";
-                controlButton.type = "button";
+        // Setup the click event listener to recenter the map
+        controlButton.addEventListener("click", () => {
+            lp.map.setCenter({
+                lat: userHomeLat,
+                lng: userHomeLng
+            });
+        });
 
-                // Setup the click event listener to recenter the map
-                controlButton.addEventListener("click", () => {
-                    lp.map.setCenter({
-                        lat: userHomeLat,
-                        lng: userHomeLng
-                    });
-                });
+        // Create the DIV to hold the control.
+        const centerControlDiv = document.createElement("div");
+        // Append the button to the DIV.
+        centerControlDiv.appendChild(controlButton);
+        lp.map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
-                // Create the DIV to hold the control.
-                const centerControlDiv = document.createElement("div");
-                // Append the button to the DIV.
-                centerControlDiv.appendChild(controlButton);
-                lp.map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+        google.maps.event.addListener(lp.map, 'idle', function(event) {
+            // Get current location and show it in HTML
+            var location = lp.getMarkerPosition();
+            cityCircle.setCenter(lp.getMarkerPosition());
+            console.log("Moved! Changed coordinates");
+            document.getElementById('onIdlePositionView').innerHTML = 'Latitude: ' + location.lat +
+                'Longitude: ' + location.lng;
+        });
+    }
 
-                google.maps.event.addListener(lp.map, 'idle', function(event) {
-                    // Get current location and show it in HTML
-                    var location = lp.getMarkerPosition();
-                    cityCircle.setCenter(lp.getMarkerPosition());
-                    console.log("Moved! Changed coordinates");
-                    document.getElementById('onIdlePositionView').innerHTML = 'Latitude: ' + location.lat +
-                        'Longitude: ' + location.lng;
-                });
-            }
+    window.initMap = initMap;
 
-            window.initMap = initMap;
+    // Listen to button onclick event to select location
+    document.getElementById('selectLocationBtn').onclick = function() {
+        selectedLocation = lp.getMarkerPosition();
+        document.getElementById('onClickPositionView').innerHTML = 'Latitude: ' + selectedLocation.lat +
+            'Longitude: ' + selectedLocation.lng;
+    };
 
-            // Listen to button onclick event to select location
-            document.getElementById('selectLocationBtn').onclick = function() {
-                selectedLocation = lp.getMarkerPosition();
-                document.getElementById('onClickPositionView').innerHTML = 'Latitude: ' + selectedLocation.lat +
-                    'Longitude: ' + selectedLocation.lng;
-            };
+    // Function to save user's location
+    function saveUserLocation() {
+        if (!selectedLocation) {
+            console.log("No location selected to save.");
+            return;
+        }
 
-            // Function to save user's location
-            function saveUserLocation() {
-                if (!selectedLocation) {
-                    console.log("No location selected to save.");
-                    return;
-                }
+        const locationData = {
+            home_lat: selectedLocation.lat,
+            home_lng: selectedLocation.lng,
+        };
 
-                const locationData = {
-                    home_lat: selectedLocation.lat,
-                    home_lng: selectedLocation.lng,
-                };
+        // Fetch CSRF token from meta tag
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                // Fetch CSRF token from meta tag
-                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        fetch('/save-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                },
+                body: JSON.stringify(locationData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("User location saved!");
+                window.location.href = '/user-profile';
+            })
+            .catch(error => {
+                console.log("Error saving location", error);
+            });
+    }
 
-                fetch('/save-location', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                        },
-                        body: JSON.stringify(locationData)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("User location saved!");
-                        window.location.href = '/user-profile';
-                    })
-                    .catch(error => {
-                        console.log("Error saving location", error);
-                    });
-            }
-
-            // Button to save new home location
-            document.getElementById('saveLocationBtn').onclick = function() {
-                if (confirm("Confirm save new home location?")) {
-                    saveUserLocation();
-                } else {
-                    console.log("Cancelled!");
-                }
-            };
-        </script>
+    // Button to save new home location
+    document.getElementById('saveLocationBtn').onclick = function() {
+        if (confirm("Confirm save new home location?")) {
+            saveUserLocation();
+        } else {
+            console.log("Cancelled!");
+        }
+    };
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
+    defer></script>
+<script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
