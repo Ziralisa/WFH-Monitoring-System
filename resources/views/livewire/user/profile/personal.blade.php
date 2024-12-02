@@ -1,5 +1,4 @@
 <div class="row">
-
     <div class="col-md-6">
         <div class="form-group">
             <label for="user-first_name" class="form-control-label">{{ __('First Name') }}</label>
@@ -12,7 +11,6 @@
             @enderror
         </div>
     </div>
-
     <div class="col-md-6">
         <div class="form-group">
             <label for="user-last_name" class="form-control-label">{{ __('Last Name') }}</label>
@@ -26,21 +24,18 @@
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
             <label for="user-birthdate" class="form-control-label">{{ __('Date of Birth') }}</label>
             <div class="@error('user.birthdate')border border-danger rounded-3 @enderror">
                 <input wire:model="user.birthdate" class="form-control" type="date" id="user-birthdate">
-
             </div>
             @error('user.birthdate')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
     </div>
-
     <div class="col-md-6">
         <div class="form-group">
             <label for="user.gender" class="form-control-label">{{ __('Gender') }}</label>
@@ -58,14 +53,13 @@
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
             <label for="user-email" class="form-control-label">{{ __('Email Address') }}</label>
             <div class="@error('user.email')border border-danger rounded-3 @enderror">
-                <input wire:model="user.email" class="form-control" type="email"
-                    placeholder="youremail@example.com" id="user-email">
+                <input wire:model="user.email" class="form-control" type="email" placeholder="youremail@example.com"
+                    id="user-email">
             </div>
             @error('user.email')
                 <div class="text-danger">{{ $message }}</div>
@@ -85,7 +79,6 @@
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="form-group">
         <label for="user-location1" class="form-control-label">{{ __('Home Address') }}</label>
@@ -102,28 +95,29 @@
         @enderror
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
             <label for="user-suburb" class="form-control-label">{{ __('Suburb') }}</label>
             <div class="@error('user.suburb')border border-danger rounded-3 @enderror">
-                <input wire:model="user.suburb" class="form-control" type="text" placeholder="Suburb" id="user-suburb">
+                <input wire:model="user.suburb" class="form-control" type="text" placeholder="Suburb"
+                    id="user-suburb">
             </div>
             @error('user.suburb')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
     </div>
-
     <div class="col-md-6">
         <div class="form-group">
             <label for="user-state" class="form-control-label">{{ __('State') }}</label>
             <div class="@error('user.state')border border-danger rounded-3 @enderror">
-                <input wire:model="user.state" class="form-control" type="text" placeholder="Selangor" id="user-state">
+                <input wire:model="user.state" class="form-control" type="text" placeholder="Selangor"
+                    id="user-state">
             </div>
             @error('user.state')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
     </div>
+</div>
