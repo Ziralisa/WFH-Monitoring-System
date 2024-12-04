@@ -5,6 +5,11 @@
         <h3 class="text-white font-weight-bolder mx-6 mb-4 pt-2">Hello, {{ auth()->user()->name }}!</h3>
     </div>
     @include('livewire.user-on-this-page')
+    <div class="container py-4 text-center">
+        <p style="font-size: 24px; font-weight: bold;">Weekly Performance: <strong>{{ $weeklyStatus }}</strong></p>
+    </div>
+
+
 
     <div class="card card-body blur shadow-blur mx-4 mt-6">
         <!-- CLOCK BUTTONS -->
@@ -15,62 +20,62 @@
                     Clock-in
                 </button>
                 @script
-                    <script>
-                        // CLOCK IN BUTTON LISTENER
-                        document.getElementById('clockInBtn').addEventListener('click', () => {
-                            if (navigator.geolocation) {
-                                navigator.geolocation.getCurrentPosition((position) => {
-                                    const userPosition = {
-                                        lat: position.coords.latitude,
-                                        lng: position.coords.longitude,
-                                    };
+                <script>
+                    // CLOCK IN BUTTON LISTENER
+                    document.getElementById('clockInBtn').addEventListener('click', () => {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition((position) => {
+                                const userPosition = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude,
+                                };
 
-                                    $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
-                                        (locationStatus) => {
-                                            console.log("Location Status: ", locationStatus);
-                                            if (locationStatus) {
-                                                alert("User is in range.. registering clock-in");
-                                                $wire.call('clockIn');
-                                            } else {
-                                                alert("Out of range! Go in range first to clock in!");
-                                            }
+                                $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
+                                    (locationStatus) => {
+                                        console.log("Location Status: ", locationStatus);
+                                        if (locationStatus) {
+                                            alert("User is in range.. registering clock-in");
+                                            $wire.call('clockIn');
+                                        } else {
+                                            alert("Out of range! Go in range first to clock in!");
                                         }
-                                    );
-                                });
-                            } else {
-                                console.log("Geolocation not supported");
-                            }
-                        });
+                                    }
+                                );
+                            });
+                        } else {
+                            console.log("Geolocation not supported");
+                        }
+                    });
 
 
-                        // CLOCK OUT BUTTON LISTENER
-                        document.getElementById('clockOutBtn').addEventListener('click', () => {
-                            if (navigator.geolocation) {
-                                navigator.geolocation.getCurrentPosition((position) => {
-                                    const userPosition = {
-                                        lat: position.coords.latitude,
-                                        lng: position.coords.longitude,
-                                    };
+                    // CLOCK OUT BUTTON LISTENER
+                    document.getElementById('clockOutBtn').addEventListener('click', () => {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition((position) => {
+                                const userPosition = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude,
+                                };
 
-                                    $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
-                                        (locationStatus) => {
-                                            if (locationStatus) {
-                                                alert("User is in range.. registering clock-out");
-                                                // Only call the clockOut method when in range
-                                                $wire.call('clockOut');
-                                                $wire.set('isClockOutDisabled', true);
-                                                $wire.set('attendanceSession', 'ended');
-                                            } else {
-                                                alert("Out of range! Go in range first to clock out!");
-                                            }
+                                $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
+                                    (locationStatus) => {
+                                        if (locationStatus) {
+                                            alert("User is in range.. registering clock-out");
+                                            // Only call the clockOut method when in range
+                                            $wire.call('clockOut');
+                                            $wire.set('isClockOutDisabled', true);
+                                            $wire.set('attendanceSession', 'ended');
+                                        } else {
+                                            alert("Out of range! Go in range first to clock out!");
                                         }
-                                    );
-                                });
-                            } else {
-                                console.log("Geolocation not supported");
-                            }
-                        });
-                    </script>
+                                    }
+                                );
+                            });
+                        } else {
+                            console.log("Geolocation not supported");
+                        }
+                    });
+                </script>
                 @endscript
             </div>
             <div class="d-flex justify-content-center align-items-center col p-3">
@@ -113,5 +118,77 @@
                 </div>
             </div>
         </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h6 class="py-3">Attendance Analytics</h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Container for the Chart -->
+                        <canvas id="attendanceChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Fetch attendance data from the backend
+        fetch('/attendance-data') // This calls the API route defined above
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    // Limit to the last 30 data points
+                    const limitedData = data.slice(0, 10);
+                    // Process the data and render the chart
+                    const labels = data.map(item => {
+                        // Format the date to 'Y-m-d' format if needed
+                        const date = new Date(item.created_at);
+                        const formattedDate = date.toISOString().split('T')[0]; // Formats as 'YYYY-MM-DD'
+                        return formattedDate;
+                    });
+
+
+                    const points = limitedData.map(item => item.total_points);
+
+                    // Render the chart with the data
+                    const ctx = document.getElementById('attendanceChart').getContext('2d');
+                    const attendanceChart = new Chart(ctx, {
+                        type: 'line', // Chart type
+                        data: {
+                            labels: labels, // Dates
+                            datasets: [{
+                                label: 'Total Points',
+                                data: points, // Points
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.log("No attendance data found.");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching attendance data:', error);
+                alert("An error occurred while fetching attendance data.");
+            });
+    });
+</script>

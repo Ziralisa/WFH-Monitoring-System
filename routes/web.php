@@ -82,7 +82,9 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
     Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
+    Route::get('/attendance-data', [Attendance::class, 'getAttendanceData']);
 });
+
 
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
