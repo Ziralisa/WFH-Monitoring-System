@@ -21,11 +21,10 @@
         // Retrieve the user's home location from hidden inputs
         const userHomeLat = parseFloat(document.getElementById('userHomeLat').value) || 0;
         const userHomeLng = parseFloat(document.getElementById('userHomeLng').value) || 0;
-        const targetPosition = {
+        const homePosition = {
             lat: userHomeLat,
             lng: userHomeLng,
         };
-
 
         // Initialize the map when the document is fully loaded
         document.addEventListener("DOMContentLoaded", function() {
@@ -38,7 +37,6 @@
             trackUserLocation(sessionType); // Pass the actual value of sessionType
         });
 
-
         // Listen for the stop attendance session event triggered by clock-out
         window.addEventListener('stop-attendance-session', () => {
             stopTrackSession();
@@ -48,7 +46,6 @@
         function trackUserLocation(sessionType) {
             if (navigator.geolocation) {
                 if (sessionType == 'clock_in') {
-
                     //START SESSION CODE HERE..
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
@@ -56,7 +53,6 @@
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude,
                             };
-
                             const currentTime = Date.now();
                             lastSaved = currentTime;
 
@@ -69,7 +65,6 @@
 
                             //TRANSITION INTO ACTIVE SESSION...
                             trackUserLocation('active');
-
                         },
                         () => {
                             console.log("Failed to retrieve location.");
@@ -91,7 +86,7 @@
                             const currentTime = Date.now();
 
                             // Determine range status
-                            const isInRange = checkIfInRange(userPosition, targetPosition);
+                            const isInRange = checkIfInRange(userPosition, homePosition);
 
                             // Save every time there's a significant move or after a set interval
                             if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
@@ -121,25 +116,9 @@
             }
         }
 
-        function stopTrackSession() {
-            // console.log('inside stopTrackSession()');
-            if (watchInstance) {
-                // Clear the watch instance to stop tracking the position
-                navigator.geolocation.clearWatch(watchInstance);
-                saveLocationToDatabase(lastPosition, 'out', 'in range');
-                // Update the map with the last known position
-                map.setCenter(lastPosition);
-                marker.setPosition(lastPosition);
-                marker.setTitle("User found!");
-                document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
-                // console.log("Disabling clock out button...")
-                document.getElementById("clockOutBtn").disabled = true;
-            }
-        }
-
-        function checkIfInRange(userPosition, targetPosition) {
+        function checkIfInRange(userPosition, homePosition) {
             const maxDistance = 50; // Define the maximum range in meters (adjust this value as needed)
-            const distance = calculateDistance(userPosition, targetPosition);
+            const distance = calculateDistance(userPosition, homePosition);
 
             return distance <= maxDistance;
         }
@@ -196,11 +175,11 @@
             if (!map) { // Ensure the map is initialized only once
                 const mapOptions = {
                     zoom: 17,
-                    center: targetPosition
+                    center: homePosition
                 };
                 map = new google.maps.Map(document.getElementById("map"), mapOptions);
                 marker = new google.maps.Marker({
-                    position: targetPosition,
+                    position: homePosition,
                     map: map,
                     title: "Welcome to KL CENTRAL",
                 });
@@ -211,7 +190,7 @@
                     fillColor: "#c3fc49",
                     fillOpacity: 0.35,
                     map: map,
-                    center: targetPosition,
+                    center: homePosition,
                     radius: 50 // in meters
                 };
                 cityCircle = new google.maps.Circle(sunCircle);

@@ -8,10 +8,7 @@
     <div class="container py-4 text-center">
         <p style="font-size: 24px; font-weight: bold;">Weekly Performance: <strong>{{ $weeklyStatus }}</strong></p>
     </div>
-
-
-
-    <div class="card card-body blur shadow-blur mx-4 mt-6">
+    <div class="card card-body blur shadow-blur mx-4">
         <!-- CLOCK BUTTONS -->
         <div class="m-3 row">
             <div class="d-flex justify-content-center align-items-center col p-3">
@@ -19,64 +16,6 @@
                     aria-pressed="true" {{ $isClockInDisabled ? 'disabled' : '' }}>
                     Clock-in
                 </button>
-                @script
-                <script>
-                    // CLOCK IN BUTTON LISTENER
-                    document.getElementById('clockInBtn').addEventListener('click', () => {
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition((position) => {
-                                const userPosition = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
-
-                                $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
-                                    (locationStatus) => {
-                                        console.log("Location Status: ", locationStatus);
-                                        if (locationStatus) {
-                                            alert("User is in range.. registering clock-in");
-                                            $wire.call('clockIn');
-                                        } else {
-                                            alert("Out of range! Go in range first to clock in!");
-                                        }
-                                    }
-                                );
-                            });
-                        } else {
-                            console.log("Geolocation not supported");
-                        }
-                    });
-
-
-                    // CLOCK OUT BUTTON LISTENER
-                    document.getElementById('clockOutBtn').addEventListener('click', () => {
-                        if (navigator.geolocation) {
-                            navigator.geolocation.getCurrentPosition((position) => {
-                                const userPosition = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
-
-                                $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
-                                    (locationStatus) => {
-                                        if (locationStatus) {
-                                            alert("User is in range.. registering clock-out");
-                                            // Only call the clockOut method when in range
-                                            $wire.call('clockOut');
-                                            $wire.set('isClockOutDisabled', true);
-                                            $wire.set('attendanceSession', 'ended');
-                                        } else {
-                                            alert("Out of range! Go in range first to clock out!");
-                                        }
-                                    }
-                                );
-                            });
-                        } else {
-                            console.log("Geolocation not supported");
-                        }
-                    });
-                </script>
-                @endscript
             </div>
             <div class="d-flex justify-content-center align-items-center col p-3">
                 <button id="clockOutBtn" class="btn btn-primary btn-lg w-100 active mb-0 text-white"
@@ -84,12 +23,12 @@
                     Clock-out
                 </button>
             </div>
-
         </div>
-        <!-- CLOCK BUTTON ROW ENDS -->
+
+        {{-- ATTENDANCE SESSION INFO --}}
         <div class="row">
             @if ($attendanceSession == 'ended')
-                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-6">
+                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-4">
                     Attendance Session: Ended <br>
                     Your clock-in time: {{ $clockInTime ?? 'N/A' }} <br>
                     Your clock-out time: {{ $clockOutTime ?? 'N/A' }} <br>
@@ -98,16 +37,18 @@
                     Your Total Points: {{ $totalPoints ?? 'N/A' }} <br>
                 </h6>
             @elseif ($attendanceSession == 'active')
-                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-6">
+                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-4">
                     Attendance Session: Active <br>
                     Your clock-in time: {{ $clockInTime ?? 'N/A' }}
                 </h6>
             @else
-                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-6">
+                <h6 class="text-center text-uppercase text-secondary text-s font-weight-bolder opacity-7 pt-4">
                     Click CLOCK IN to start recording your attendance
                 </h6>
             @endif
         </div>
+
+        {{-- MAP COMPONENT --}}
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -133,6 +74,68 @@
         </div>
     </div>
 </div>
+
+
+{{-- CLOCK BUTTON SCRIPT --}}
+@script
+    <script>
+        // CLOCK IN BUTTON LISTENER
+        document.getElementById('clockInBtn').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const userPosition = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    $wire.call('checkLocation', userPosition.lat, userPosition.lng).then(
+                        (locationStatus) => {
+                            console.log("Location Status: ", locationStatus);
+                            if (locationStatus) {
+                                alert("User is in range.. registering clock-in");
+                                $wire.call('clockIn');
+                            } else {
+                                alert("Out of range! Go in range first to clock in!");
+                            }
+                        }
+                    );
+                });
+            } else {
+                console.log("Geolocation not supported");
+            }
+        });
+
+        // CLOCK OUT BUTTON LISTENER
+        document.getElementById('clockOutBtn').addEventListener('click', () => {
+            console.log('lastPosition values: ', lastPosition);
+            $wire.call('checkLocation', lastPosition.lat, lastPosition.lng).then(
+                (locationStatus) => {
+                    if (locationStatus) {
+                        alert("User is in range.. registering clock-out");
+
+                        if (watchInstance) {
+                            // Clear the watch instance to stop tracking the position
+                            navigator.geolocation.clearWatch(watchInstance);
+                            // Update the map with the last known position
+                            map.setCenter(lastPosition);
+                            marker.setPosition(lastPosition);
+                            marker.setTitle("User found!");
+                            document.getElementById("lastUpdated").textContent = new Date().toLocaleString();
+                            console.log('Attendance session stopped!!');
+                        }
+
+                        $wire.call('clockOut');
+                        $wire.set('isClockOutDisabled', true);
+                        $wire.set('attendanceSession', 'ended');
+                    } else {
+                        alert("Out of range! Go in range first to clock out!");
+                    }
+                }
+            );
+        });
+    </script>
+@endscript
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -147,7 +150,8 @@
                     const labels = data.map(item => {
                         // Format the date to 'Y-m-d' format if needed
                         const date = new Date(item.created_at);
-                        const formattedDate = date.toISOString().split('T')[0]; // Formats as 'YYYY-MM-DD'
+                        const formattedDate = date.toISOString().split('T')[
+                        0]; // Formats as 'YYYY-MM-DD'
                         return formattedDate;
                     });
 
