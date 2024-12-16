@@ -102,3 +102,7 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
     Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
     Route::get('/counter', Counter::class);
 });
+
+Route::get('/admin/attendance-status', [AttendanceController::class, 'attendanceStatus'])
+    ->middleware('auth')
+    ->name('attendanceStatus','admin');
