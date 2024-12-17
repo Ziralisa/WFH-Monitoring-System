@@ -92,12 +92,11 @@
                 </a>
             </li>
         @endcan
-        
+
 
         {{-- Attendance Report button --}}
-        {{-- ADJUST BALIK NANTI******** --}}
         <!-- untuk staff -->
-        @can('view attendance report') 
+        @can('view attendance report')
             <li class="nav-item pb-2">
                 <a class="nav-link {{ Route::currentRouteName() == 'report' ? 'active' : '' }}"
                     href="{{ route('report') }}">
