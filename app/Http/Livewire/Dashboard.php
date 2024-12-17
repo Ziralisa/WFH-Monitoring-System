@@ -2,13 +2,16 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Location;
 use App\Models\User;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public $usersOnPage = []; // Public property as an array
+    public $usersOnPage = [];
+    public $userReports = [];
+    public $badUsers = [];
+    public $goodUsers = [];
 
     protected $rules = [
         'usersOnPage.*.id' => 'required|integer',
@@ -67,8 +70,76 @@ class Dashboard extends Component
             ->toArray();
     }
 
+    public function showReport()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        // Fetch all users with their weekly points and weekly status
+        $this->userReports = User::with([
+            'locations' => function ($query) use ($startOfWeek, $endOfWeek) {
+                $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
+            },
+        ])
+            ->get()
+            ->map(function ($user) use ($startOfWeek, $endOfWeek) {
+                $weeklyPoints = $user->locations->sum('total_points');
+                $weeklyStatus = $this->getWeeklyStatus($weeklyPoints);
+
+                // Categorize users based on their weekly status
+                if ($weeklyStatus == 'Bad') {
+                    // Add to badUsers array
+                    $this->badUsers[] = [
+                        'user' => $user,
+                        'weekly_points' => $weeklyPoints,
+                        'weekly_status' => $weeklyStatus,
+                    ];
+                } else {
+                    // Add to goodUsers array (Good or Excellent)
+                    $this->goodUsers[] = [
+                        'user' => $user,
+                        'weekly_points' => $weeklyPoints,
+                        'weekly_status' => $weeklyStatus,
+                    ];
+                }
+            });
+
+        // Sort badUsers by weekly_points (ascending) and keep the bottom 3
+        $this->badUsers = collect($this->badUsers)
+            ->sortBy('weekly_points') // Sort by points in ascending order
+            ->take(3) // Take only the bottom 3 users
+            ->values() // Reindex the array to maintain a clean numeric index
+            ->toArray(); // Convert the collection back to a regular array
+
+        // Sort goodUsers by weekly_points (descending) and keep the top 3
+        $this->goodUsers = collect($this->goodUsers)
+            ->sortByDesc('weekly_points') // Sort by points in descending order
+            ->take(3) // Take only the top 3 users
+            ->values() // Reindex the array to maintain a clean numeric index
+            ->toArray(); // Convert the collection back to a regular array
+    }
+
+    private function getWeeklyStatus($points)
+    {
+        if ($points >= 30) {
+            return 'Excellent';
+        } elseif ($points >= 10) {
+            return 'Good';
+        } else {
+            return 'Bad';
+        }
+    }
+
     public function render()
     {
-        return view('livewire.admin.dashboard.show', ['usersOnPage' => $this->usersOnPage]);
+        // Call the report method to generate the user reports
+        $this->showReport();
+
+        // Pass the user reports to the view
+        return view('livewire.admin.dashboard.show', [
+            'usersOnPage' => $this->usersOnPage,
+            'goodUsers' => $this->goodUsers,
+            'badUsers' => $this->badUsers,
+        ]);
     }
 }

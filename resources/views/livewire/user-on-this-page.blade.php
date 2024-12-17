@@ -35,6 +35,8 @@
                     //Display all online user data
                     //console.log('User Location Updated:', e);
 
+                    $wire.call('syncUserData', currentUsers);
+
                     if (window.location.pathname === '/dashboard') {
                         if (e.in_range) {
                             console.log(`${e.user.name} is within range.`);
