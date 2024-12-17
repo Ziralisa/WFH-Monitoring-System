@@ -6,29 +6,44 @@
             var channel = window.Echo.join(`presence-onthispage`)
                 .here((users) => {
                     currentUsers = users;
-
-                    console.log('All users: ', users.map(user => user.name));
+                    // Display all data for each user
+                    // console.log('All users with full data:');
+                    // users.forEach(user => {
+                    //     console.log(user);
                     $wire.set('usersOnPage', currentUsers);
-                    $wire.call('updateUserData', currentUsers);
-
+                    $wire.call('syncUserData', currentUsers);
                 })
                 .joining((user) => {
                     currentUsers.push(user);
                     console.log(user.name + ' joined!');
                     $wire.set('usersOnPage', currentUsers);
-                    $wire.call('updateUserData', currentUsers);
-
-
+                    $wire.call('syncUserData', currentUsers);
+                    if (window.location.pathname === '/dashboard') {
+                        $wire.call('userNotification', 'online', user.name);
+                    }
                 })
                 .leaving((user) => {
-                    currentUsers = currentUsers.filter(u => u.id !== user.id); // Remove user from list
+                    currentUsers = currentUsers.filter(u => u.id !== user.id);
                     console.log(user.name + ' left!');
                     $wire.set('usersOnPage', currentUsers);
-                    $wire.call('updateUserData', currentUsers);
-
+                    $wire.call('syncUserData', currentUsers);
+                    if (window.location.pathname === '/dashboard') {
+                        $wire.call('userNotification', 'offline', user.name);
+                    }
                 })
-                .listen('.user-location-updated', (data) => {
-                    $wire.call('updateUserData', currentUsers);
+                .listen('.user-location-updated', (e) => {
+                    //Display all online user data
+                    //console.log('User Location Updated:', e);
+
+                    if (window.location.pathname === '/dashboard') {
+                        if (e.in_range) {
+                            console.log(`${e.user.name} is within range.`);
+                            $wire.call('userNotification', 'in range', e.user.name);
+                        } else {
+                            console.log(`${e.user.name} is out of range.`);
+                            $wire.call('userNotification', 'out of range', e.user.name);
+                        }
+                    }
                 })
                 .error((error) => {
                     console.error(error);
@@ -36,15 +51,3 @@
         </script>
     @endscript
 @endpush
-{{-- <div>
-    <h4>Users on this page:</h4>
-    <ul>
-        @if ($usersOnPage && count($usersOnPage) > 0)
-            @foreach ($usersOnPage as $user)
-                <li>{{ $user['name'] }}</li>
-            @endforeach
-        @else
-            <li>No user found</li>
-        @endif
-    </ul>
-</div> --}}

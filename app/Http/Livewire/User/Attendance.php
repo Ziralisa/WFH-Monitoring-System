@@ -72,7 +72,6 @@ class Attendance extends Component
         }
     }
 
-
     public function checkLocation($userLat, $userLng)
     {
         $homeLat = deg2rad($this->homeLocationLat);
@@ -164,7 +163,6 @@ class Attendance extends Component
 
     public function updateLocationSession(Request $request)
     {
-
         $validated = $request->validate([
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
@@ -188,11 +186,11 @@ class Attendance extends Component
             ]);
 
             return response()->json(['success' => true, 'message' => 'Location updated successfully.']);
+
         } else {
             logger()->warning('Update user location failed. No clock-in record found.', [
                 'user_id' => Auth::id(),
             ]);
-
             return response()->json(['success' => false, 'message' => 'No clock-in record found.'], 404);
         }
     }
@@ -210,7 +208,6 @@ class Attendance extends Component
         $this->dispatch('check-location-clockout');
     }
 
-
     //-------To update user data for admin's live monitoring--------
     protected $rules = [
         'usersOnPage.*.id' => 'required|integer',
@@ -222,17 +219,15 @@ class Attendance extends Component
         'usersOnPage.*.locations.*.status' => 'nullable|string',
     ];
 
-    public function updateUserData($users)
+    public function syncUserData($users)
     {
         $userIds = collect($users)->pluck('id');
 
         $this->usersOnPage = User::whereIn('id', $userIds)
             ->with([
                 'locations' => function ($query) {
-                    $query->whereDate('created_at', today())
-                        ->orderBy('created_at', 'desc')
-                        ->limit(1);
-                }
+                    $query->whereDate('created_at', today())->orderBy('created_at', 'desc')->limit(1);
+                },
             ])
             ->get()
             ->map(function ($user) {
@@ -240,108 +235,104 @@ class Attendance extends Component
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'locations' => $user->locations->map(function ($location) {
-                        return [
-                            'created_at' => $location->created_at,
-                            'updated_at' => $location->updated_at,
-                            'status' => $location->status,
-                            'type' => $location->type,
-                            'in_range' => $location->in_range,
-                        ];
-                    })->toArray(),
+                    'locations' => $user->locations
+                        ->map(function ($location) {
+                            return [
+                                'created_at' => $location->created_at,
+                                'updated_at' => $location->updated_at,
+                                'status' => $location->status,
+                                'type' => $location->type,
+                                'in_range' => $location->in_range,
+                            ];
+                        })
+                        ->toArray(),
                 ];
-            })->toArray(); // Convert to plain array
-
-        //logger()->info($this->usersOnPage);
+            })
+            ->toArray();
     }
 
+    //Receives location-updated event from map.blade.php, and then broadcast another event to pass user details to Pusher presence channel.
     #[On('location-updated')]
     public function callbackMethod()
     {
-        logger()->info('Location-updated dispatched!');
-        event(new UserLocationUpdated());
+        // Ensure that 'location' is eager loaded before dispatching the event
+        $user = auth()->user()->load('locations');
+
+        // Dispatch the event with the fully loaded user
+        event(new UserLocationUpdated($user));
     }
 
     //---------ATTENDANCE REPORT FOR STAFF SIDE--------
     public function showReport(Request $request)
-{
-    // Retrieve filters from the request
-    $selectedWeek = $request->input('week', null);  // Default to null (show all records initially)
-    $selectedMonth = $request->input('month', null);  // Default to null (show all records initially)
-    $selectedDate = $request->input('date');
+    {
+        // Retrieve filters from the request
+        $selectedWeek = $request->input('week', null); // Default to null (show all records initially)
+        $selectedMonth = $request->input('month', null); // Default to null (show all records initially)
+        $selectedDate = $request->input('date');
 
-    // Get the current user's attendance records (user-specific data)
-    $userLocations = Location::where('user_id', auth()->id());  // Restrict to the authenticated user's locations
+        // Get the current user's attendance records (user-specific data)
+        $userLocations = Location::where('user_id', auth()->id()); // Restrict to the authenticated user's locations
 
-    // Handle week filter
-    if ($selectedWeek) {
-        $weekNumber = $selectedWeek;
-        $userLocations = $userLocations->whereBetween('created_at', [
-            Carbon::now()->setISODate(Carbon::now()->year, $weekNumber)->startOfWeek(),
-            Carbon::now()->setISODate(Carbon::now()->year, $weekNumber)->endOfWeek()
-        ]);
+        // Handle week filter
+        if ($selectedWeek) {
+            $weekNumber = $selectedWeek;
+            $userLocations = $userLocations->whereBetween('created_at', [
+                Carbon::now()
+                    ->setISODate(Carbon::now()->year, $weekNumber)
+                    ->startOfWeek(),
+                Carbon::now()
+                    ->setISODate(Carbon::now()->year, $weekNumber)
+                    ->endOfWeek(),
+            ]);
+        }
+
+        // Handle month filter
+        if ($selectedMonth) {
+            $monthNumber = $selectedMonth;
+            $userLocations = $userLocations->whereMonth('created_at', $monthNumber);
+        }
+
+        // Handle specific date filter
+        if ($selectedDate) {
+            $userLocations = $userLocations->whereDate('created_at', $selectedDate);
+        }
+
+        // Calculate Weekly Status (based on points)
+        $weeklyPoints = $userLocations->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('total_points');
+
+        $weeklyStatus = $this->getWeeklyStatus($weeklyPoints);
+
+        // Calculate Monthly Status (based on points)
+        $monthlyPoints = $userLocations->whereMonth('created_at', Carbon::now()->month)->sum('total_points');
+
+        $monthlyStatus = $this->getMonthlyStatus($monthlyPoints);
+
+        // Query to fetch location data (general report)
+        $query = Location::query();
+
+        // Apply same week/month filters for general report (you can remove this part if not needed)
+        if ($selectedWeek) {
+            $query->whereRaw('WEEK(created_at, 1) = ?', [$selectedWeek]);
+        }
+
+        if ($selectedMonth) {
+            $query->whereMonth('created_at', $selectedMonth);
+        }
+
+        // Fetch location data for the report (can be paginated or without pagination based on needs)
+        // For staff, we want their own data only, so we need to limit the query to the authenticated user's data
+        $userLocations = $query
+            ->where('user_id', auth()->id()) // Restrict to the authenticated user's data
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Get current week number and current month (month name)
+        $currentWeek = Carbon::now()->format('W');
+        $currentMonth = Carbon::now()->format('F');
+
+        // Return the data to the view
+        return view('livewire.staff.report', compact('userLocations', 'weeklyStatus', 'monthlyStatus', 'selectedWeek', 'selectedMonth', 'selectedDate', 'currentWeek', 'currentMonth'));
     }
-
-    // Handle month filter
-    if ($selectedMonth) {
-        $monthNumber = $selectedMonth;
-        $userLocations = $userLocations->whereMonth('created_at', $monthNumber);
-    }
-
-    // Handle specific date filter
-    if ($selectedDate) {
-        $userLocations = $userLocations->whereDate('created_at', $selectedDate);
-    }
-
-    // Calculate Weekly Status (based on points)
-    $weeklyPoints = $userLocations->whereBetween('created_at', [
-        Carbon::now()->startOfWeek(),
-        Carbon::now()->endOfWeek()
-    ])
-    ->sum('total_points');
-
-    $weeklyStatus = $this->getWeeklyStatus($weeklyPoints);
-
-    // Calculate Monthly Status (based on points)
-    $monthlyPoints = $userLocations->whereMonth('created_at', Carbon::now()->month)
-        ->sum('total_points');
-
-    $monthlyStatus = $this->getMonthlyStatus($monthlyPoints);
-
-    // Query to fetch location data (general report)
-    $query = Location::query();
-
-    // Apply same week/month filters for general report (you can remove this part if not needed)
-    if ($selectedWeek) {
-        $query->whereRaw('WEEK(created_at, 1) = ?', [$selectedWeek]);
-    }
-
-    if ($selectedMonth) {
-        $query->whereMonth('created_at', $selectedMonth);
-    }
-
-    // Fetch location data for the report (can be paginated or without pagination based on needs)
-    // For staff, we want their own data only, so we need to limit the query to the authenticated user's data
-    $userLocations = $query->where('user_id', auth()->id())  // Restrict to the authenticated user's data
-        ->orderBy('created_at', 'desc')->paginate(10);
-
-    // Get current week number and current month (month name)
-    $currentWeek = Carbon::now()->format('W');  
-    $currentMonth = Carbon::now()->format('F');  
-
-    // Return the data to the view
-    return view('livewire.staff.report', compact(
-        'userLocations',
-        'weeklyStatus',
-        'monthlyStatus',
-        'selectedWeek',
-        'selectedMonth',
-        'selectedDate',
-        'currentWeek',  
-        'currentMonth'  
-    ));
-}
-
 
     //--------WEEKLY STATUS CALCULATION-----------
     private function getWeeklyStatus($points)
@@ -367,7 +358,6 @@ class Attendance extends Component
         }
     }
 
-
     //--------ATTENDANCE REPORT ADMIN SIDE---------
     public function attendanceReport()
     {
@@ -378,8 +368,6 @@ class Attendance extends Component
 
         return view('livewire.admin.attendance-report', compact('allUserLocations'));
     }
-
-
 
     //------GRAPH PERFORMANCE UNTUK TAKE ATTENDANCE PAGE (AKAN DIBUANG)----
     public function getAttendanceData()
@@ -395,17 +383,13 @@ class Attendance extends Component
         return response()->json($attendanceData);
     }
 
-
-
     public function render()
     {
         // Get attendance records for the current user
         $userLocations = Location::where('user_id', Auth::id());
 
         // Calculate weekly points (sum of points for the current week)
-        $weeklyPoints = $userLocations->where('created_at', '>=', Carbon::now()->startOfWeek())
-            ->where('created_at', '<=', Carbon::now()->endOfWeek())
-            ->sum('total_points');
+        $weeklyPoints = $userLocations->where('created_at', '>=', Carbon::now()->startOfWeek())->where('created_at', '<=', Carbon::now()->endOfWeek())->sum('total_points');
 
         // Get the weekly status based on the points
         $weeklyStatus = $this->getWeeklyStatus($weeklyPoints);
@@ -426,7 +410,4 @@ class Attendance extends Component
             'attendanceSession' => $this->attendanceSession,
         ]);
     }
-
-
-
 }

@@ -146,30 +146,34 @@
                 latitude: position.lat,
                 longitude: position.lng,
                 in_range: rangeStatus,
-            }
-
-            // Fetch CSRF token from meta tag
+            };
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('/update-location-session', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': token, // CSRF token from the meta tag
+                        'X-CSRF-TOKEN': token,
                     },
                     body: JSON.stringify(locationData)
                 })
                 .then(response => response.json())
                 .then(data => {
                     console.log("Location saved", data);
-                    const event = new Event('location-updated');
-                    dispatchEvent(event);
-
+                    const locationUpdatedEvent = new Event('location-updated');
+                    window.dispatchEvent(locationUpdatedEvent);
+                    const sendNotificationEvent = new CustomEvent('send-notification', {
+                        "detail": {
+                            "in_range": rangeStatus
+                        }
+                    })
+                    window.dispatchEvent(sendNotificationEvent);
                 })
                 .catch(error => {
                     console.log("Error saving location", error);
                 });
         }
+
 
         function initMap() {
             if (!map) { // Ensure the map is initialized only once

@@ -8,7 +8,6 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-
     public $usersOnPage = []; // Public property as an array
 
     protected $rules = [
@@ -21,35 +20,51 @@ class Dashboard extends Component
         'usersOnPage.*.locations.*.status' => 'nullable|string',
     ];
 
-    public function updateUserData($users)
+    public function userNotification($status, $username)
+    {
+        if ($status == 'online') {
+            flash()->info($username . ' is now online..');
+        } elseif ($status == 'offline') {
+            flash()->warning($username . ' is now offline..');
+        } elseif ($status == 'in range') {
+            flash()->success($username . ' is now in range..');
+        } elseif ($status == 'out of range') {
+            flash()->error($username . ' is out of range!');
+        } else {
+            flash()->error('An error has occured');
+        }
+    }
+
+    public function syncUserData($users)
     {
         $userIds = collect($users)->pluck('id');
 
         $this->usersOnPage = User::whereIn('id', $userIds)
-            ->with(['locations' => function ($query) {
-                $query->whereDate('created_at', today())
-                      ->orderBy('created_at', 'desc')
-                      ->limit(1);
-            }])
+            ->with([
+                'locations' => function ($query) {
+                    $query->whereDate('created_at', today())->orderBy('created_at', 'desc')->limit(1);
+                },
+            ])
             ->get()
             ->map(function ($user) {
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'locations' => $user->locations->map(function ($location) {
-                        return [
-                            'created_at' => $location->created_at,
-                            'updated_at' => $location->updated_at,
-                            'status' => $location->status,
-                            'type' => $location ->type,
-                            'in_range' => $location->in_range,
-                        ];
-                    })->toArray(),
+                    'locations' => $user->locations
+                        ->map(function ($location) {
+                            return [
+                                'created_at' => $location->created_at,
+                                'updated_at' => $location->updated_at,
+                                'status' => $location->status,
+                                'type' => $location->type,
+                                'in_range' => $location->in_range,
+                            ];
+                        })
+                        ->toArray(),
                 ];
-            })->toArray(); // Convert to plain array
-
-        //logger()->info($this->usersOnPage);
+            })
+            ->toArray();
     }
 
     public function render()
