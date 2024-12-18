@@ -1,9 +1,9 @@
 <x-layouts.base>
-    @section('title', 'WFHMS | 403 - Forbidden')
+    @section('title', 'WFHMS | 404 - Not Found')
 
     <div class="container mt-5 text-center">
-        <h1 class="display-4 text-danger">403 - Forbidden</h1>
-        <p class="lead m-3">Sorry, you do not have permission to access this page.</p>
+        <h1 class="display-4 text-danger">404 - Not Found</h1>
+        <p class="lead m-3">Sorry, this page does not exist</p>
 
         @php
             $redirectRoute = route('login');

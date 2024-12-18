@@ -77,7 +77,6 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
     Route::get('/calculate-points', [AttendanceController::class, 'calculateWorkHoursPoints'])->name('attendance.calculate-points');
-    Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
     Route::get('/take-attendance', Attendance::class)->name('take-attendance');
     Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
@@ -85,6 +84,9 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::get('/attendance-data', [Attendance::class, 'getAttendanceData']);
 });
 
+Route::group(['middleware' => ['can:view attendance report']], function() {
+    Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
+});
 
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
