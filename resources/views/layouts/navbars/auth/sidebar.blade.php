@@ -150,6 +150,21 @@
             </a>
         </li>
 
+<!-- BackLog -->
+<li class="nav-item">
+    <a class="nav-link {{ Route::currentRouteName() == 'backlog.show' ? 'active' : '' }}"
+       href="{{ route('backlog.show') }}">
+        <div class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <i style="font-size: 1rem;"
+               class="fas fa-xs fa-list ps-2 pe-2 text-center {{ Route::currentRouteName() == 'backlog.show' ? 'text-white' : 'text-dark' }}"></i>
+        </div>
+        <span class="nav-link-text ms-1">Backlog</span>
+    </a>
+</li>
+
+
+
+
 
         @can('view approve users')
             <li class="nav-item pb-2">

@@ -29,6 +29,10 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\Attendance\Index as AttendanceIndex;
+use App\Http\Controllers\SprintController;
+use Illuminate\Support\Facades\Auth;
+
+
 
 
 // Redirect to login page by default
@@ -108,3 +112,14 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
 Route::get('/admin/attendance-status', [AttendanceController::class, 'attendanceStatus'])
     ->middleware('auth')
     ->name('attendanceStatus','admin');
+
+Route::get('task-management/backlog', [SprintController::class, 'showBacklog'])
+    ->name('backlog.show')
+    ->middleware('auth');
+
+Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])
+    ->name('create-sprint')
+    ->middleware('auth');
+
+
+
