@@ -152,7 +152,7 @@
                                                     <button type="button"
                                                         class="btn btn-warning btn-sm dropdown-toggle"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
-                                                        Dropup
+                                                        Action
                                                     </button>
                                                     <ul class="dropdown-menu px-2 py-3"
                                                         aria-labelledby="dropdownMenuButton">
