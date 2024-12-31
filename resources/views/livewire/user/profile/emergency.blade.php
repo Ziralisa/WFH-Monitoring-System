@@ -7,8 +7,12 @@
             <div class="form-group">
                 <label for="user-emergency_firstname" class="form-control-label">{{ __('First Name') }}</label>
                 <div class="@error('user.emergency_firstname')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.emergency_firstname" class="form-control" type="text"
-                        placeholder="Name" id="user-emergency_firstname">
+                    <input wire:model="user.emergency_firstname"
+                           class="form-control"
+                           type="text"
+                           placeholder="Name"
+                           id="user-emergency_firstname"
+                           {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.emergency_firstname')
                     <div class="text-danger">{{ $message }}</div>
@@ -19,8 +23,12 @@
             <div class="form-group">
                 <label for="user-emergency_lastname" class="form-control-label">{{ __('Last Name') }}</label>
                 <div class="@error('user.emergency_lastname')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.emergency_lastname" class="form-control" type="text"
-                        placeholder="Name" id="user-emergency_lastname">
+                    <input wire:model="user.emergency_lastname"
+                           class="form-control"
+                           type="text"
+                           placeholder="Name"
+                           id="user-emergency_lastname"
+                           {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.emergency_lastname')
                     <div class="text-danger">{{ $message }}</div>
@@ -33,8 +41,12 @@
             <div class="form-group">
                 <label for="user-emergency_relation" class="form-control-label">{{ __('Relation') }}</label>
                 <div class="@error('user.emergency_relation')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.emergency_relation" class="form-control" type="text"
-                        placeholder="e.g: Parent, Sibling" id="user-emergency_relation">
+                    <input wire:model="user.emergency_relation"
+                           class="form-control"
+                           type="text"
+                           placeholder="e.g: Parent, Sibling"
+                           id="user-emergency_relation"
+                           {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.emergency_relation')
                     <div class="text-danger">{{ $message }}</div>
@@ -45,8 +57,12 @@
             <div class="form-group">
                 <label for="user-emergency_phone" class="form-control-label">{{ __('Mobile Phone') }}</label>
                 <div class="@error('user.emergency_phone')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.emergency_phone" class="form-control" type="tel"
-                        placeholder="e.g: 012-345-6789" id="user-emergency_phone">
+                    <input wire:model="user.emergency_phone"
+                           class="form-control"
+                           type="tel"
+                           placeholder="e.g: 012-345-6789"
+                           id="user-emergency_phone"
+                           {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.emergency_phone')
                     <div class="text-danger">{{ $message }}</div>

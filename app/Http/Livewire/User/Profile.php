@@ -17,6 +17,7 @@ class Profile extends Component
     public $showSuccesNotification = false;
 
     public $showDemoNotification = false;
+    public ?int $selectedUserId = null;
 
     protected $rules = [
         // Personal Information
@@ -45,10 +46,12 @@ class Profile extends Component
         'user.emergency_phone' => 'nullable|max:15',
     ];
 
-    public function mount()
+    public function mount($selectedUserId = null)
     {
-        $this->user = auth()->user();
-        $this->userId = $this->user->id;
+        $this->selectedUserId = $selectedUserId;
+
+        // If viewing another user, fetch that user; otherwise, use the authenticated user.
+        $this->user = $selectedUserId ? User::findOrFail($selectedUserId) : auth()->user();
     }
 
     public function saveLocation(Request $request)
@@ -65,7 +68,7 @@ class Profile extends Component
         $user->home_lat = $validated['home_lat'];
         $user->home_lng = $validated['home_lng'];
         $user->save();
-        
+
         // Set a flash message in the session
         session()->flash('success', 'Your location information has been successfully saved!');
 

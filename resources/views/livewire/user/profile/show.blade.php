@@ -19,10 +19,10 @@
                 <div class="col-auto my-auto">
                     <div class="h-100">
                         <h5 class="mb-1">
-                            {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}
+                            {{ $user->first_name . ' ' . $user->last_name }}
                         </h5>
                         <p class="mb-0 font-weight-bold text-sm">
-                            {{ Auth::user()->position ?? 'Employee' }}
+                            {{ $user->position ?? 'Employee' }}
                         </p>
                     </div>
                 </div>
@@ -77,10 +77,13 @@
                     @include('livewire.user.profile.personal')
                     @include('livewire.user.profile.job')
                     @include('livewire.user.profile.emergency')
-                    <div class="d-flex justify-content-end">
-                        <button type="submit"
-                            class="btn bg-gradient-dark btn-md mt-4 mb-4">{{ 'Save Changes' }}</button>
-                    </div>
+                    @if(!$selectedUserId)
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn bg-gradient-dark btn-md m-4">
+                                {{ 'Save Changes' }}
+                            </button>
+                        </div>
+                    @endif
                 </form>
             </div>
         </div>
