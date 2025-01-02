@@ -113,8 +113,7 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
 
 Route::get('/admin/attendance-status', [AttendanceController::class, 'attendanceStatus'])
     ->middleware('auth')
-<<<<<<< HEAD
-    ->name('attendanceStatus','admin');
+    ->name('attendanceStatus');
 
 Route::get('task-management/backlog', [SprintController::class, 'showBacklog'])
     ->name('backlog.show')
@@ -123,9 +122,3 @@ Route::get('task-management/backlog', [SprintController::class, 'showBacklog'])
 Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])
     ->name('create-sprint')
     ->middleware('auth');
-
-
-
-=======
-    ->name('attendanceStatus');
->>>>>>> aaa9238468b31b5245cdbc02ee5dd3da874ec274
