@@ -12,14 +12,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->integer('total_points')->default(0)->after('clock_out_points');
+            //$table->integer('total_points')->default(0)->after('clock_out_points');
         });
     }
     
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->dropColumn('total_points');
+            //$table->dropColumn('total_points');
         });
     }
     
