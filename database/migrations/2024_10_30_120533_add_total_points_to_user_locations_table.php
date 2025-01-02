@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('user_locations', function (Blueprint $table) {
-            $table->integer('total_points')->default(0)->after('workinghourpoints'); // Adjust position as needed
+            $table->integer('total_points')->default(0);//->after('workinghourpoints'); // Adjust position as needed
         });
     }
 
