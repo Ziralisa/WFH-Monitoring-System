@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Attendance;
+use App\Models\Comment;
 use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -22,6 +24,52 @@ class Dashboard extends Component
         'usersOnPage.*.locations.*.updated_at' => 'nullable|date',
         'usersOnPage.*.locations.*.status' => 'nullable|string',
     ];
+
+    public $commentContent;
+    public $comments = [];
+    public function storeComment()
+    {
+        // Validation
+        $this->validate([
+            'commentContent' => 'required|string|max:500',
+        ]);
+
+        // Store the comment
+        Comment::create([
+            'content' => $this->commentContent,
+            'user_id' => auth()->id(), // Assuming the user is logged in
+        ]);
+
+        // Flash the message
+        flash()->success('Comment added successfully!');
+
+        // Redirect to the dashboard
+        return redirect()->route('dashboard');
+    }
+
+    public function deleteComment($commentid)
+    {
+        // Find and delete the comment
+        $comment = Comment::find($commentid);
+
+        if ($comment) {
+            $comment->delete();
+
+            // Optionally refresh the comments list
+            $this->comments = Comment::latest()->get();
+
+            // Provide feedback to the user
+            flash()->success('Comment removed successfully!');
+            // Redirect to the dashboard
+            return redirect()->route('dashboard');
+        } else {
+            flash()->error('Comment not found!');
+        }
+    }
+    public function mount()
+    {
+        $this->comments = Comment::get(); // Load comments on mount
+    }
 
     public function userNotification($status, $username)
     {
@@ -69,6 +117,40 @@ class Dashboard extends Component
             })
             ->toArray();
     }
+
+    // Simulate adding a new row with dummy data
+    public $showOfflineUser = false;
+    public $offlineUsers = [];
+
+    public function viewOfflineUsers()
+    {
+
+        $this->showOfflineUser = true;
+        $users = User::whereHas('locations', function ($query) {
+            $query->where('status', 'inactive');
+        })
+        ->get()
+        ->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'locations' => $user->locations->map(function ($location) {
+                    return [
+                        'created_at' => $location->created_at,
+                        'updated_at' => $location->updated_at,
+                        'type' => $location->type,
+                        'status' => $location->status,
+                        'in_range' => $location->in_range,
+                    ];
+                }),
+            ];
+        });
+
+        $this->offlineUsers = $users;
+
+    }
+
 
     public function showReport()
     {
@@ -140,6 +222,9 @@ class Dashboard extends Component
             'usersOnPage' => $this->usersOnPage,
             'goodUsers' => $this->goodUsers,
             'badUsers' => $this->badUsers,
+            'comments' => $this->comments,
+            'showOfflineUser' => $this->showOfflineUser,
+            'offlineUsers' => $this->offlineUsers,
         ]);
     }
 }

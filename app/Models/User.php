@@ -44,4 +44,8 @@ class User extends Authenticatable
      public function locations(){
         return $this->hasMany(Location::class);
      }
+
+     public function comments(){
+        return $this->hasMany(Comment::class)->latest();
+    }
 }

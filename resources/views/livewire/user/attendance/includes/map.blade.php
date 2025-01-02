@@ -89,11 +89,15 @@
                             const isInRange = checkIfInRange(userPosition, homePosition);
 
                             // Save every time there's a significant move or after a set interval
-                            if (distanceMoved > 50 || currentTime - lastSaved > 30000) { // 50 meters or 30 seconds
+                            if (distanceMoved > 50) { // 50 meters or 60 seconds
                                 saveLocationToDatabase(userPosition, isInRange ? 1 : 0);
                                 console.log("Location saved! Session active..");
                                 lastSaved = currentTime;
-                            } else {
+                            } else if(currentTime - lastSaved > 60000){
+                                //prompt user still there or not (button renew session or clockout)
+                            }
+
+                            else {
                                 console.log("Location is not saved due to minimal/lack of movement!");
                             }
 

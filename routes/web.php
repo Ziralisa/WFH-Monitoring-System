@@ -71,6 +71,8 @@ Route::group(['middleware' => ['can:view role settings']], function () {
 });
 Route::group(['middleware' => ['can:view profile']], function () {
     Route::get('/user-profile', UserProfile1::class)->name('user-profile');
+    Route::get('/user/{selectedUserId}', UserProfile1::class)->name('view-user-profile');
+
 });
 Route::group(['middleware' => ['can:view staff dashboard']], function () {
     Route::get('/dashboard1', Dashboard1::class)->name('dashboard1');
@@ -111,6 +113,7 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
 
 Route::get('/admin/attendance-status', [AttendanceController::class, 'attendanceStatus'])
     ->middleware('auth')
+<<<<<<< HEAD
     ->name('attendanceStatus','admin');
 
 Route::get('task-management/backlog', [SprintController::class, 'showBacklog'])
@@ -123,3 +126,6 @@ Route::post('task-management/backlog/add-sprint', [SprintController::class, 'sto
 
 
 
+=======
+    ->name('attendanceStatus');
+>>>>>>> aaa9238468b31b5245cdbc02ee5dd3da874ec274
