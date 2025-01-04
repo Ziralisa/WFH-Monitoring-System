@@ -17,5 +17,9 @@ class Sprint extends Model
         'enddate',
     ];
 
+public function tasks()
+{
+    return $this->hasMany(Task::class);
+}
 
 }

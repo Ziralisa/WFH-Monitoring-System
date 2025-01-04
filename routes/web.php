@@ -31,6 +31,7 @@ use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\Attendance\Index as AttendanceIndex;
 use App\Http\Controllers\SprintController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TaskController;
 
 
 
@@ -122,3 +123,8 @@ Route::get('task-management/backlog', [SprintController::class, 'showBacklog'])
 Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])
     ->name('create-sprint')
     ->middleware('auth');
+
+    Route::post('/tasks', [TaskController::class, 'store'])->name('create-task');
+    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.createTask');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    
