@@ -91,7 +91,7 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::get('/attendance-data', [Attendance::class, 'getAttendanceData']);
 });
 
-Route::group(['middleware' => ['can:view attendance report']], function() {
+Route::group(['middleware' => ['can:view attendance report']], function () {
     Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
 });
 
@@ -124,7 +124,8 @@ Route::post('task-management/backlog/add-sprint', [SprintController::class, 'sto
     ->name('create-sprint')
     ->middleware('auth');
 
-    Route::post('/tasks', [TaskController::class, 'store'])->name('create-task');
-    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.createTask');
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+Route::post('/assign-task/{task}', [TaskController::class, 'assignTask'])->name('assign-task');
+Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+

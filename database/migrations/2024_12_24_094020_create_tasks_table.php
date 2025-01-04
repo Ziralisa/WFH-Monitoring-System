@@ -4,30 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedBigInteger('sprint_id'); 
-            $table->unsignedBigInteger('user_id'); 
-            
-            $table->string('name', 250); 
-            $table->string('task_status', 50); 
-            $table->string('task_priority', 50);
-            $table->string('task_assign', 50);
-            $table->text('task_description'); 
-
-            $table->timestamps(); // Created_at and updated_at columns
-
-            // Foreign key constraints
-            // $table->foreign('sprint_id')->references('id')->on('sprints')->onDelete('cascade');
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('sprint_id')->constrained()->onDelete('cascade'); // Ensures sprint_id exists
+            $table->string('name');
+            $table->enum('task_status', ['To Do', 'In Progress', 'Done', 'Stuck']);
+            $table->enum('task_priority', ['Low', 'Medium', 'High']);
+            $table->string('task_assign')->nullable()->default(null);
+            $table->text('task_description')->nullable();
+            $table->timestamps();
         });
+
     }
 
     /**

@@ -34,155 +34,255 @@
 
             <h2>Sprints</h2>
 
-            <!-- Display sprint details -->
             @forelse($sprints as $sprint)
-                <div>
-                    <strong>Name:</strong> {{ $sprint->name }} <strong>Description:</strong> {{ $sprint->desc }} <strong>Start Date:</strong> {{ $sprint->startdate }} <strong>End Date:</strong> {{ $sprint->enddate }}
-                </div>
+                <div class="sprint-card">
+                    <h3>{{ $sprint->name }}</h3>
+                    <p>{{ $sprint->desc }}</p>
+                    <div class="sprint-dates">
+                        <span><strong>Start Date:</strong> {{ $sprint->startdate }}</span>
+                        <span><strong>End Date:</strong> {{ $sprint->enddate }}</span>
+                    </div>
 
-                <!-- Display task table -->
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Task</th>
-                            <th>Status</th>
-                            <th>Priority</th>
-                            <th>Actions</th> <!-- Add actions for tasks -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if($sprint->tasks)
-                            @foreach($sprint->tasks as $task)
+                    <!-- Display task table -->
+                    <table class="table modern-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Assign</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($sprint->tasks as $task)
                                 <tr>
                                     <td>{{ $task->name }}</td>
-                                    <td>{{ $task->status }}</td>
-                                    <td>{{ $task->priority }}</td>
+                                    <td>{{ $task->task_description }}</td>
                                     <td>
-                                        <!-- Edit and Delete buttons for tasks -->
-                                        <a href="{{ route('edit-task', $task->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{ route('delete-task', $task->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <form>
+                                            <select id="task-status-{{ $task->id }}" class="task-status"
+                                                data-task-id="{{ $task->id }}" required>
+                                                <option value="To Do" {{ $task->task_status == 'To Do' ? 'selected' : '' }}>To Do
+                                                </option>
+                                                <option value="In Progress" {{ $task->task_status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                                                <option value="Done" {{ $task->task_status == 'Done' ? 'selected' : '' }}>Done
+                                                </option>
+                                                <option value="Stuck" {{ $task->task_status == 'Stuck' ? 'selected' : '' }}>Stuck
+                                                </option>
+                                            </select>
                                         </form>
                                     </td>
+                                    <td>{{ $task->task_priority }}</td>
+                                    <td>
+                                        @if($task->assignedUser)
+                                            {{ $task->assignedUser->name }}
+                                        @else
+                                            <form action="{{ route('assign-task', $task->id) }}" method="POST">
+                                                @csrf
+                                                <select name="task_assign" class="form-select" required>
+                                                    <option value="" disabled selected>Select a user</option>
+                                                    @foreach($users as $user)
+                                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" class="btn btn-primary btn-sm mt-2">Assign</button>
+                                            </form>
+                                        @endif
+                                    </td>
                                 </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="4">No tasks available</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">No tasks available</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
 
-                <!-- Button to open popup form for adding new task -->
-                <button class="btn btn-success btn-sm" id="addTaskButton" data-sprint-id="{{ $sprint->id }}">Add New Task</button>
+                    <!-- Add Task Button -->
+                    <button class="btn btn-success mt-3" data-bs-toggle="modal"
+                        data-bs-target="#addTaskModal-{{ $sprint->id }}">
+                        Add Task
+                    </button>
 
-                <!-- Popup Form -->
-                <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="taskForm" action="{{ route('tasks.store') }}" method="POST">
+                    <!-- Add Task Modal -->
+                    <div class="modal fade" id="addTaskModal-{{ $sprint->id }}" tabindex="-1"
+                        aria-labelledby="addTaskModalLabel-{{ $sprint->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addTaskModalLabel-{{ $sprint->id }}">Add Task to
+                                        {{ $sprint->name }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('tasks.store') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="sprint_id" id="sprint_id">
-                                    <div class="form-group">
-                                        <label for="title">Task Title</label>
-                                        <input type="text" class="form-control" name="title" id="title" required>
+                                    <input type="hidden" name="sprint_id" value="{{ $sprint->id }}">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="task_name" class="form-label">Task Name</label>
+                                            <input type="text" name="name" id="task_name" class="form-control"
+                                                placeholder="Enter task name" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="task_description" class="form-label">Task Description</label>
+                                            <textarea name="task_description" id="task_description" class="form-control"
+                                                rows="3" placeholder="Enter task description"></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="task_priority" class="form-label">Priority</label>
+                                                <select name="task_priority" id="task_priority" class="form-select"
+                                                    required>
+                                                    <option value="Low">Low</option>
+                                                    <option value="Medium">Medium</option>
+                                                    <option value="High">High</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="task_status" class="form-label">Status</label>
+                                                <select name="task_status" id="task_status" class="form-select" required>
+                                                    <option value="To Do">To Do</option>
+                                                    <option value="In Progress">In Progress</option>
+                                                    <option value="Done">Done</option>
+                                                    <option value="Stuck">Stuck</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="task_assign" class="form-label">Assign Task (Optional)</label>
+                                            <select name="task_assign" id="task_assign" class="form-select">
+                                                <option value="" disabled selected>Select a user (optional)</option>
+                                                @foreach($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" class="form-control">{{ old('description') }}</textarea>
-                    @error('description') <small class="text-danger">{{ $message }}</small> @enderror
-                </div>
-                                    <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <select class="form-control" name="status" id="status" required>
-                                            <option value="To Do">To Do</option>
-                                            <option value="In Progress">In Progress</option>
-                                            <option value="Done">Done</option>
-                                            <option value="Stuck">Stuck</option>
-                                        </select>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Add Task</button>
                                     </div>
-
-                                    <div class="form-group">
-                    <label for="priority">Priority</label>
-                    <select id="priority" name="priority" class="form-control">
-                        <option value="Low" {{ old('priority') == 'Low' ? 'selected' : '' }}>Low</option>
-                        <option value="Medium" {{ old('priority') == 'Medium' ? 'selected' : '' }}>Medium</option>
-                        <option value="High" {{ old('priority') == 'High' ? 'selected' : '' }}>High</option>
-                    </select>
-                    @error('priority') <small class="text-danger">{{ $message }}</small> @enderror
-                </div>
-                                    <button type="submit" class="btn btn-primary">Save Task</button>
                                 </form>
+
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
             @empty
-                <div>No sprints added yet.</div>
+                <div class="no-sprints">No sprints added yet.</div>
             @endforelse
+
         </div>
     </main>
 
     <style>
-        label {
-            font-size: 16px;
+        .sprint-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sprint-card h3 {
+            margin: 0 0 8px;
+            color: #2c3e50;
+        }
+
+        .sprint-card .sprint-dates span {
+            display: inline-block;
+            margin-right: 16px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        .modern-table th {
+            background-color: #f4f6f9;
             font-weight: bold;
+            color: #2c3e50;
+            border-bottom: 2px solid #ddd;
         }
 
-        .d-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .modern-table td {
+            border-bottom: 1px solid #ddd;
         }
 
-        .mr-2 {
-            margin-right: 8px;
+        .modern-table tr:hover {
+            background-color: #f9f9f9;
         }
 
-        .btn {
-            margin-left: 10px;
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
         }
 
-        textarea {
-            width: 150px;
-            height: 100px;
-            resize: none;
+        .status-in-progress {
+            background-color: #3498db;
         }
 
-        table th, table td {
+        .status-completed {
+            background-color: #2ecc71;
+        }
+
+        .status-pending {
+            background-color: #e74c3c;
+        }
+
+        .no-sprints {
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        .text-center {
             text-align: center;
         }
     </style>
-
-    <!-- Include Bootstrap CSS and JS for modal functionality -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#addTaskButton').click(function() {
-                var sprintId = $(this).data('sprint-id');
-                $('#sprint_id').val(sprintId);
-                $('#addTaskModal').modal('show');
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.task-status').forEach(function (element) {
+                element.addEventListener('change', function () {
+                    let taskId = this.dataset.taskId;
+                    let status = this.value;
 
-            $('#taskForm').submit(function(e) {
-                e.preventDefault();
-                var formData = $(this).serialize();
-                $.post($(this).attr('action'), formData, function(response) {
-                    location.reload(); // Reload the page after adding the task
+                    // AJAX request to update task status
+                    fetch(`/tasks/${taskId}/status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({ task_status: status })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Task status updated successfully');
+                            } else {
+                                alert('Failed to update task status');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
                 });
             });
         });
