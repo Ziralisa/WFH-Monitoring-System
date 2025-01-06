@@ -9,15 +9,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropColumn('user_id');    // Remove the user_id column
+            // Drop foreign key constraint before dropping the column
+            if (Schema::hasColumn('tasks', 'user_id')) {
+                $table->dropForeign(['user_id']);
+                $table->dropColumn('user_id');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id'); // Re-add the column
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // Re-add the foreign key
+            if (!Schema::hasColumn('tasks', 'user_id')) {
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            }
         });
     }
 };

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sprints', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('name', 250);
             $table->text('desc');
             $table->dateTime('startdate');

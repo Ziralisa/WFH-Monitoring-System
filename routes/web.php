@@ -25,8 +25,7 @@ use App\Http\Livewire\Rtl;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
-use App\Http\Controllers\SprintController;
-use App\Http\Controllers\TaskController;
+use App\Http\Livewire\SprintController;
 
 
 
@@ -110,18 +109,14 @@ Route::get('/admin/attendance-status', [AttendanceController::class, 'attendance
     ->middleware('auth')
     ->name('attendanceStatus');
 
-Route::get('task-management/backlog', [SprintController::class, 'showBacklog'])
-    ->name('backlog.show')
-    ->middleware('auth');
-
-Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])
-    ->name('create-sprint')
-    ->middleware('auth');
-
-Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
-Route::post('/assign-task/{task}', [TaskController::class, 'assignTask'])->name('assign-task');
-Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+// Sprint and Task Management
+Route::middleware('auth')->group(function () {
+    Route::get('task-management/backlog', SprintController::class)->name('backlog.show');
+    Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])->name('create-sprint');
+    Route::post('/tasks', [SprintController::class, 'storeTask'])->name('tasks.store');
+    Route::post('/assign-task/{task}', [SprintController::class, 'assignTask'])->name('assign-task');
+    Route::patch('/tasks/{task}/status', [SprintController::class, 'updateTaskStatus'])->name('tasks.updateStatus');
+});
 
 //ATTENDANCE LOG PAGE
 Route::get('/attendance-log/{user}', AttendanceLog::class)->name('attendance-log');

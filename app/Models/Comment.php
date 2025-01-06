@@ -10,11 +10,16 @@ class Comment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'task_id',
         'user_id',
         'content'
     ];
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function task(){
+        return $this->belongsTo(Task::class);
     }
 }
