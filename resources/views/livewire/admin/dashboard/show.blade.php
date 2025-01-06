@@ -33,7 +33,6 @@
         @include('livewire.user-on-this-page')
         <!--Middle row-->
         @include('livewire.admin.dashboard.components.online-users-table')
-        @livewire('get-place')
 
         {{-- Task Popup --}}
         <div class="col-md-4">
