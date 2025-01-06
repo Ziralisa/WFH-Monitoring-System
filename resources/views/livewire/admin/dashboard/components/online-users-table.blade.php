@@ -163,7 +163,7 @@
                                                             </a>
                                                         </li>
                                                         <li><a class="dropdown-item border-radius-md"
-                                                                href="javascript:;">View Attendance Location Log</a>
+                                                                href="{{ route('attendance-log', $user['id']) }}">View Attendance Location Log</a>
                                                         </li>
                                                     </ul>
                                                 </div>

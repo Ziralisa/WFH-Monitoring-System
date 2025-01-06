@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sprint;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SprintController extends Controller
@@ -13,7 +14,9 @@ class SprintController extends Controller
     public function showBacklog()
     {
         $sprints = Sprint::all(); // Fetch all sprints
-        return view('livewire.task-management.backlog', compact('sprints'));
+        $users = User::all();
+
+        return view('livewire.task-management.backlog', compact('sprints','users'));
 
 
     }
@@ -31,7 +34,7 @@ class SprintController extends Controller
      */
     public function storeSprint()
     {
-      
+
         //dd(request()->all());
 
         // Validate the incoming data

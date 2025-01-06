@@ -14,10 +14,7 @@
             <div class="form-group">
                 <label for="user-job-status" class="form-control-label">{{ __('Employment Status') }}</label>
                 <div class="@error('user.job_status')border border-danger rounded-3 @enderror">
-                    <select wire:model="user.job_status"
-                            class="form-control"
-                            id="user-job-status"
-                            disabled>
+                    <select wire:model="user.job_status" class="form-control" id="user-job-status" disabled>
                         <option value="">Select Employment Status</option>
                         <option value="0">Employed</option>
                         <option value="1">Resigned</option>
@@ -34,12 +31,8 @@
             <div class="form-group">
                 <label for="user-position" class="form-control-label">{{ __('Position') }}</label>
                 <div class="@error('user.position')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.position"
-                           class="form-control"
-                           type="text"
-                           id="user-position"
-                           placeholder="Programmer"
-                           {{ $selectedUserId ? 'disabled' : '' }}>
+                    <input wire:model="user.position" class="form-control" type="text" id="user-position"
+                        placeholder="Programmer" {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.position')
                     <div class="text-danger">{{ $message }}</div>
@@ -50,11 +43,8 @@
             <div class="form-group">
                 <label for="user-started_work" class="form-control-label">{{ __('Started Work') }}</label>
                 <div class="@error('user.started_work')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.started_work"
-                           class="form-control"
-                           type="date"
-                           id="user-started_work"
-                           {{ $selectedUserId ? 'disabled' : '' }}>
+                    <input wire:model="user.started_work" class="form-control" type="date" id="user-started_work"
+                        {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.started_work')
                     <div class="text-danger">{{ $message }}</div>
@@ -67,12 +57,8 @@
             <div class="form-group">
                 <label for="user-work_email" class="form-control-label">{{ __('Work Email Address') }}</label>
                 <div class="@error('user.work_email')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.work_email"
-                           class="form-control"
-                           type="email"
-                           id="user-work_email"
-                           placeholder="youremail@example.com"
-                           {{ $selectedUserId ? 'disabled' : '' }}>
+                    <input wire:model="user.work_email" class="form-control" type="email" id="user-work_email"
+                        placeholder="youremail@example.com" {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.work_email')
                     <div class="text-danger">{{ $message }}</div>
@@ -83,12 +69,8 @@
             <div class="form-group">
                 <label for="user-work_phone" class="form-control-label">{{ __('Work Phone Number') }}</label>
                 <div class="@error('user.work_phone')border border-danger rounded-3 @enderror">
-                    <input wire:model="user.work_phone"
-                           class="form-control"
-                           type="tel"
-                           id="user-work_phone"
-                           placeholder="e.g: 012-345-6789"
-                           {{ $selectedUserId ? 'disabled' : '' }}>
+                    <input wire:model="user.work_phone" class="form-control" type="tel" id="user-work_phone"
+                        placeholder="e.g: 012-345-6789" {{ $selectedUserId ? 'disabled' : '' }}>
                 </div>
                 @error('user.work_phone')
                     <div class="text-danger">{{ $message }}</div>
@@ -98,7 +80,8 @@
     </div>
 </div>
 
-    {{-- SET WFH LOCATION --}}
+{{-- SET WFH LOCATION --}}
+@if (!$selectedUserId)
     <div class="container p-3">
         <div class="row">
             <div class="d-flex justify-content-center align-items-center col">
@@ -109,8 +92,7 @@
             <div class="d-flex justify-content-center">
                 <div class="d-flex justify-content-center col-md-4">
                     <button type="button" class="btn btn-lg w-100 bg-gradient-primary mb-3" data-bs-toggle="modal"
-                        data-bs-target="#modal-default"
-                        {{ $selectedUserId ? 'disabled' : '' }}>
+                        data-bs-target="#modal-default">
                         <span class="btn-inner--icon"><i class="fa-solid fa-map-location-dot px-1"></i></span>
                         Set Location
                     </button>
@@ -155,6 +137,7 @@
             </div>
         </div>
     </div>
+@endif
 </div>
 <script>
     var lp;
@@ -289,4 +272,3 @@
 <script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaVipOWWCixCZQeOCuFhvVOQ71_mN8qq4&callback=initMap" async
     defer></script>
-

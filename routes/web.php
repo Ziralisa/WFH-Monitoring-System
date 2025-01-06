@@ -1,15 +1,13 @@
 <?php
 
-use App\Http\Controllers\LocationController;
 use App\Http\Livewire\Admin\RoleSettings;
 use App\Http\Livewire\Admin\UserSettings;
+use App\Http\Livewire\AttendanceLog;
 use App\Http\Livewire\Auth\Logout;
-use App\Http\Livewire\Attendance\AttendanceComponent;
 use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
 use App\Http\Livewire\Admin\ApproveUsers;
 use App\Http\Livewire\Dashboard1;
-use App\Http\Livewire\Counter;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Livewire\Auth\ForgotPassword;
@@ -18,7 +16,6 @@ use App\Http\Livewire\Auth\SignUp;
 use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\NewUserHomepage;
-use App\Http\Livewire\Admin\StaffList;
 use App\Http\Livewire\Billing;
 use App\Http\Livewire\Profile;
 use App\Http\Livewire\Tables;
@@ -28,9 +25,7 @@ use App\Http\Livewire\Rtl;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
-use App\Http\Livewire\Attendance\Index as AttendanceIndex;
 use App\Http\Controllers\SprintController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TaskController;
 
 
@@ -109,7 +104,6 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
     Route::get('/rtl', Rtl::class)->name('rtl');
     Route::get('/laravel-user-profile', UserProfile::class)->name(name: 'laravel-user-profile');
     Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
-    Route::get('/counter', Counter::class);
 });
 
 Route::get('/admin/attendance-status', [AttendanceController::class, 'attendanceStatus'])
@@ -128,4 +122,9 @@ Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
 Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
 Route::post('/assign-task/{task}', [TaskController::class, 'assignTask'])->name('assign-task');
 Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+
+//ATTENDANCE LOG PAGE
+Route::get('/attendance-log/{user}', AttendanceLog::class)->name('attendance-log');
+
+
 
