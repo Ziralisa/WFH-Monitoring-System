@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role;
 
 class User extends Authenticatable
 {
@@ -48,4 +49,10 @@ class User extends Authenticatable
      public function comments(){
         return $this->hasMany(Comment::class)->latest();
     }
+
+public function roles()
+{
+    return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+}
+
 }

@@ -80,22 +80,23 @@
                                 </td>
                                 <td>{{ $task->task_priority }}</td>
                                 <td>
-                                    @if ($task->assignedUser)
-                                        {{ $task->assignedUser->name }}
-                                    @else
-                                        <form action="{{ route('assign-task', $task->id) }}" method="POST">
-                                            @csrf
-                                            <select name="task_assign" class="form-select" required>
-                                                <option value="" disabled selected>Select a user</option>
-                                                @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}">{{ $user->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <button type="submit" class="btn btn-primary btn-sm mt-2">Assign</button>
-                                        </form>
-                                    @endif
-                                </td>
+    @if ($task->assignedUser)
+        {{ $task->assignedUser->name }}
+    @else
+        <form id="assign-form-{{ $task->id }}" action="{{ route('assign-task', $task->id) }}" method="POST">
+            @csrf
+            <select name="task_assign" id="task_assign_{{ $task->id }}" class="form-select" onchange="this.form.submit()">
+                <option value="" disabled selected>Select a user (optional)</option>
+                @foreach ($staff as $member)
+                    <option value="{{ $member->id }}" {{ $task->assignedUser && $task->assignedUser->id == $member->id ? 'selected' : '' }}>
+                        {{ $member->name }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+    @endif
+</td>
+
                                 <td>
                                     @include('livewire.task-management.components.comment')
                                 </td>
@@ -215,6 +216,7 @@
                         .then(data => {
                             if (data.success) {
                                 alert('Task status updated successfully');
+                                location.reload(); // Reload the page
                             } else {
                                 alert('Failed to update task status');
                             }
@@ -223,6 +225,7 @@
                 });
             });
         });
+
     </script>
 
 </div>

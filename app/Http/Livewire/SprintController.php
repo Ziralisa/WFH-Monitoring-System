@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class SprintController extends Component
 {
@@ -19,7 +20,8 @@ class SprintController extends Component
     ];
 
 
-    public function setTaskId($id){
+    public function setTaskId($id)
+    {
         $this->taskId = $id;
     }
 
@@ -108,11 +110,19 @@ class SprintController extends Component
 
     public function assignTask(Request $request, Task $task)
     {
-        $task->task_assign = $request->task_assign;
-        $task->save();
-
-        return redirect()->back()->with('success', 'Task assigned successfully');
+        // Ensure the user has been selected
+        if ($request->has('task_assign')) {
+            // Assign the task to the user
+            $task->assignedUser()->associate(User::find($request->input('task_assign')));
+            $task->save();
+    
+            // Redirect back with success message (or you can just reload the page)
+            return redirect()->route('backlog.show')->with('success', 'Task assigned successfully.');
+        }
+    
+        return redirect()->route('backlog.show')->with('error', 'Failed to assign the task.');
     }
+    
     public function updateTaskStatus(Request $request, Task $task)
     {
         $validated = $request->validate([
@@ -126,9 +136,23 @@ class SprintController extends Component
 
     public function render()
     {
+        // Get the role ID for 'staff'
+        $staffRole = Role::where('name', 'staff')->first();
+
+        // Fetch users with the 'staff' role
+        $staff = User::whereIn('id', function ($query) use ($staffRole) {
+            $query->select('model_id')
+                ->from('model_has_roles')
+                ->where('role_id', $staffRole->id)
+                ->where('model_type', User::class); // Ensure correct model type
+        })->get();
+
+        // Pass the 'staff' data to the view
         return view('livewire.task-management.backlog', [
             'sprints' => Sprint::all(),
-            'users' => User::all(),
+            'staff' => $staff,  // Correct variable name
         ]);
     }
+
+
 }
