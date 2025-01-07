@@ -50,9 +50,4 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class)->latest();
     }
 
-public function roles()
-{
-    return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
-}
-
 }
