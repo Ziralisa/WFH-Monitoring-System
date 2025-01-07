@@ -118,8 +118,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/tasks/{task}/status', [SprintController::class, 'updateTaskStatus'])->name('tasks.updateStatus');
 });
 
-//ATTENDANCE LOG PAGE
-Route::get('/attendance-log/{user}', AttendanceLog::class)->name('attendance-log');
-
 
 
