@@ -85,9 +85,15 @@
                                                             Profile</a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item border-radius-md"
+                                                        {{-- <a class="dropdown-item border-radius-md"
                                                             href="{{ route('attendance-log', $user['id']) }}">View
-                                                            Attendance Location Log</a>
+                                                            Attendance Location Log</a> --}}
+                                                            <a class="dropdown-item border-radius-md"
+                                                            href="javascript:void(0)"
+                                                            wire:click="showAttendanceLog({{ $user['id'] }})"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#logModal">View Attendance Location Log</a>
+
                                                     </li>
                                                 </ul>
                                             </div>
@@ -174,8 +180,10 @@
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item border-radius-md"
-                                                            href="{{ route('attendance-log', $user['id']) }}">View
-                                                            Attendance Location Log</a>
+                                                            href="javascript:void(0)"
+                                                            wire:click="showAttendanceLog({{ $user['id'] }})"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#logModal">View Attendance Location Log</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -187,6 +195,7 @@
                     </div>
                 @endif
             </div>
+            @include('livewire.admin.dashboard.components.attendance-log')
         </div>
     </div>
 </div>

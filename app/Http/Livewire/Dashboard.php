@@ -6,14 +6,20 @@ use App\Models\Attendance;
 use App\Models\Comment;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
+    use WithPagination;
+
+    public User $user;
     public $usersOnPage = [];
     public $userReports = [];
     public $badUsers = [];
     public $goodUsers = [];
+    public $locations= [];
 
     protected $rules = [
         'usersOnPage.*.id' => 'required|integer',
@@ -25,50 +31,62 @@ class Dashboard extends Component
         'usersOnPage.*.locations.*.status' => 'nullable|string',
     ];
 
-    public $commentContent;
-    public $comments = [];
-    public function storeComment()
-    {
-        // Validation
-        $this->validate([
-            'commentContent' => 'required|string|max:500',
-        ]);
+    public function showAttendanceLog($userId)
+{
+    $this->user = User::find($userId);
 
-        // Store the comment
-        Comment::create([
-            'content' => $this->commentContent,
-            'user_id' => auth()->id(), // Assuming the user is logged in
-        ]);
+    if ($this->user) {
+        // Retrieve locations and simplify the data
+        $locations = $this->user->locations()->latest()->paginate(10);
 
-        // Flash the message
-        flash()->success('Comment added successfully!');
+        // Convert paginator to simple array
+        $this->locations = $locations->items(); // This gives just the collection of location items
 
-        // Redirect to the dashboard
-        return redirect()->route('dashboard');
+        // Optionally transform each location
+        $this->locations = collect($this->locations)->map(function ($location) {
+            return [
+                'date' => $location->created_at->format('Y-m-d'),
+                'time' => $location->created_at->format('H:i:s'),
+                'user_id' => $location->user_id,
+                'name' => $this->user->name,
+                'latitude' => $location->latitude,
+                'longitude' => $location->longitude,
+                'location' => $this->getPlace($location->latitude, $location->longitude),
+            ];
+        });
+    } else {
+        $this->locations = collect(); // Empty collection if user not found
     }
+}
 
-    public function deleteComment($commentid)
+    public function getPlace($latitude, $longitude)
     {
-        // Find and delete the comment
-        $comment = Comment::find($commentid);
-
-        if ($comment) {
-            $comment->delete();
-
-            // Optionally refresh the comments list
-            $this->comments = Comment::latest()->get();
-
-            // Provide feedback to the user
-            flash()->success('Comment removed successfully!');
-            // Redirect to the dashboard
-            return redirect()->route('dashboard');
-        } else {
-            flash()->error('Comment not found!');
+        if (!$latitude || !$longitude) {
+            return 'N/A';
         }
-    }
-    public function mount()
-    {
-        $this->comments = Comment::get(); // Load comments on mount
+
+        $url = "https://maps.googleapis.com/maps/api/geocode/json";
+        $params = [
+            'latlng' => "{$latitude},{$longitude}",
+            'sensor' => 'false',
+            'key' => env('GOOGLE_MAP_KEY'),
+        ];
+
+        $response = Http::get($url, $params);
+
+        if ($response->ok()) {
+            $data = $response->json();
+
+            if (!empty($data['results'][0]['address_components'])) {
+                $components = $data['results'][0]['address_components'];
+                $city = collect($components)->firstWhere(fn($comp) => in_array('locality', $comp['types']))['long_name'] ?? null;
+                $state = collect($components)->firstWhere(fn($comp) => in_array('administrative_area_level_1', $comp['types']))['long_name'] ?? null;
+
+                return "{$state}, {$city}";
+            }
+        }
+
+        return 'N/A';
     }
 
     public function userNotification($status, $username)
@@ -146,9 +164,7 @@ class Dashboard extends Component
                 }),
             ];
         });
-
         $this->offlineUsers = $users;
-
     }
 
 
@@ -214,7 +230,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        // Call the report method to generate the user reports
         $this->showReport();
 
         // Pass the user reports to the view
@@ -222,9 +237,9 @@ class Dashboard extends Component
             'usersOnPage' => $this->usersOnPage,
             'goodUsers' => $this->goodUsers,
             'badUsers' => $this->badUsers,
-            'comments' => $this->comments,
             'showOfflineUser' => $this->showOfflineUser,
             'offlineUsers' => $this->offlineUsers,
+            'locations' => $this->locations,
         ]);
     }
 }

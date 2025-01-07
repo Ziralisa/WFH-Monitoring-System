@@ -14,14 +14,10 @@ use Illuminate\Http\Request;
 
 class Attendance extends Component
 {
-    public $clockInTime;
-    public $clockOutTime;
-    public $totalHours;
+    public $clockInTime, $clockOutTime, $totalHours,  $homeLocationLat, $homeLocationLng;
     public $isClockInDisabled = true;
     public $isClockOutDisabled = true;
     public $attendanceSession = 'active';
-    public $homeLocationLat;
-    public $homeLocationLng;
     public $usersOnPage = [];
 
     public function mount()
