@@ -19,17 +19,12 @@ class SprintController extends Component
     ];
 
 
-    public function mount()
-    {
-    }
-
     public function setTaskId($id){
         $this->taskId = $id;
     }
 
     public function storeComment(Task $task)
     {
-        // Validation
         $validatedcontent = $this->validate([
             'commentContent' => 'required|string|max:500',
         ]);
@@ -41,11 +36,29 @@ class SprintController extends Component
         $comment->content = $validatedcontent['commentContent'];
         $comment->save();
 
-        // Flash the message
         flash()->success('Comment added successfully!');
 
-        // Redirect to the dashboard
         return redirect()->route('backlog.show');
+    }
+
+    public function deleteComment($commentid)
+    {
+        // Find and delete the comment
+        $comment = Comment::find($commentid);
+
+        if ($comment) {
+            $comment->delete();
+
+            // Optionally refresh the comments list
+            $this->comments = Comment::latest()->get();
+
+            // Provide feedback to the user
+            flash()->success('Comment removed successfully!');
+            // Redirect to the dashboard
+            return redirect()->route('backlog.show');
+        } else {
+            flash()->error('Comment not found!');
+        }
     }
 
     /**
