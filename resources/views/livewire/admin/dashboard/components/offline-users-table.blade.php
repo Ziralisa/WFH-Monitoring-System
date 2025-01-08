@@ -6,15 +6,20 @@
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                     Name
                 </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                    style="width: 15%;">
                     Online Status</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                    style="width: 15%;">
                     Last Online</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                    style="width: 15%;">
                     Clock In</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                    style="width: 15%;">
                     Contact</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                    style="width: 15%;">
                     Action</th>
             </tr>
         </thead>
@@ -27,8 +32,8 @@
                                 <img src="../assets/img/team-{{ rand(1, 6) }}.jpg" class="avatar avatar-sm me-3">
                             </div>
                             <div class="d-flex flex-column justify-content-center">
-                                <h6 class="mb-0 text-sm">{{ $user['name'] }}</h6>
-                                <p class="text-xs text-secondary mb-0">{{ $user['email'] }}</p>
+                                <a class="mb-0 text-sm font-weight-bold" href="{{ route('view-user-profile', $user['id']) }}">{{ $user['name'] }}</a>
+                                <a class="text-xs text-secondary mb-0" href="{{ route('view-user-profile', $user['id']) }}">{{ $user['email'] }}</a>
                             </div>
                         </div>
                     </td>
@@ -38,7 +43,11 @@
                     </td>
                     <td class="text-center">
                         <p class="text-xs font-weight-bold mb-0 ">
-                            {{ \Carbon\Carbon::parse($user['last_online'])->diffForHumans() }}
+                            @if ($user['last_online'] == null)
+                                <p class="text-xs font-weight-bold mb-0 ">N/A</p>
+                            @else
+                                {{ \Carbon\Carbon::parse($user['last_online'])->diffForHumans() }}
+                            @endif
                         </p>
                     </td>
                     <td class="text-center">
@@ -51,7 +60,9 @@
                                 <i class="fa-solid fa-comments"></i>
                             </a>
                         @else
-                            <a href="#" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">
+                            <a href="#" class="btn-tooltip" data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="Contact link is not set!" data-container="body" data-animation="true"
+                                style="opacity: 0.6; cursor: not-allowed;">
                                 <i class="fa-solid fa-comments"></i>
                             </a>
                         @endif
