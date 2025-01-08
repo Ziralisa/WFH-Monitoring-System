@@ -7,9 +7,6 @@
                 .here((users) => {
                     currentUsers = users;
                     // Display all data for each user
-                    // console.log('All users with full data:');
-                    // users.forEach(user => {
-                    //     console.log(user);
                     $wire.set('usersOnPage', currentUsers);
                     $wire.call('syncUserData', currentUsers);
                 })
@@ -32,11 +29,9 @@
                     }
                 })
                 .listen('.user-location-updated', (e) => {
+
                     //Display all online user data
-                    //console.log('User Location Updated:', e);
-
                     $wire.call('syncUserData', currentUsers);
-
                     if (window.location.pathname === '/dashboard') {
                         if (e.in_range) {
                             console.log(`${e.user.name} is within range.`);

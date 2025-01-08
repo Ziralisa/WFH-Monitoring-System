@@ -19,7 +19,8 @@ class Dashboard extends Component
     public $userReports = [];
     public $badUsers = [];
     public $goodUsers = [];
-    public $locations= [];
+    public $locations = [];
+    public $contactLink;
 
     protected $rules = [
         'usersOnPage.*.id' => 'required|integer',
@@ -32,32 +33,32 @@ class Dashboard extends Component
     ];
 
     public function showAttendanceLog($userId)
-{
-    $this->user = User::find($userId);
+    {
+        $this->user = User::find($userId);
 
-    if ($this->user) {
-        // Retrieve locations and simplify the data
-        $locations = $this->user->locations()->latest()->paginate(10);
+        if ($this->user) {
+            // Retrieve locations and simplify the data
+            $locations = $this->user->locations()->latest()->paginate(10);
 
-        // Convert paginator to simple array
-        $this->locations = $locations->items(); // This gives just the collection of location items
+            // Convert paginator to simple array
+            $this->locations = $locations->items(); // This gives just the collection of location items
 
-        // Optionally transform each location
-        $this->locations = collect($this->locations)->map(function ($location) {
-            return [
-                'date' => $location->created_at->format('Y-m-d'),
-                'time' => $location->created_at->format('H:i:s'),
-                'user_id' => $location->user_id,
-                'name' => $this->user->name,
-                'latitude' => $location->latitude,
-                'longitude' => $location->longitude,
-                'location' => $this->getPlace($location->latitude, $location->longitude),
-            ];
-        });
-    } else {
-        $this->locations = collect(); // Empty collection if user not found
+            // Optionally transform each location
+            $this->locations = collect($this->locations)->map(function ($location) {
+                return [
+                    'date' => $location->created_at->format('Y-m-d'),
+                    'time' => $location->created_at->format('H:i:s'),
+                    'user_id' => $location->user_id,
+                    'name' => $this->user->name,
+                    'latitude' => $location->latitude,
+                    'longitude' => $location->longitude,
+                    'location' => $this->getPlace($location->latitude, $location->longitude),
+                ];
+            });
+        } else {
+            $this->locations = collect(); // Empty collection if user not found
+        }
     }
-}
 
     public function getPlace($latitude, $longitude)
     {
@@ -65,7 +66,7 @@ class Dashboard extends Component
             return 'N/A';
         }
 
-        $url = "https://maps.googleapis.com/maps/api/geocode/json";
+        $url = 'https://maps.googleapis.com/maps/api/geocode/json';
         $params = [
             'latlng' => "{$latitude},{$longitude}",
             'sensor' => 'false',
@@ -89,12 +90,28 @@ class Dashboard extends Component
         return 'N/A';
     }
 
+    public function editContactLink($userid)
+    {
+        $this->user = User::find($userid);
+        $this->contactLink = $this->user->contact_link;
+    }
+
+    public function saveContactLink()
+    {
+        // dd($this->user, $this->contactLink);
+        $this->user->update([
+            'contact_link' => $this->contactLink
+        ]);
+        session()->flash('message', 'Contact link saved successfully!');
+    }
+
     public function userNotification($status, $username)
     {
         if ($status == 'online') {
             flash()->info($username . ' is now online..');
         } elseif ($status == 'offline') {
             flash()->warning($username . ' is now offline..');
+            User::where('name', $username)->update(['last_online' => Carbon::now()]);
         } elseif ($status == 'in range') {
             flash()->success($username . ' is now in range..');
         } elseif ($status == 'out of range') {
@@ -120,6 +137,8 @@ class Dashboard extends Component
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'contact_link' => $user->contact_link,
+                    'last_online' => $user->last_online,
                     'locations' => $user->locations
                         ->map(function ($location) {
                             return [
@@ -142,31 +161,41 @@ class Dashboard extends Component
 
     public function viewOfflineUsers()
     {
+        // dd($this->usersOnPage);
 
         $this->showOfflineUser = true;
-        $users = User::whereHas('locations', function ($query) {
-            $query->where('status', 'inactive');
-        })
-        ->get()
-        ->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'locations' => $user->locations->map(function ($location) {
-                    return [
-                        'created_at' => $location->created_at,
-                        'updated_at' => $location->updated_at,
-                        'type' => $location->type,
-                        'status' => $location->status,
-                        'in_range' => $location->in_range,
-                    ];
-                }),
-            ];
-        });
+
+        // Extract the user IDs from $usersOnPage
+        $userIdsOnPage = collect($this->usersOnPage)
+            ->pluck('id')
+            ->toArray();
+
+        // Query to get users who are not in $usersOnPage and have 'inactive' locations
+        $users = User::whereHas('locations')
+            ->whereNotIn('id', $userIdsOnPage) // Exclude users already in $usersOnPage
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'contact_link' => $user->contact_link,
+                    'last_online' => $user->last_online,
+                    'locations' => $user->locations->map(function ($location) {
+                        return [
+                            'created_at' => $location->created_at,
+                            'updated_at' => $location->updated_at,
+                            'type' => $location->type,
+                            'status' => $location->status,
+                            'in_range' => $location->in_range,
+                        ];
+                    }),
+                ];
+            });
+
+        // Assign the result to offlineUsers
         $this->offlineUsers = $users;
     }
-
 
     public function showReport()
     {
@@ -240,6 +269,7 @@ class Dashboard extends Component
             'showOfflineUser' => $this->showOfflineUser,
             'offlineUsers' => $this->offlineUsers,
             'locations' => $this->locations,
+            'contactLink' => $this->contactLink,
         ]);
     }
 }

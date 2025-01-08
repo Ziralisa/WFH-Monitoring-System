@@ -6,30 +6,33 @@
             </div>
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive overflow-visible">
-                    <table class="table mb-0">
+                    <table class="table align-items-center mb-0">
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
                                 </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                    Online Status
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                    Location Status
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
                                     Clock In
                                 </th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Location Status</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Online Status</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Action</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                    Contact
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($usersOnPage && count($usersOnPage) > 0)
                                 @foreach ($usersOnPage as $user)
                                     <tr>
-                                        <td>
+                                        <td style="width: 350px;">
                                             <div class="d-flex px-2 py-1">
                                                 <div>
                                                     <img src="../assets/img/team-{{ rand(1, 6) }}.jpg"
@@ -41,16 +44,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            @if (!empty($user['locations']))
-                                                <p class="text-xs font-weight-bold mb-0">
-                                                    {{ \Carbon\Carbon::parse($user['locations'][0]['created_at'])->format('h:i A') }}
-                                                </p>
-                                            @else
-                                                <p class="text-xs text-secondary mb-0">N/A</p>
-                                            @endif
+                                        <td class="text-center">
+                                            <span class="badge bg-success">Online</span>
                                         </td>
-                                        <td class="align-middle text-center text-sm">
+                                        <td class="text-center text-sm">
                                             @if (
                                                 !empty($user['locations']) &&
                                                     $user['locations'][0]['status'] === 'active' &&
@@ -65,10 +62,39 @@
                                                 <span class="badge bg-secondary">N/A</span>
                                             @endif
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <span class="badge bg-success">Online</span>
+                                        <td class="text-center text-sm">
+                                            @if (!empty($user['locations']))
+                                                @if ($user['locations'][0]['type'] === 'clock_in')
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        Clocked in at:<br>
+                                                        <strong>
+                                                            {{ \Carbon\Carbon::parse($user['locations'][0]['created_at'])->format('h:i A') }}
+                                                        </strong>
+                                                    </p>
+                                                @else
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        Clocked out at:
+                                                        {{ \Carbon\Carbon::parse($user['locations'][0]['updated_at'])->format('h:i A') }}
+                                                    </p>
+                                                @endif
+                                            @else
+                                                <p class="text-xs text-secondary mb-0">N/A</p>
+                                            @endif
                                         </td>
-                                        <td class="align-middle text-center">
+                                        <td class="text-center">
+                                            @if (!empty($user['contact_link']))
+                                                <a href="{{ $user['contact_link'] }}" target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    <i class="fa-solid fa-comments"></i>
+                                                </a>
+                                            @else
+                                                <a href="#"
+                                                    style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">
+                                                    <i class="fa-solid fa-comments"></i>
+                                                </a>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn btn-warning btn-sm dropdown-toggle"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -88,12 +114,18 @@
                                                         {{-- <a class="dropdown-item border-radius-md"
                                                             href="{{ route('attendance-log', $user['id']) }}">View
                                                             Attendance Location Log</a> --}}
-                                                            <a class="dropdown-item border-radius-md"
+                                                        <a class="dropdown-item border-radius-md"
                                                             href="javascript:void(0)"
                                                             wire:click="showAttendanceLog({{ $user['id'] }})"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#logModal">View Attendance Location Log</a>
-
+                                                            data-bs-toggle="modal" data-bs-target="#logModal">View
+                                                            Attendance Location Log</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item border-radius-md"
+                                                            href="javascript:void(0)"
+                                                            wire:click='editContactLink({{ $user['id'] }})'
+                                                            data-bs-toggle="modal" data-bs-target="#contactModal">
+                                                            Edit Contact Link</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -119,82 +151,10 @@
                 </div>
                 @if ($showOfflineUser)
                     <hr>
-                    <h6 class="mx-4">Offline Staff</h6>
-                    <div class="table-responsive overflow-visible">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Name
-                                    </th>
-                                    <th
-                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Clock In</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Clock Out</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Online Status</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($offlineUsers as $user)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-{{ rand(1, 6) }}.jpg"
-                                                        class="avatar avatar-sm me-3">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $user['name'] }}</h6>
-                                                    <p class="text-xs text-secondary mb-0">{{ $user['email'] }}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-sm">
-                                            <p class="text-xs font-weight-bold mb-0 ">N/A</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <p class="text-xs font-weight-bold mb-0 ">N/A</p>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="badge bg-danger">Offline</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <div class="btn-group dropup">
-                                                <button type="button" class="btn btn-warning btn-sm dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                    Action
-                                                </button>
-                                                <ul class="dropdown-menu px-2 py-3"
-                                                    aria-labelledby="dropdownMenuButton">
-                                                    <li>
-                                                        <a class="dropdown-item border-radius-md"
-                                                            href="{{ route('view-user-profile', $user['id']) }}">View
-                                                            Profile</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item border-radius-md"
-                                                            href="javascript:void(0)"
-                                                            wire:click="showAttendanceLog({{ $user['id'] }})"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#logModal">View Attendance Location Log</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                    @include('livewire.admin.dashboard.components.offline-users-table')
                 @endif
             </div>
+            @include('livewire.admin.dashboard.components.edit-contact')
             @include('livewire.admin.dashboard.components.attendance-log')
         </div>
     </div>

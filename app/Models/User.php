@@ -40,7 +40,7 @@ class User extends Authenticatable
     ];
 
      // Role column
-     protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location'];
+     protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location', 'contact_link'];
 
      public function locations(){
         return $this->hasMany(Location::class);
