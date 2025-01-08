@@ -14,6 +14,7 @@ class SprintController extends Component
 {
     public $commentContent = '';
     public $taskId;
+    public $commentId;
 
     protected $rules = [
         'commentContent' => 'nullable|string|min:5|max:500',
@@ -40,6 +41,35 @@ class SprintController extends Component
 
         flash()->success('Comment added successfully!');
 
+        return redirect()->route('backlog.show');
+
+        $this->reset(['commentContent']); 
+    }
+
+    public function editComment($commentId)
+    {   
+        $comment = Comment::find($commentId);
+
+        if ($comment) {
+            $this->commentId = $comment->id; 
+            $this->commentContent = $comment->content;
+        } else {
+            session()->flash('error', 'Comment not found.');
+        }
+
+    }
+    public function updateComment()
+    {
+        $validated = $this->validate([
+            'commentContent' => 'required|string|max:500',
+        ]);
+    
+        $comment = Comment::findOrFail($this->commentId);
+    
+        $comment->content = $validated['commentContent']; 
+        $comment->save(); 
+    
+        flash()->success('Comment updated successfully!');
         return redirect()->route('backlog.show');
     }
 

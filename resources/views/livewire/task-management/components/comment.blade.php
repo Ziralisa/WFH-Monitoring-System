@@ -55,7 +55,7 @@
                                     <h6 class="">{{ $comment->user->name }}</h6>
                                     @if ($comment->user->id == auth()->id())
                                         <div>
-                                            <a class="mx-3"><u>Edit</u></a>
+                                            <a wire:click="editComment({{ $comment->id }})" class="mx-3 cursor-pointer" data-bs-toggle="modal" data-bs-target="#editCommentModal"><u>Edit</u></a>
                                             <a wire:click="deleteComment({{ $comment->id }})"
                                                 class="text-danger cursor-pointer"><u>Delete</u></a>
                                         </div>
@@ -99,3 +99,40 @@
             </div>
         </div>
     </div>
+    <!-- FORM TO EDIT COMMENT -->
+<div wire:ignore class="modal fade" id="editCommentModal" tabindex="-1" role="dialog" aria-labelledby="editCommentModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            {{-- MODAL HEADER --}}
+            <div class="modal-header d-flex align-items-center justify-content-start gap-3 p-4">
+                <div class="px-4">
+                    <p class="h6 mb-0 text-s">Edit Comment</p>
+                </div>
+            </div>
+
+            {{-- MODAL BODY --}}
+            <div class="modal-body">
+                <form wire:submit.prevent="updateComment">
+                    <div class="form-group">
+                        <label for="commentContent" class="h6">Comment</label>
+                        <textarea wire:model.defer="commentContent" id="commentContent" name="commentContent"
+                            class="form-control" rows="3" placeholder="Edit your comment..."></textarea>
+                    </div>
+                    @error('commentContent')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Update Comment</button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- MODAL FOOTER --}}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
