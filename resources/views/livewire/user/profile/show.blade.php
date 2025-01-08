@@ -9,7 +9,7 @@
                 <div class="col-auto">
                     <div class="avatar avatar-xl position-relative">
                         <img src="../assets/img/team-5.jpg" alt="..." class="w-100 border-radius-lg shadow-sm">
-                        @if(!$selectedUserId)
+                        @if (!$selectedUserId)
                             <a href="javascript:;"
                                 class="btn btn-sm btn-icon-only bg-gradient-light position-absolute bottom-0 end-0 mb-n2 me-n2">
                                 <i class="fa fa-pen top-0" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -19,15 +19,52 @@
                     </div>
                 </div>
                 <div class="col-auto my-auto">
-                    <div class="h-100">
-                        <h5 class="mb-1">
-                            {{ $user->first_name . ' ' . $user->last_name }}
-                        </h5>
+                    <div class="h-100 row gx-4 d-flex align-items-center">
+                        <div class="col-auto">
+                            @if (!empty($user->firstname) && !empty($user->lastname))
+                                <p class="h5">{{ $user->first_name . ' ' . $user->last_name }}</p>
+                            @else
+                                <p class="h5">{{ $user->name }}</p>
+                            @endif
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary text-xxs font-weight-bolder align-self-center opacity-7">
+                                <span
+                                    class="badge badge-md badge-circle badge-floating badge-danger border-white bg-success">
+                                </span>
+                                <span>Last online:
+                                    {{ \Carbon\Carbon::parse($user['last_online'])->diffForHumans() }}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-auto my-n2">
                         <p class="mb-0 font-weight-bold text-sm">
                             {{ $user->position ?? 'Employee' }}
                         </p>
                     </div>
                 </div>
+                @if (!empty($user->contact_link))
+                    <div
+                        class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3 d-flex justify-content-end px-8">
+                        <a class="btn bg-gradient-default shadow border-radius-md text-center me-2"
+                            style="backdrop-filter: none; background: rgba(255, 255, 255, 0.9);"
+                            href="{{ $user->contact_link }}" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-solid fa-comments fa-xl py-2"></i>
+                            Message
+                        </a>
+                    </div>
+                @else
+                    <div
+                        class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3 d-flex justify-content-end px-8">
+                        <a class="btn bg-gradient-default btn-tooltip shadow border-radius-md text-center me-2"
+                            href="#" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Contact link is not set!" data-container="body" data-animation="true">
+                            <i class="fa-solid fa-comments fa-xl py-2"></i>
+                            <span>Message</span>
+                        </a>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>
@@ -79,7 +116,7 @@
                     @include('livewire.user.profile.personal')
                     @include('livewire.user.profile.job')
                     @include('livewire.user.profile.emergency')
-                    @if(!$selectedUserId)
+                    @if (!$selectedUserId)
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn bg-gradient-dark btn-md m-4">
                                 {{ 'Save Changes' }}

@@ -100,7 +100,7 @@ class Dashboard extends Component
     {
         // dd($this->user, $this->contactLink);
         $this->user->update([
-            'contact_link' => $this->contactLink
+            'contact_link' => $this->contactLink,
         ]);
         session()->flash('message', 'Contact link saved successfully!');
     }
@@ -170,28 +170,9 @@ class Dashboard extends Component
             ->pluck('id')
             ->toArray();
 
-        // Query to get users who are not in $usersOnPage and have 'inactive' locations
-        $users = User::whereHas('locations')
-            ->whereNotIn('id', $userIdsOnPage) // Exclude users already in $usersOnPage
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'contact_link' => $user->contact_link,
-                    'last_online' => $user->last_online,
-                    'locations' => $user->locations->map(function ($location) {
-                        return [
-                            'created_at' => $location->created_at,
-                            'updated_at' => $location->updated_at,
-                            'type' => $location->type,
-                            'status' => $location->status,
-                            'in_range' => $location->in_range,
-                        ];
-                    }),
-                ];
-            });
+        $users = User::whereNotIn('id', $userIdsOnPage)
+            ->orderBy('last_online', 'desc') // Sort by last_online in descending order
+            ->get(['id', 'name', 'email', 'contact_link', 'last_online']);
 
         // Assign the result to offlineUsers
         $this->offlineUsers = $users;

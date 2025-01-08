@@ -11,19 +11,24 @@
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                    style="width: 15%;">
                                     Online Status
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                    style="width: 15%;">
                                     Location Status
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                    style="width: 15%;">
                                     Clock In
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                    style="width: 15%;">
                                     Contact
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0" style="width: 15%;">
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                    style="width: 15%;">
                                     Action
                                 </th>
                             </tr>
@@ -39,8 +44,14 @@
                                                         class="avatar avatar-sm me-3">
                                                 </div>
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $user['name'] }}</h6>
-                                                    <p class="text-xs text-secondary mb-0">{{ $user['email'] }}</p>
+                                                    <a class="mb-0 text-sm font-weight-bold"
+                                                        href="
+                                                        @if ($user['id'] === auth()->user()->id) {{ route('user-profile') }}
+                                                        @else
+                                                            {{ route('view-user-profile', $user['id']) }} @endif">
+                                                        {{ $user['name'] }}
+                                                    </a>
+                                                    <a class="text-xs text-secondary mb-0" href="{{ route('view-user-profile', $user['id']) }}">{{ $user['email'] }}</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -140,8 +151,7 @@
                             @if (!$showOfflineUser)
                                 <tr>
                                     <td class="text-center" colspan="100%">
-                                        <a href="#" wire:click="viewOfflineUsers"
-                                            class="text-center text-uppercase text-secondary text-xs font-weight-bolder">View
+                                        <a href="#" wire:click="viewOfflineUsers" class="font-weight-bolder">View
                                             More</a>
                                     </td>
                                 </tr>
