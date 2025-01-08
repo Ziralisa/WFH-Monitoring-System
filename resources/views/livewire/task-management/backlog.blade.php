@@ -8,35 +8,57 @@
             </div>
         @endif
 
-        <!-- Add Sprint Form -->
-        <form action="{{ route('create-sprint') }}" method="POST">
-            @csrf
-            <div class="d-flex align-items-center mb-3">
-                <label for="name" class="mr-2">Sprint</label>
-                <input type="text" name="name" id="name" class="mr-2" required>
+        <!-- Add Sprint Modal -->
+        <button type="button" class="btn bg-gradient-primary" data-bs-toggle="modal" data-bs-target="#SprintModal">
+        Add Sprint
+        </button>
 
-                <label for="desc" class="mr-2">Description</label>
-                <textarea name="desc" id="desc" class="mr-2" required></textarea>
-
-                <label for="startdate" class="mr-2">Start Date</label>
-                <input type="date" name="startdate" id="startdate" class="mr-2" required>
-
-                <label for="enddate" class="mr-2">End Date</label>
-                <input type="date" name="enddate" id="enddate" class="mr-2" required>
-
-                <button type="submit" class="btn btn-primary">Add Sprint</button>
+        <div class="modal fade" id="SprintModal" tabindex="-1" role="dialog" 
+            aria-labelledby="SprintModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="SprintModal">
+                            New Sprint
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <form action="{{ route('create-sprint') }}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Sprint Name</label>
+                            <input type="text" name="name" id="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="desc" class="form-label">Description</label>
+                            <textarea name="desc" id="desc" class="form-control" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startdate" class="mr-2 px-2">Start Date</label>
+                            <input type="date" name="startdate" id="startdate" class="mr-2 px-3" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="enddate" class="mr-2 px-2">End Date</label>
+                            <input type="date" name="enddate" id="enddate" class="mr-2 px-3" required>
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary">Submit</button>
+                        </div>
+                </div>
             </div>
-        </form>
-
-        <h2>Sprints</h2>
+        </div>
 
         @forelse($sprints as $sprint)
             <div class="sprint-card">
-                <h3>{{ $sprint->name }}</h3>
-                <p>{{ $sprint->desc }}</p>
+                <h3> Sprint: {{ $sprint->name }}</h3>
+                <p>Description: {{ $sprint->desc }}</p>
                 <div class="sprint-dates">
-                    <span><strong>Start Date:</strong> {{ $sprint->startdate }}</span>
-                    <span><strong>End Date:</strong> {{ $sprint->enddate }}</span>
+                    <span><strong>From: {{ $sprint->startdate }} To {{ $sprint->enddate }} </strong> </span>
                 </div>
 
                 <!-- Display task table -->
