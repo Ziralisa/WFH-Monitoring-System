@@ -10,43 +10,44 @@
 
         <!-- Add Sprint Modal -->
         <button type="button" class="btn bg-gradient-primary" data-bs-toggle="modal" data-bs-target="#SprintModal">
-        Add Sprint
+            Add Sprint
         </button>
 
-        <div class="modal fade" id="SprintModal" tabindex="-1" role="dialog" 
-            aria-labelledby="SprintModal" aria-hidden="true">
+        <div class="modal fade" id="SprintModal" tabindex="-1" role="dialog" aria-labelledby="SprintModal"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-header">
                         <h5 class="modal-title" id="SprintModal">
                             New Sprint
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">&times;</span>
                         </button>
-                        </div>
-                        <form action="{{ route('create-sprint') }}" method="POST">
+                    </div>
+                    <form action="{{ route('create-sprint') }}" method="POST">
                         @csrf
                         <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Sprint Name</label>
-                            <input type="text" name="name" id="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="desc" class="form-label">Description</label>
-                            <textarea name="desc" id="desc" class="form-control" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="startdate" class="mr-2 px-2">Start Date</label>
-                            <input type="date" name="startdate" id="startdate" class="mr-2 px-3" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="enddate" class="mr-2 px-2">End Date</label>
-                            <input type="date" name="enddate" id="enddate" class="mr-2 px-3" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Sprint Name</label>
+                                <input type="text" name="name" id="name" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="desc" class="form-label">Description</label>
+                                <textarea name="desc" id="desc" class="form-control" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="startdate" class="mr-2 px-2">Start Date</label>
+                                <input type="date" name="startdate" id="startdate" class="mr-2 px-3" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="enddate" class="mr-2 px-2">End Date</label>
+                                <input type="date" name="enddate" id="enddate" class="mr-2 px-3" required>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn bg-gradient-secondary"
+                                data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary">Submit</button>
                         </div>
                 </div>
@@ -65,7 +66,7 @@
                 <table class="table modern-table">
                     <thead>
                         <tr>
-                            <th>Task</th>
+                            <th style="width: 40%">Task</th>
                             <th>Description</th>
                             <th>Status</th>
                             <th>Priority</th>
@@ -77,7 +78,14 @@
                         @forelse($sprint->tasks as $task)
                             <tr>
                                 <td>{{ $task->name }}</td>
-                                <td>{{ $task->task_description }}</td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ $task->task_description ?? 'No description' }}" data-container="body"
+                                        data-animation="true">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </a>
+                                </td>
                                 <td>
                                     <form>
                                         <select id="task-status-{{ $task->id }}" class="task-status"
@@ -100,32 +108,47 @@
                                         </select>
                                     </form>
                                 </td>
-                                <td>{{ $task->task_priority }}</td>
-                                <td>
-    @if ($task->assignedUser)
-        {{ $task->assignedUser->name }}
-    @else
-        <form id="assign-form-{{ $task->id }}" action="{{ route('assign-task', $task->id) }}" method="POST">
-            @csrf
-            <select name="task_assign" id="task_assign_{{ $task->id }}" class="form-select" onchange="this.form.submit()">
-                <option value="" disabled selected>Select a user (optional)</option>
-                @foreach ($staff as $member)
-                    <option value="{{ $member->id }}" {{ $task->assignedUser && $task->assignedUser->id == $member->id ? 'selected' : '' }}>
-                        {{ $member->name }}
-                    </option>
-                @endforeach
-            </select>
-        </form>
-    @endif
-</td>
+                                <td
+                                    class="text-center font-weight-bolder
+                                    @if ($task->task_priority === 'Low') priority-low
+                                    @elseif($task->task_priority === 'Medium') priority-medium
+                                    @elseif($task->task_priority === 'High') priority-high @endif">
+                                    {{ $task->task_priority }}
+                                </td>
 
                                 <td>
+                                    @if ($task->assignedUser)
+                                        {{ $task->assignedUser->name }}
+                                    @else
+                                        <form id="assign-form-{{ $task->id }}"
+                                            action="{{ route('assign-task', $task->id) }}" method="POST">
+                                            @csrf
+                                            <select name="task_assign" id="task_assign_{{ $task->id }}"
+                                                class="form-select" onchange="this.form.submit()">
+                                                <option value="" disabled selected>Select a user (optional)
+                                                </option>
+                                                @foreach ($staff as $member)
+                                                    <option value="{{ $member->id }}"
+                                                        {{ $task->assignedUser && $task->assignedUser->id == $member->id ? 'selected' : '' }}>
+                                                        {{ $member->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" class="mb-3" data-bs-toggle="modal"
+                                        data-bs-target="#modal-{{ $task->id }}"
+                                        wire:click='setTaskId({{ $task->id }})'>
+                                        <i class="fa-solid fa-message"></i>
+                                    </a>
                                     @include('livewire.task-management.components.comment')
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">No tasks available</td>
+                                <td colspan="6" class="text-center font-weight-bold">No tasks available</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -206,6 +229,22 @@
             background-color: #e74c3c;
         }
 
+        td.priority-low {
+            background-color: #d4edda !important;
+            /* Add !important if necessary */
+            color: #155724;
+        }
+
+        td.priority-medium {
+            background-color: #fff3cd !important;
+            color: #856404;
+        }
+
+        td.priority-high {
+            background-color: #f8d7da !important;
+            color: #721c24;
+        }
+
         .no-sprints {
             text-align: center;
             color: #7f8c8d;
@@ -247,7 +286,6 @@
                 });
             });
         });
-
     </script>
 
 </div>

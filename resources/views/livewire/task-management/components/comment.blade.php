@@ -1,16 +1,14 @@
-<div class="col-md-4">
-    <button type="button" class="btn btn-block bg-gradient-primary mb-3" data-bs-toggle="modal"
-        data-bs-target="#modal-{{ $task->id }}" wire:click='setTaskId({{ $task->id }})'>View Comments</button>
-
-    <div wire:ignore class="modal fade" id="modal-{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-{{ $task->id }}"
-        aria-hidden="true">
+<div class="col-md-4 text-start">
+    <div wire:ignore class="modal fade" id="modal-{{ $task->id }}" tabindex="-1" role="dialog"
+        aria-labelledby="modal-{{ $task->id }}" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 {{-- MODAL HEADER --}}
                 <div class="modal-header d-flex align-items-center justify-content-start gap-3 p-4">
                     <div class="px-4">
                         <p class="h6 mb-0 text-s">Last updated:</p>
-                        <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">{{ $task->updated_at->diffForHumans() }}
+                        <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
+                            {{ $task->updated_at->diffForHumans() }}
                         </p>
                     </div>
                     <div class="d-flex align-items-center flex-grow-1">
@@ -21,7 +19,8 @@
                                         <tr>
                                             <td class="ps-2 w-20 ">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <p class="h6 mb-2 text-s text-center">{{ $task->assignedUser->name ?? 'Unassigned' }}</p>
+                                                    <p class="h6 mb-2 text-s text-center">
+                                                        {{ $task->assignedUser->name ?? 'Unassigned' }}</p>
                                                     <span
                                                         class="badge badge-sm badge-secondary bg-dark">{{ $task->task_status }}</span>
                                                 </div>
@@ -30,7 +29,8 @@
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <p class="h6 mb-2 text-s mx-3">{{ $task->name }}
                                                     </p>
-                                                    <span class="text-s text-secondary mx-3">{{ $task->task_description }}</span>
+                                                    <span
+                                                        class="text-s text-secondary mx-3">{{ $task->task_description }}</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -55,7 +55,9 @@
                                     <h6 class="">{{ $comment->user->name }}</h6>
                                     @if ($comment->user->id == auth()->id())
                                         <div>
-                                            <a wire:click="editComment({{ $comment->id }})" class="mx-3 cursor-pointer" data-bs-toggle="modal" data-bs-target="#editCommentModal"><u>Edit</u></a>
+                                            <a wire:click="editComment({{ $comment->id }})"
+                                                class="mx-3 cursor-pointer" data-bs-toggle="modal"
+                                                data-bs-target="#editCommentModal"><u>Edit</u></a>
                                             <a wire:click="deleteComment({{ $comment->id }})"
                                                 class="text-danger cursor-pointer"><u>Delete</u></a>
                                         </div>
@@ -100,39 +102,38 @@
         </div>
     </div>
     <!-- FORM TO EDIT COMMENT -->
-<div wire:ignore class="modal fade" id="editCommentModal" tabindex="-1" role="dialog" aria-labelledby="editCommentModal"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            {{-- MODAL HEADER --}}
-            <div class="modal-header d-flex align-items-center justify-content-start gap-3 p-4">
-                <div class="px-4">
-                    <p class="h6 mb-0 text-s">Edit Comment</p>
+    <div wire:ignore class="modal fade" id="editCommentModal" tabindex="-1" role="dialog"
+        aria-labelledby="editCommentModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                {{-- MODAL HEADER --}}
+                <div class="modal-header d-flex align-items-center justify-content-start gap-3 p-4">
+                    <div class="px-4">
+                        <p class="h6 mb-0 text-s">Edit Comment</p>
+                    </div>
                 </div>
-            </div>
 
-            {{-- MODAL BODY --}}
-            <div class="modal-body">
-                <form wire:submit.prevent="updateComment">
-                    <div class="form-group">
-                        <label for="commentContent" class="h6">Comment</label>
-                        <textarea wire:model.defer="commentContent" id="commentContent" name="commentContent"
-                            class="form-control" rows="3" placeholder="Edit your comment..."></textarea>
-                    </div>
-                    @error('commentContent')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary">Update Comment</button>
-                    </div>
-                </form>
-            </div>
+                {{-- MODAL BODY --}}
+                <div class="modal-body">
+                    <form wire:submit.prevent="updateComment">
+                        <div class="form-group">
+                            <label for="commentContent" class="h6">Comment</label>
+                            <textarea wire:model.defer="commentContent" id="commentContent" name="commentContent" class="form-control"
+                                rows="3" placeholder="Edit your comment..."></textarea>
+                        </div>
+                        @error('commentContent')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Update Comment</button>
+                        </div>
+                    </form>
+                </div>
 
-            {{-- MODAL FOOTER --}}
-            <div class="modal-footer">
-                <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+                {{-- MODAL FOOTER --}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-

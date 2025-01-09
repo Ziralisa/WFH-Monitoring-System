@@ -13,13 +13,7 @@
                     {{ str_replace('-', ' ', Route::currentRouteName()) }}</h6>
             </nav>
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
-                <div class="ms-md-3 pe-md-3 d-flex align-items-center">
-                    <div class="input-group">
-                        <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                        <input type="text" class="form-control" placeholder="Type here...">
-                    </div>
-                </div>
-                <div class="nav-item d-flex align-self-end mx-2">
+                <div class="nav-item d-flex align-self-end mx-4">
                     <a href="{{route('user-profile')}}"
                         class="btn btn-primary active mb-0 text-white" role="button" aria-pressed="true">
                         {{Auth::user()->name}}

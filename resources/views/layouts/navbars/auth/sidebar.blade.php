@@ -72,9 +72,21 @@
                 </a>
             </li>
         @endcan
+        <!-- BackLog -->
+        <li class="nav-item">
+            <a class="nav-link {{ Route::currentRouteName() == 'backlog.show' ? 'active' : '' }}"
+                href="{{ route('backlog.show') }}">
+                <div
+                    class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <i style="font-size: 1rem;"
+                        class="fas fa-xs fa-table ps-2 pe-2 text-center {{ Route::currentRouteName() == 'backlog.show' ? 'text-white' : 'text-dark' }}"></i>
+                </div>
+                <span class="nav-link-text ms-1">Backlog</span>
+            </a>
+        </li>
 
 
-        <li class="nav-item mt-2">
+        <li class="nav-item mt-4">
             <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Attendance</h6>
         </li>
 
@@ -137,10 +149,8 @@
 
         <!--  view attendance status -->
         <li class="nav-item">
-        <a class="nav-link {{ Route::currentRouteName() == 'attendanceStatus' ? 'active' : '' }}"
-        href="{{ route('attendanceStatus') }}">
-
-
+            <a class="nav-link {{ Route::currentRouteName() == 'attendanceStatus' ? 'active' : '' }}"
+                href="{{ route('attendanceStatus') }}">
                 <div
                     class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                     <i style="font-size: 1rem;"
@@ -148,23 +158,7 @@
                 </div>
                 <span class="nav-link-text ms-1">Attendance Status</span>
             </a>
-        </li>
-
-<!-- BackLog -->
-<li class="nav-item">
-    <a class="nav-link {{ Route::currentRouteName() == 'backlog.show' ? 'active' : '' }}"
-       href="{{ route('backlog.show') }}">
-        <div class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i style="font-size: 1rem;"
-               class="fas fa-xs fa-list ps-2 pe-2 text-center {{ Route::currentRouteName() == 'backlog.show' ? 'text-white' : 'text-dark' }}"></i>
-        </div>
-        <span class="nav-link-text ms-1">Backlog</span>
-    </a>
-</li>
-
-
-
-
+        </li>
 
         @can('view approve users')
             <li class="nav-item pb-2">
@@ -200,7 +194,7 @@
 
 
         <!-- Settings options -->
-        <li class="nav-item mt-2">
+        <li class="nav-item mt-4">
             <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Settings</h6>
         </li>
 

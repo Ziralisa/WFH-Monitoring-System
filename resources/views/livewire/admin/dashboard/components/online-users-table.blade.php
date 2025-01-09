@@ -99,7 +99,9 @@
                                                     <i class="fa-solid fa-comments"></i>
                                                 </a>
                                             @else
-                                                <a href="#"
+                                                <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top" title="Contact link is not set!"
+                                                    data-container="body" data-animation="true"
                                                     style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">
                                                     <i class="fa-solid fa-comments"></i>
                                                 </a>
