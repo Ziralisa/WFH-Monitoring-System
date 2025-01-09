@@ -18,16 +18,16 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Create permissions, using firstOrCreate to avoid duplicates
         Permission::firstOrCreate(['name' => 'view profile']);
-        Permission::firstOrCreate(['name' => 'clock in']);
-        Permission::firstOrCreate(['name' => 'clock out']);
         Permission::firstOrCreate(['name' => 'view attendance report']);
         Permission::firstOrCreate(['name' => 'view admin dashboard']);
-        Permission::firstOrCreate(['name' => 'view staff dashboard']);
-        Permission::firstOrCreate(['name' => 'view staff list']);
-        Permission::firstOrCreate(['name' => 'view user list']);
         Permission::firstOrCreate(['name' => 'view take attendance']);
-        Permission::firstOrCreate(['name' => 'view approve users']);
         Permission::firstOrCreate(['name' => 'view attendance report staff']);
+        Permission::firstOrCreate(['name' => 'view daily tasks']);
+        Permission::firstOrCreate(['name' => 'view backlog']);
+        Permission::firstOrCreate(['name' => 'view attendance status']);
+        
+        
+
 
         // Create roles and assign created permissions
 
@@ -38,25 +38,23 @@ class RolesAndPermissionsSeeder extends Seeder
         $staffRole = Role::firstOrCreate(['name' => 'staff']);
         $staffRole->givePermissionTo([
             'view profile',
-            'clock in',
-            'clock out',
             'view attendance report',
             'view take attendance',
-            'view staff dashboard',
+            'view backlog',
+            'view daily tasks'
         ]);
 
         // Admin role
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo([
             'view profile',
-            'clock in',
-            'clock out',
             'view admin dashboard',
-            'view staff list',
-            'view approve users',
             'view role settings',
             'view user settings',
             'view attendance report staff',
+            'view take attendance',
+            'view backlog',
+            'view daily tasks'
         ]);
     }
 }

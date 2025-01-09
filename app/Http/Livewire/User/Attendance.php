@@ -365,20 +365,7 @@ class Attendance extends Component
         return view('livewire.admin.attendance-report', compact('allUserLocations'));
     }
 
-    //------GRAPH PERFORMANCE UNTUK TAKE ATTENDANCE PAGE (AKAN DIBUANG)----
-    public function getAttendanceData()
-    {
-        // Query the database to get attendance data (adjust field names if necessary)
-        $attendanceData = Location::select('created_at', 'total_points')
-            ->where('user_id', auth()->user()->id) // if user-specific data
-            ->orderBy('created_at', 'desc') // Order by created_at, latest first
-            ->take(10)
-            ->get();
-
-        // Return the data as JSON
-        return response()->json($attendanceData);
-    }
-
+    
     public function render()
     {
         // Get attendance records for the current user

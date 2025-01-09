@@ -75,3 +75,53 @@ Admin:
 - Google Maps API
 - Pusher API
 - Location Picker library
+
+
+## Page related
+1. Dashboard admin
+- view : app/resources/views/livewire/admin/dashboard/show.blade.php
+- function : app/http/livewire/user/attendance.php
+
+2. Take attendance (dashboard staff)
+- view : app/resources/views/livewire/user/attendance/show.blade.php
+- function : app/http/livewire/user/attendance.php
+
+3. Attendance report (Staff side)
+- view : app/resources/views/livewire/staff/report.blade.php
+- function : app/http/livewire/user/attendance.php
+
+4. Attendance report (Staff side)
+- view : app/resources/views/livewire/admin/attendance-report.blade.php
+- function : app/http/livewire/user/attendance.php
+
+5. Attendance status 
+- view : app/resources/views/livewire/admin/attendance-status.blade.php
+- function : app/http/livewire/user/attendance.php
+
+6. Backlog
+- view : app/resources/views/livewire/task-management/backlog.blade.php
+- function : app/http/livewire/sprintcontroller.php
+
+7. Daily Task
+- view : app/resources/views/livewire/task-management/components/daily-task-page.blade.php
+- function : app/http/livewire/sprintcontroller.php
+
+8. Add Sprint
+- view : app/resources/views/livewire/task-management/backlog.blade.php
+- function : app/http/livewire/sprintcontroller.php
+
+9. Add Task di Backlog
+- view : app/resources/views/livewire/task-management/components/add-task.blade.php
+- function : app/http/livewire/sprintcontroller.php
+
+9. Add comment di Backlog
+- view : app/resources/views/livewire/task-management/components/comment.blade.php
+- function : app/http/livewire/sprintcontroller.php
+
+10. User setting
+- view : app/resources/views/livewire/admin/user-settings/show.blade.php
+- function : app/http/livewire/Admin/UserSettings.php
+
+11. Role setting
+- view : app/resources/views/livewire/admin/role-settings/show.blade.php
+- function : app/http/livewire/Admin/RoleSettings.php

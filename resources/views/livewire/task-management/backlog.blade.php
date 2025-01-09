@@ -254,7 +254,7 @@
             text-align: center;
         }
     </style>
-    <script>
+ <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.task-status').forEach(function(element) {
                 element.addEventListener('change', function() {
@@ -287,5 +287,4 @@
             });
         });
     </script>
-
 </div>

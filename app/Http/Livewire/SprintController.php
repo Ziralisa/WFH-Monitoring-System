@@ -166,23 +166,29 @@ class SprintController extends Component
 
     public function render()
     {
-        // Get the role ID for 'staff'
-        $staffRole = Role::where('name', 'staff')->first();
-
-        // Fetch users with the 'staff' role
-        $staff = User::whereIn('id', function ($query) use ($staffRole) {
-            $query->select('model_id')
-                ->from('model_has_roles')
-                ->where('role_id', $staffRole->id)
-                ->where('model_type', User::class); // Ensure correct model type
-        })->get();
-
-        // Pass the 'staff' data to the view
+        // Check if the daily log view is requested
+        if (request()->routeIs('daily.show')) {
+            // Fetch sall tasks updated in the last 7 days with status "In Progress"
+            $taskLogs = Task::with(['assignedUser'])
+                ->where('updated_at', '>=', now()->subWeek())  // Get tasks updated in the last week
+                ->whereIn('task_status', ['In Progress', 'Done', 'Stuck'])   // Filter by "In Progress" status
+                ->orderBy('updated_at', 'desc')
+                ->get()
+                ->groupBy(function ($task) {
+                    return $task->updated_at->format('Y-m-d'); // Group tasks by date
+                });
+    
+            // Return the daily task log view
+            return view('livewire.task-management.components.daily-task-page', [
+                'taskLogs' => $taskLogs,
+            ]);
+        }
+    
+        // Default to backlog view
         return view('livewire.task-management.backlog', [
             'sprints' => Sprint::all(),
-            'staff' => $staff,  // Correct variable name
+            'staff' => User::role('staff')->get(),
         ]);
     }
-
-
+    
 }
