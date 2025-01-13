@@ -31,5 +31,9 @@ class Task extends Model
         return $this->belongsTo(User::class, 'user_id'); // Assuming tasks are assigned to a user
     }
     
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 
 }

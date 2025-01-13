@@ -22,6 +22,8 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\SprintController;
+use App\Http\Livewire\ProjectController;
+
 
 
 // Redirect to login page by default
@@ -114,4 +116,12 @@ Route::group(['middleware' => ['can:view backlog']], function () {
 // Daily task management
 Route::group(['middleware' => ['can:view daily tasks']], function () {
     Route::get('daily-management/task', SprintController::class)->name('daily.show');
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::post('/projects/{project}/tasks', [ProjectController::class, 'storeTask'])->name('projects.tasks.store');
 });
