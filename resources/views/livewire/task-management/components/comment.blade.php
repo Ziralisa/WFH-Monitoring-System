@@ -8,7 +8,7 @@
                     <div class="px-4">
                         <p class="h6 mb-0 text-s">Last updated:</p>
                         <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
-                            {{ $task->updated_at->diffForHumans() }}
+                        {{ $task->updated_at ? $task->updated_at->diffForHumans() : '' }}
                         </p>
                     </div>
                     <div class="d-flex align-items-center flex-grow-1">
@@ -101,7 +101,6 @@
             </div>
         </div>
     </div>
-    <!-- FORM TO EDIT COMMENT -->
     <div wire:ignore class="modal fade" id="editCommentModal" tabindex="-1" role="dialog"
         aria-labelledby="editCommentModal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -137,3 +136,4 @@
             </div>
         </div>
     </div>
+    

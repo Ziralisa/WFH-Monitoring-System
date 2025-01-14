@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
+use App\Models\Project;
+use Illuminate\Support\Facades\DB;
 
 class SprintController extends Component
 {
@@ -20,10 +22,15 @@ class SprintController extends Component
         'commentContent' => 'nullable|string|min:5|max:500',
     ];
 
-
     public function setTaskId($id)
     {
         $this->taskId = $id;
+    }
+
+    public function getTasksByProject($projectId)
+    {
+        $tasks = Task::where('project_id', $projectId)->get(['id', 'name']);
+        return response()->json($tasks);
     }
 
     public function storeComment(Task $task)
@@ -43,32 +50,31 @@ class SprintController extends Component
 
         return redirect()->route('backlog.show');
 
-        $this->reset(['commentContent']); 
+        $this->reset(['commentContent']);
     }
 
     public function editComment($commentId)
-    {   
+    {
         $comment = Comment::find($commentId);
 
         if ($comment) {
-            $this->commentId = $comment->id; 
+            $this->commentId = $comment->id;
             $this->commentContent = $comment->content;
         } else {
             session()->flash('error', 'Comment not found.');
         }
-
     }
     public function updateComment()
     {
         $validated = $this->validate([
             'commentContent' => 'required|string|max:500',
         ]);
-    
+
         $comment = Comment::findOrFail($this->commentId);
-    
-        $comment->content = $validated['commentContent']; 
-        $comment->save(); 
-    
+
+        $comment->content = $validated['commentContent'];
+        $comment->save();
+
         flash()->success('Comment updated successfully!');
         return redirect()->route('backlog.show');
     }
@@ -117,24 +123,59 @@ class SprintController extends Component
 
     public function storeTask(Request $request)
     {
+        // Validate the incoming request data
         $validated = $request->validate([
             'sprint_id' => 'required|exists:sprints,id',
-            'name' => 'required|string|max:255',
-            'task_description' => 'nullable|string',
+            'project_id' => 'required|exists:projects,id',
+            'task_id' => 'required|exists:tasks,id', // Ensure task_id exists in the tasks table
+            'task_description'=>'nullable',
             'task_priority' => 'required|in:Low,Medium,High',
             'task_status' => 'required|in:To Do,In Progress,Done,Stuck',
-            'task_assign' => 'nullable|exists:users,id',
+            'task_assign' => 'nullable|exists:users,id', // task_assign can be null or must exist in users table
         ]);
 
-        $validated['task_assign'] = $validated['task_assign'] ?? null;
-
         try {
-            Task::create($validated);
-            return redirect()->route('backlog.show')->with('success', 'Task created successfully!');
+            // Find the task by its ID
+            $task = Task::where('id', $validated['task_id'])->firstOrFail(); // Ensure the task exists for the given project_id
+            // Update the task's attributes
+
+            $task->update([
+                'task_priority' => $validated['task_priority'],
+                'task_status' => $validated['task_status'],
+                'task_assign' => $validated['task_assign'] ?? null,
+                'task_description' => $validated['task_description'],
+
+                //isset($validated['task_assign']) ? $validated['task_assign'] : null,
+            ]);
+
+            $sprint = Sprint::findOrFail($validated['sprint_id']);
+            // Insert the task_id and sprint_id into the sprint_task pivot table
+            DB::table('sprint_task')->insert([
+                'sprint_id' => $validated['sprint_id'],
+                'task_id' => $validated['task_id'],
+                'created_at' => now(), // Optional if you want timestamps
+                'updated_at' => now(), // Optional if you want timestamps
+            ]);
+
+            // Return a success response
+            return redirect()->route('backlog.show')->with('success', 'Task updated successfully!');
         } catch (\Exception $e) {
+            // Handle errors and return a failure response
             return redirect()
                 ->route('backlog.show')
-                ->with('error', 'Failed to save the task: ' . $e->getMessage());
+                ->with('error', 'Failed to update the task: ' . $e->getMessage());
+        }
+    }
+
+    protected $listeners = ['taskAdded' => 'reloadTasks'];
+    public function reloadTasks()
+    {
+        $selectedProjectId = request()->route('projectId');
+        if ($selectedProjectId) {
+            $tasks = Task::where('project_id', $selectedProjectId)->get();
+            $this->emit('tasksUpdated', $tasks); // Send tasks data to the front-end
+        } else {
+            session()->flash('error', 'No project selected!');
         }
     }
 
@@ -145,14 +186,14 @@ class SprintController extends Component
             // Assign the task to the user
             $task->assignedUser()->associate(User::find($request->input('task_assign')));
             $task->save();
-    
+
             // Redirect back with success message (or you can just reload the page)
             return redirect()->route('backlog.show')->with('success', 'Task assigned successfully.');
         }
-    
+
         return redirect()->route('backlog.show')->with('error', 'Failed to assign the task.');
     }
-    
+
     public function updateTaskStatus(Request $request, Task $task)
     {
         $validated = $request->validate([
@@ -166,29 +207,36 @@ class SprintController extends Component
 
     public function render()
     {
+        $selectedProjectId = request()->route('projectId');
+        $tasks = Task::where('project_id', $selectedProjectId)->get();
+
+        $projects = Project::all();
+
         // Check if the daily log view is requested
         if (request()->routeIs('daily.show')) {
-            // Fetch sall tasks updated in the last 7 days with status "In Progress"
+            // Fetch all tasks updated in the last 7 days with status "In Progress"
             $taskLogs = Task::with(['assignedUser'])
-                ->where('updated_at', '>=', now()->subWeek())  // Get tasks updated in the last week
-                ->whereIn('task_status', ['In Progress', 'Done', 'Stuck'])   // Filter by "In Progress" status
+                ->where('updated_at', '>=', now()->subWeek()) // Get tasks updated in the last week
+                ->whereIn('task_status', ['In Progress', 'Done', 'Stuck']) // Filter by "In Progress" status
                 ->orderBy('updated_at', 'desc')
                 ->get()
                 ->groupBy(function ($task) {
                     return $task->updated_at->format('Y-m-d'); // Group tasks by date
                 });
-    
+
             // Return the daily task log view
             return view('livewire.task-management.components.daily-task-page', [
                 'taskLogs' => $taskLogs,
             ]);
         }
-    
+
         // Default to backlog view
         return view('livewire.task-management.backlog', [
             'sprints' => Sprint::all(),
             'staff' => User::role('staff')->get(),
+            'projects' => Project::all(),
+            'projects' => $projects,
+            'tasks' => $tasks,
         ]);
     }
-    
 }

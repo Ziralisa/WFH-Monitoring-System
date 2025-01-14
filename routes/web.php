@@ -111,6 +111,7 @@ Route::group(['middleware' => ['can:view backlog']], function () {
     Route::post('/tasks', [SprintController::class, 'storeTask'])->name('tasks.store');
     Route::post('/assign-task/{task}', [SprintController::class, 'assignTask'])->name('assign-task');
     Route::patch('/tasks/{task}/status', [SprintController::class, 'updateTaskStatus'])->name('tasks.updateStatus');
+    Route::get('/tasks/{projectId}', [SprintController::class, 'getTasksByProject'])->name('tasks.byProject');
 });
 
 // Daily task management
@@ -125,3 +126,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/projects', [ProjectController::class, 'storeProject'])->name('projects.store');
     Route::post('/projects/tasks', [ProjectController::class, 'storeTask'])->name('projects.tasks.store');
 });
+

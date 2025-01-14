@@ -36,4 +36,12 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
+   // In Task.php model
+
+public function sprints()
+{
+    return $this->belongsToMany(Sprint::class, 'sprint_task', 'task_id', 'sprint_id');
+}
+
+
 }

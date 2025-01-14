@@ -19,7 +19,11 @@ class Sprint extends Model
 
 public function tasks()
 {
-    return $this->hasMany(Task::class);
+    return $this->belongsToMany(Task::class, 'sprint_task', 'sprint_id', 'task_id');
 }
 
+public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }
