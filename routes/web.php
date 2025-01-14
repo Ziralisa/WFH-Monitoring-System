@@ -122,6 +122,6 @@ Route::group(['middleware' => ['can:view daily tasks']], function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-    Route::post('/projects/{project}/tasks', [ProjectController::class, 'storeTask'])->name('projects.tasks.store');
+    Route::post('/projects', [ProjectController::class, 'storeProject'])->name('projects.store');
+    Route::post('/projects/tasks', [ProjectController::class, 'storeTask'])->name('projects.tasks.store');
 });
