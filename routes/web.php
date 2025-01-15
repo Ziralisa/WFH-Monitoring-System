@@ -104,7 +104,7 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
 
 
 
-// Sprint and Task Management
+// SPRINT AND TASK MANAGEMENT
 Route::group(['middleware' => ['can:view backlog']], function () {
     Route::get('task-management/backlog', SprintController::class)->name('backlog.show');
     Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])->name('create-sprint');
@@ -114,16 +114,20 @@ Route::group(['middleware' => ['can:view backlog']], function () {
     Route::get('/tasks/{projectId}', [SprintController::class, 'getTasksByProject'])->name('tasks.byProject');
 });
 
-// Daily task management
+// DAILY TASK MANAGEMENT
 Route::group(['middleware' => ['can:view daily tasks']], function () {
     Route::get('daily-management/task', SprintController::class)->name('daily.show');
 });
 
 
-
-Route::middleware('auth')->group(function () {
+// PROJECT MANAGEMENT
+Route::group(['middleware' => ['can:view project']], function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::post('/projects', [ProjectController::class, 'storeProject'])->name('projects.store');
     Route::post('/projects/tasks', [ProjectController::class, 'storeTask'])->name('projects.tasks.store');
+    Route::put('/tasks/{task}', [ProjectController::class, 'updateTask'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [ProjectController::class, 'destroyTask'])->name('tasks.destroy');
+    Route::put('/projects/{project}', [ProjectController::class, 'updateProject'])->name('projects.update');
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroyProject'])->name('projects.destroy');
 });
 
