@@ -1,6 +1,5 @@
-<div>
+<div class="mt-4">
     <h2 class="mb-4">Daily Task Log</h2>
-
     @foreach ($taskLogs as $date => $tasks)
         <div style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px;">
             <h3>
@@ -17,7 +16,7 @@
                             <div class="px-6">
                                 <p class="h6 mb-0 text-s">Last updated:</p>
                                 <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
-                                    {{ $task->updated_at}}
+                                    {{ $task->updated_at }}
                                 </p>
                             </div>
                             <div class="d-flex align-items-center flex-grow-1">
@@ -31,11 +30,16 @@
                                                             <p class="h6 mb-2 text-s text-center">
                                                                 {{ $task->assignedUser->name ?? 'Unassigned' }}
                                                             </p>
-                                                            <span class="badge badge-sm" style="
-                                                                                    background-color: 
-                                                                                    {{ $task->task_status == 'To Do' ? 'grey' :
-                    ($task->task_status == 'In Progress' ? 'orange' :
-                        ($task->task_status == 'Done' ? 'green' : 'red')) }};
+                                                            <span class="badge badge-sm"
+                                                                style="
+                                                                                    background-color:
+                                                                                    {{ $task->task_status == 'To Do'
+                                                                                        ? 'grey'
+                                                                                        : ($task->task_status == 'In Progress'
+                                                                                            ? 'orange'
+                                                                                            : ($task->task_status == 'Done'
+                                                                                                ? 'green'
+                                                                                                : 'red')) }};
                                                                                     color: white;">
                                                                 {{ $task->task_status }}
                                                             </span>
@@ -60,5 +64,4 @@
             @endforeach
         </div>
     @endforeach
-
 </div>

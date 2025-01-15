@@ -49,8 +49,6 @@ class SprintController extends Component
         flash()->success('Comment added successfully!');
 
         return redirect()->route('backlog.show');
-
-        $this->reset(['commentContent']);
     }
 
     public function editComment($commentId)
@@ -209,32 +207,12 @@ class SprintController extends Component
     {
         $selectedProjectId = request()->route('projectId');
         $tasks = Task::where('project_id', $selectedProjectId)->get();
-
         $projects = Project::all();
-
-        // Check if the daily log view is requested
-        if (request()->routeIs('daily.show')) {
-            // Fetch all tasks updated in the last 7 days with status "In Progress"
-            $taskLogs = Task::with(['assignedUser'])
-                ->where('updated_at', '>=', now()->subWeek()) // Get tasks updated in the last week
-                ->whereIn('task_status', ['In Progress', 'Done', 'Stuck']) // Filter by "In Progress" status
-                ->orderBy('updated_at', 'desc')
-                ->get()
-                ->groupBy(function ($task) {
-                    return $task->updated_at->format('Y-m-d'); // Group tasks by date
-                });
-
-            // Return the daily task log view
-            return view('livewire.task-management.components.daily-task-page', [
-                'taskLogs' => $taskLogs,
-            ]);
-        }
 
         // Default to backlog view
         return view('livewire.task-management.backlog', [
             'sprints' => Sprint::all(),
             'staff' => User::role('staff')->get(),
-            'projects' => Project::all(),
             'projects' => $projects,
             'tasks' => $tasks,
         ]);

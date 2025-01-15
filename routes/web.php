@@ -3,6 +3,7 @@
 use App\Http\Livewire\Admin\RoleSettings;
 use App\Http\Livewire\Admin\UserSettings;
 use App\Http\Livewire\Auth\Logout;
+use App\Http\Livewire\DailyTask;
 use App\Http\Livewire\User\Attendance;
 use App\Http\Livewire\User\Profile as UserProfile1;
 use Illuminate\Support\Facades\Route;
@@ -72,7 +73,7 @@ Route::group(['middleware' => ['can:view take attendance']], function () {
     Route::POST('/update-location-session', [Attendance::class, 'updateLocationSession']);
     Route::POST('/save-location', [UserProfile1::class, 'saveLocation']);
     Route::get('/attendance-data', [Attendance::class, 'getAttendanceData']);
-    
+
 });
 
 //ATTENDANCE STATUS (ADMIN)
@@ -102,8 +103,6 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
     Route::get('/laravel-user-management', UserManagement::class)->name('user-management');
 });
 
-
-
 // SPRINT AND TASK MANAGEMENT
 Route::group(['middleware' => ['can:view backlog']], function () {
     Route::get('task-management/backlog', SprintController::class)->name('backlog.show');
@@ -116,9 +115,8 @@ Route::group(['middleware' => ['can:view backlog']], function () {
 
 // DAILY TASK MANAGEMENT
 Route::group(['middleware' => ['can:view daily tasks']], function () {
-    Route::get('daily-management/task', SprintController::class)->name('daily.show');
+    Route::get('daily-management/task', DailyTask::class)->name('daily.show');
 });
-
 
 // PROJECT MANAGEMENT
 Route::group(['middleware' => ['can:view project']], function () {
@@ -130,4 +128,3 @@ Route::group(['middleware' => ['can:view project']], function () {
     Route::put('/projects/{project}', [ProjectController::class, 'updateProject'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroyProject'])->name('projects.destroy');
 });
-
