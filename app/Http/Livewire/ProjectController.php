@@ -9,7 +9,7 @@ use App\Models\Task;
 
 class ProjectController extends Component
 {
-    // Display projects
+    //----------------DISPLAY PROJECTS------------------
     public function index()
     {
         $projects = Project::with('tasks')->get();
@@ -37,10 +37,52 @@ class ProjectController extends Component
             'name' => 'required|string|max:255',
             'task_description' => 'nullable|string',
         ]);
-    
+
         Task::create($validated);
-    
+
         return redirect()->back()->with('success', 'Task created successfully!');
     }
-    
+
+
+    //----------------UPDATE TASK------------------
+    public function updateTask(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'task_description' => 'nullable|string',
+        ]);
+
+        $task->update($validated);
+
+        return redirect()->back()->with('success', 'Task updated successfully!');
+    }
+
+    //----------------DELETE TASK------------------
+    public function destroyTask(Task $task)
+    {
+        $task->delete();
+
+        return redirect()->back()->with('success', 'Task deleted successfully!');
+    }
+
+    //----------------UPDATE PROJECT------------------
+    public function updateProject(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $project->update($validated);
+
+        return redirect()->back()->with('success', 'Project updated successfully!');
+    }
+
+    //----------------DELETE PROJECT------------------
+    public function destroyProject(Project $project)
+    {
+        $project->delete();
+
+        return redirect()->back()->with('success', 'Project deleted successfully!');
+    }
 }

@@ -25,7 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view daily tasks']);
         Permission::firstOrCreate(['name' => 'view backlog']);
         Permission::firstOrCreate(['name' => 'view attendance status']);
-        
+        Permission::firstOrCreate(['name' => 'view project']);
         
 
 
@@ -41,7 +41,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'view attendance report',
             'view take attendance',
             'view backlog',
-            'view daily tasks'
+            'view daily tasks',
+            'view project'
         ]);
 
         // Admin role
@@ -54,7 +55,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'view attendance report staff',
             'view take attendance',
             'view backlog',
-            'view daily tasks'
+            'view daily tasks',
+            'view project'
         ]);
     }
 }
