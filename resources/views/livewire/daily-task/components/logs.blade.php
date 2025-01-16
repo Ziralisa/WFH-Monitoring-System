@@ -45,20 +45,20 @@
                             </div>
                             <div class="flex-row">
                                 <span class="badge badge-sm"
-                                    style="background-color: {{ $task->task_status == 'To Do'
+                                    style="background-color: {{ $log->status == 'To Do'
                                         ? 'grey'
-                                        : ($task->task_status == 'In Progress'
+                                        : ($log->status == 'In Progress'
                                             ? 'orange'
-                                            : ($task->task_status == 'Done'
+                                            : ($log->status == 'Done'
                                                 ? 'green'
                                                 : 'red')) }}; color: white; width: 100px">
-                                    {{ $task->task_status }}
+                                    {{ $log->status }}
                                 </span>
                             </div>
                         </div>
                         <div class="col-10 p-4">
-                            <p class="h6 mb-2 text-s mx-3">{{ $task->name }}</p>
-                            <span
+                            <p class="h6"><strong>{{ $task->project->name }}</strong>:
+                                {{ $task->name }}</p>                            <span
                                 class="text-s text-secondary mx-3">{{ $task->task_description ?? 'No Description' }}</span>
                         </div>
                     </div>

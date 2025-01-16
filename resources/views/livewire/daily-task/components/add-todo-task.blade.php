@@ -15,8 +15,7 @@
                     <option selected disabled>Select an unassigned task</option>
                     @forelse ($unassignedTasks as $task)
                         <option value="{{ $task->id }}">
-                            <strong>Task {{ $task->id }}</strong> -
-                            {{ $task->name }}
+                           {{ $task->project->name }}: {{ $task->name }}
                         </option>
                     @empty
                         <option disabled>No unassigned tasks available</option>

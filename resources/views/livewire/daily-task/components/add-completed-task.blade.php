@@ -14,8 +14,7 @@
                     <option selected disabled>Select an assigned task</option>
                     @forelse ($assignedTasks as $task)
                         <option value="{{ $task->id }}">
-                            <strong>Task {{ $task->id }}</strong> -
-                            {{ $task->name }}
+                            {{ $task->project->name }}: {{ $task->name }}
                         </option>
                     @empty
                         <option disabled>No assigned tasks available</option>

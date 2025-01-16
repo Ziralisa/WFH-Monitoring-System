@@ -4,14 +4,23 @@
 @endphp
 <div class="container-fluid py-4">
     <h2 id="current-time" class="text-black font-weight-bolder mx-6 mb-4 pt-2"></h2>
+    <select wire:model="selectedWeek" wire:change='loadTasksForSelectedWeek'class="form-control mb-4">
+        @foreach ($availableWeeks as $index => $week)
+            <option value="{{ $index }}">
+                {{ $week['start'] }} to {{ $week['end'] }} (Week {{ $week['weekNumber'] }} of {{ $week['year'] }})
+            </option>
+        @endforeach
+    </select>
     <div class="p-4">
         <h5>Task Card Color:</h5>
         <div style="display: flex; align-items: center; margin-bottom: 10px;">
-            <div style="width: 20px; height: 20px; background-color: #6CD185; border-radius: 3px; margin-right: 10px;"></div>
+            <div style="width: 20px; height: 20px; background-color: #6CD185; border-radius: 3px; margin-right: 10px;">
+            </div>
             <span>Done</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="width: 20px; height: 20px; background-color: #FFD700; border-radius: 3px; margin-right: 10px;"></div>
+            <div style="width: 20px; height: 20px; background-color: #FFD700; border-radius: 3px; margin-right: 10px;">
+            </div>
             <span>In Progress</span>
         </div>
     </div>
@@ -24,19 +33,15 @@
                 month: 'long', // Full name of the month (e.g., January)
                 day: '2-digit', // Two-digit day (e.g., 14)
             };
-
             // Format the date
             const formattedDate = new Intl.DateTimeFormat('en-US', options).format(now);
 
             // Update the content of the current-time element
             document.getElementById('current-time').textContent = formattedDate;
         }
-
         updateTime();
         setInterval(updateTime, 1000); // Update every second
     </script>
-
-
     <div class="card">
         {{-- @dump('assigned tasks: ', $assignedTasks)
         @dump('unassigned tasks: ', $unassignedTasks) --}}
@@ -65,7 +70,8 @@
                                         @foreach ($completedTasksForTable[$day] as $task)
                                             <div class="shadow-lg card border p-2 mb-1"
                                                 style="@if ($task->task_status == 'Done') background-color: #20c997; @else background-color: #FFDE75; @endif">
-                                                <p class="h6"><strong>{{ $task->project->name }}</strong>: <small>{{ $task->name }}</small></p>
+                                                <p class="h6"><strong>{{ $task->project->name }}</strong>:
+                                                    <small>{{ $task->name }}</small></p>
                                             </div>
                                         @endforeach
                                     @else
@@ -85,7 +91,6 @@
                             </td>
                         @endforeach
                     </tr>
-
                     <!-- Row for In Progress Tasks -->
                     <tr style="background-color: rgba(255,222,117, 0.7); height: 20rem;">
                         <!-- Leftmost cell for the row label -->
@@ -97,7 +102,8 @@
                                         @foreach ($todoTasksForTable[$day] as $task)
                                             <div class="h6 shadow-lg card border p-2 mb-1"
                                                 style="@if ($task->task_status == 'Done') background-color: #20c997; @else background-color: #FFDE75; @endif">
-                                                <p class="h6"><strong>{{ $task->project->name }}</strong>: <small>{{ $task->name }}</small></p>
+                                                <p class="h6"><strong>{{ $task->project->name }}</strong>:
+                                                    <small>{{ $task->name }}</small></p>
                                             </div>
                                         @endforeach
                                     @else

@@ -15,48 +15,81 @@ class DailyTask extends Component
     public $assignedTasks = [];
     public $selectedTaskId;
     protected $taskLogs = [];
-    
     public $startOfWeek, $endOfWeek;
-
+    public $selectedWeek = 0; // Default to the current week
+    public $availableWeeks = [];
     public function mount()
     {
         // Load tasks when the component is mounted
-        $this->loadTasksForCurrentWeek();
+        $this->generateAvailableWeeks();
+        $this->loadTasksForSelectedWeek();
         $this->loadUnassignedAndAssignedTasks();
         $this->loadTaskLogs();
     }
 
-    public function loadTasksForCurrentWeek()
+    public function generateAvailableWeeks()
     {
-        // Get the start and end of the current week
-        $this->startOfWeek = Carbon::now()->startOfWeek()->toDateString();
-        $this->endOfWeek = Carbon::now()->endOfWeek()->toDateString();
+        $this->availableWeeks = [];
+        $currentWeek = now()->startOfWeek(); // Get the current week's start date
 
-        // Fetch tasks for the current week
-        $todoTasks = Task::whereBetween('todo_date', [$this->startOfWeek, $this->endOfWeek])->get();
-        $completedTasks = Task::whereBetween('completed_date', [$this->startOfWeek, $this->endOfWeek])->get();
+        // Loop for the current week and the previous 3 weeks
+        for ($i = 0; $i >= -3; $i--) {
+            $startOfWeek = $currentWeek->copy()->addWeeks($i);
+            $endOfWeek = $startOfWeek->copy()->endOfWeek();
+            $weekNumber = $startOfWeek->weekOfYear;
+            $year = $startOfWeek->year;
 
-        // Group tasks by day name for both To-Do and Completed
-        $todoTasksByDay = $todoTasks->groupBy(function ($task) {
-            return Carbon::parse($task->todo_date)->format('l'); // "Monday", "Tuesday", etc.
-        });
-
-        $completedTasksByDay = $completedTasks->groupBy(function ($task) {
-            return Carbon::parse($task->completed_date)->format('l'); // "Monday", "Tuesday", etc.
-        });
-
-        // Prepare tasks for each weekday column
-        $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-        $this->todoTasksForTable = [];
-        foreach ($weekDays as $day) {
-            $this->todoTasksForTable[$day] = $todoTasksByDay[$day] ?? collect(); // Ensure empty collection if no tasks
+            $this->availableWeeks[] = [
+                'start' => $startOfWeek->format('d/m/Y'), // Format: 6/01/2025
+                'end' => $endOfWeek->format('d/m/Y'), // Format: 10/01/2025
+                'weekNumber' => $weekNumber, // Week number (e.g., 1, 2, 3)
+                'year' => $year, // Year (e.g., 2025)
+            ];
         }
 
-        $this->completedTasksForTable = [];
-        foreach ($weekDays as $day) {
-            $this->completedTasksForTable[$day] = $completedTasksByDay[$day] ?? collect(); // Ensure empty collection if no tasks
+        // Default selectedWeek is set to the current week (latest week in the array)
+        $this->selectedWeek = 0;
+    }
+
+    public function loadTasksForSelectedWeek()
+    {
+        if ($this->selectedWeek == 0) {
+
         }
+            $selectedWeekData = $this->availableWeeks[$this->selectedWeek];
+
+            $this->startOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['start']);
+            $this->endOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['end']);
+
+            // // Get the start and end of the current week
+            // $this->startOfWeek = Carbon::now()->startOfWeek()->toDateString();
+            // $this->endOfWeek = Carbon::now()->endOfWeek()->toDateString();
+
+            // Fetch tasks for the current week
+            $todoTasks = Task::whereBetween('todo_date', [$this->startOfWeek, $this->endOfWeek])->get();
+            $completedTasks = Task::whereBetween('completed_date', [$this->startOfWeek, $this->endOfWeek])->get();
+
+            // Group tasks by day name for both To-Do and Completed
+            $todoTasksByDay = $todoTasks->groupBy(function ($task) {
+                return Carbon::parse($task->todo_date)->format('l'); // "Monday", "Tuesday", etc.
+            });
+
+            $completedTasksByDay = $completedTasks->groupBy(function ($task) {
+                return Carbon::parse($task->completed_date)->format('l'); // "Monday", "Tuesday", etc.
+            });
+
+            // Prepare tasks for each weekday column
+            $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+            $this->todoTasksForTable = [];
+            foreach ($weekDays as $day) {
+                $this->todoTasksForTable[$day] = $todoTasksByDay[$day] ?? collect(); // Ensure empty collection if no tasks
+            }
+
+            $this->completedTasksForTable = [];
+            foreach ($weekDays as $day) {
+                $this->completedTasksForTable[$day] = $completedTasksByDay[$day] ?? collect(); // Ensure empty collection if no tasks
+            }
     }
 
     public function loadUnassignedAndAssignedTasks()
@@ -81,44 +114,67 @@ class DailyTask extends Component
 
     public function addTodoTaskToday()
     {
-        if ($this->selectedTaskId) {
-            $task = Task::find($this->selectedTaskId);
+        try {
+            if ($this->selectedTaskId) {
+                $task = Task::find($this->selectedTaskId);
 
-            if ($task) {
-                $task->todo_date = now();
-                $task->task_status = 'In Progress';
-                $task->save();
-                TaskLog::create([
-                    'task_id' => $task->id,
-                    'status' => 'In Progress',
-                ]);
+                if ($task) {
+                    $task->todo_date = now();
+                    $task->task_status = 'In Progress';
+                    $task->save();
 
-                return redirect()->route('daily.show')->with('success', 'Added task to-do task for today successfully.');
+                    TaskLog::create([
+                        'task_id' => $task->id,
+                        'status' => 'In Progress',
+                    ]);
+
+                    return redirect()->route('daily.show')->with('success', 'Added task to-do task for today successfully.');
+                } else {
+                    session()->flash('error', 'Task not found.');
+                }
+            } else {
+                session()->flash('error', 'Please select a task.');
             }
-        } else {
-            session()->flash('error', 'Please select a task.');
+        } catch (\Exception $e) {
+            \Log::error('Error adding task to-do: ' . $e->getMessage(), [
+                'task_id' => $this->selectedTaskId,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', 'An unexpected error occurred while adding the task.');
         }
     }
 
     public function addCompletedTaskToday()
     {
-        if ($this->selectedTaskId) {
-            $task = Task::find($this->selectedTaskId);
+        try {
+            if ($this->selectedTaskId) {
+                $task = Task::find($this->selectedTaskId);
 
-            if ($task) {
-                $task->completed_date = now();
-                $task->task_status = 'Done';
-                $task->save();
-                TaskLog::create([
-                    'task_id' => $task->id,
-                    'status' => 'Done',
-                ]);
+                if ($task) {
+                    $task->completed_date = now();
+                    $task->task_status = 'Done';
+                    $task->save();
 
-                // Success message
-                return redirect()->route('daily.show')->with('success', 'Added task completed for today successfully.');
+                    TaskLog::create([
+                        'task_id' => $task->id,
+                        'status' => 'Done',
+                    ]);
+
+                    return redirect()->route('daily.show')->with('success', 'Added task completed for today successfully.');
+                } else {
+                    session()->flash('error', 'Task not found.');
+                }
             } else {
                 session()->flash('error', 'Please select a task.');
             }
+        } catch (\Exception $e) {
+            \Log::error('Error adding completed task: ' . $e->getMessage(), [
+                'task_id' => $this->selectedTaskId,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', 'An unexpected error occurred while adding the task.');
         }
     }
 
