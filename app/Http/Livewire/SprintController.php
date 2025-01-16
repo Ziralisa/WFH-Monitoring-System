@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Comment;
 use App\Models\Sprint;
 use App\Models\Task;
+use App\Models\TaskLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Livewire\Component;
@@ -199,6 +200,11 @@ class SprintController extends Component
         ]);
 
         $task->update($validated);
+
+        TaskLog::create([
+            'task_id' => $task->id,
+            'status' => $validated['task_status'],
+        ]);
 
         return response()->json(['success' => true]);
     }

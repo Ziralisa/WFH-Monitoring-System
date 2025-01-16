@@ -1,14 +1,13 @@
-<div class="col-md-4 text-start">
     <div wire:ignore class="modal fade" id="modal-{{ $task->id }}" tabindex="-1" role="dialog"
-        aria-labelledby="modal-{{ $task->id }}" aria-hidden="true">
+        aria-labelledby="modal-{{ $task->id }}" aria-hidden="true" wire:key="modal-{{ $task->id }}">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content text-start">
                 {{-- MODAL HEADER --}}
                 <div class="modal-header d-flex align-items-center justify-content-start gap-3 p-4">
                     <div class="px-4">
                         <p class="h6 mb-0 text-s">Last updated:</p>
                         <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
-                        {{ $task->updated_at ? $task->updated_at->diffForHumans() : '' }}
+                            {{ $task->updated_at ? $task->updated_at->diffForHumans() : '' }}
                         </p>
                     </div>
                     <div class="d-flex align-items-center flex-grow-1">
@@ -55,9 +54,8 @@
                                     <h6 class="">{{ $comment->user->name }}</h6>
                                     @if ($comment->user->id == auth()->id())
                                         <div>
-                                            <a wire:click="editComment({{ $comment->id }})"
-                                                class="mx-3 cursor-pointer" data-bs-toggle="modal"
-                                                data-bs-target="#editCommentModal"><u>Edit</u></a>
+                                            <a wire:click="editComment({{ $comment->id }})" class="mx-3 cursor-pointer"
+                                                data-bs-toggle="modal" data-bs-target="#editCommentModal"><u>Edit</u></a>
                                             <a wire:click="deleteComment({{ $comment->id }})"
                                                 class="text-danger cursor-pointer"><u>Delete</u></a>
                                         </div>
@@ -101,7 +99,7 @@
             </div>
         </div>
     </div>
-    <div wire:ignore class="modal fade" id="editCommentModal" tabindex="-1" role="dialog"
+    <div wire:ignore.self class="modal fade" id="editCommentModal" tabindex="-1" role="dialog"
         aria-labelledby="editCommentModal" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -111,7 +109,6 @@
                         <p class="h6 mb-0 text-s">Edit Comment</p>
                     </div>
                 </div>
-
                 {{-- MODAL BODY --}}
                 <div class="modal-body">
                     <form wire:submit.prevent="updateComment">
@@ -128,7 +125,6 @@
                         </div>
                     </form>
                 </div>
-
                 {{-- MODAL FOOTER --}}
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
@@ -136,4 +132,3 @@
             </div>
         </div>
     </div>
-    

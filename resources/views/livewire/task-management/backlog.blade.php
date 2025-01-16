@@ -50,7 +50,7 @@
                                 data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary">Submit</button>
                         </div>
-                    </form>  
+                    </form>
                 </div>
             </div>
         </div>
@@ -77,37 +77,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @forelse($sprint->tasks as $task)
-                        <tr>
-                            <td>{{ $task->name }}</td>
-                            <td class="text-center">
-                                <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip"
-                                    data-bs-placement="top"
-                                    title="{{ $task->task_description ?? 'No description' }}" data-container="body"
-                                    data-animation="true">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                </a>
-                            </td>
-                            <td>
-                                <form>
-                                    <select id="task-status-{{ $task->id }}" class="task-status"
+                        @forelse($sprint->tasks as $task)
+                            <tr>
+                                <td>{{ $task->name }}</td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="{{ $task->task_description ?? 'No description' }}" data-container="body"
+                                        data-animation="true">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <form>
+                                        <select id="task-status-{{ $task->id }}" class="task-status"
                                             data-task-id="{{ $task->id }}" required>
-                                        <option value="To Do"
+                                            <option value="To Do"
                                                 {{ $task->task_status == 'To Do' ? 'selected' : '' }}>To Do
-                                        </option>
-                                        <option value="In Progress"
+                                            </option>
+                                            <option value="In Progress"
                                                 {{ $task->task_status == 'In Progress' ? 'selected' : '' }}>In Progress
-                                        </option>
-                                        <option value="Done"
+                                            </option>
+                                            <option value="Done"
                                                 {{ $task->task_status == 'Done' ? 'selected' : '' }}>Done
-                                        </option>
-                                        <option value="Stuck"
+                                            </option>
+                                            <option value="Stuck"
                                                 {{ $task->task_status == 'Stuck' ? 'selected' : '' }}>Stuck
-                                        </option>
-                                    </select>
-                                </form>
-                            </td>
-                                <td class="text-center font-weight-bolder
+                                            </option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td
+                                    class="text-center font-weight-bolder
                                         @if ($task->task_priority === 'Low') priority-low
                                         @elseif($task->task_priority === 'Medium') priority-medium
                                         @elseif($task->task_priority === 'High') priority-high @endif">
@@ -117,8 +118,7 @@
                                     @if ($task->assignedUser)
                                         <div class="avatar-wrapper">
                                             <img src="{{ $task->assignedUser->img ? asset($task->assignedUser->img) : asset('assets/img/team-' . rand(1, 6) . '.jpg') }}"
-                                                alt="{{ $task->assignedUser->name }}"
-                                                class="avatar avatar-sm">
+                                                alt="{{ $task->assignedUser->name }}" class="avatar avatar-sm">
                                             <div class="tooltip-content">
                                                 <h4>{{ $task->assignedUser->name }}</h4>
                                                 <span>staff</span>
@@ -127,12 +127,10 @@
                                                         <span>{{ $task->assignedUser->email }}</span>
                                                     </div>
                                                 </div>
-                                                <a href="@if ($task->assignedUser->id === auth()->user()->id) 
-                                                                {{ route('user-profile') }}
+                                                <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }}
                                                             @else
-                                                                {{ route('view-user-profile', $task->assignedUser->id) }} 
-                                                            @endif" 
-                                                            class="view-profile-hover">View Profile</a>
+                                                                {{ route('view-user-profile', $task->assignedUser->id) }} @endif"
+                                                    class="view-profile-hover">View Profile</a>
                                             </div>
                                         </div>
                                     @else
@@ -140,8 +138,9 @@
                                             action="{{ route('assign-task', $task->id) }}" method="POST">
                                             @csrf
                                             <select name="task_assign" id="task_assign_{{ $task->id }}"
-                                                    class="form-select" onchange="this.form.submit()">
-                                                <option value="" disabled selected>Select a user (optional)</option>
+                                                class="form-select" onchange="this.form.submit()">
+                                                <option value="" disabled selected>Select a user (optional)
+                                                </option>
                                                 @foreach ($staff as $member)
                                                     <option value="{{ $member->id }}"
                                                         {{ $task->assignedUser && $task->assignedUser->id == $member->id ? 'selected' : '' }}>
@@ -154,24 +153,25 @@
                                 </td>
                                 <td class="text-center">
                                     <a href="javascript:void(0)" class="mb-3" data-bs-toggle="modal"
-                                    data-bs-target="#modal-{{ $task->id }}" wire:click='setTaskId({{ $task->id }})'>
+                                        data-bs-target="#modal-{{ $task->id }}"
+                                        wire:click='setTaskId({{ $task->id }})'>
                                         <i class="fa-solid fa-message"></i>
                                     </a>
                                     @include('livewire.task-management.components.comment')
                                 </td>
 
-                                    <!-- Display Project Name -->
-                                    <td>
-                                        {{ $task->project->name ?? 'No project assigned' }}
-                                    </td>
-                                </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center font-weight-bold">No tasks available</td>
-                                    </tr>  
-                                @endforelse
-                            </tbody>
-                        </table>
+                                <!-- Display Project Name -->
+                                <td>
+                                    {{ $task->project->name ?? 'No project assigned' }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center font-weight-bold">No tasks available</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
 
                 @include('livewire.task-management.components.add-task')
             </div>
@@ -276,27 +276,29 @@
 
         /*Hover  */
         .avatar-wrapper {
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
         }
 
         .tooltip-content {
             visibility: hidden;
-            background-color:rgb(102, 111, 120);
+            background-color: rgb(102, 111, 120);
             color: #fff;
             text-align: left;
             border-radius: 10px;
             padding: 15px;
             position: absolute;
             z-index: 1;
-            bottom: 125%; /* Position above the avatar */
+            bottom: 125%;
+            /* Position above the avatar */
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 250px; /* Adjust width for consistent layout */
+            width: 250px;
+            /* Adjust width for consistent layout */
         }
 
         .avatar-wrapper:hover .tooltip-content {
@@ -317,7 +319,7 @@
             color: #dcdcdc;
         }
 
-    
+
         .tooltip-conent .contact-details {
             margin-top: 10px;
         }
@@ -332,26 +334,33 @@
         .tooltip-content .email i {
             margin-right: 8px;
         }
-        
+
         /* View Profile Button */
         .tooltip-content .view-profile-hover {
             display: inline-block;
             margin-top: 10px;
             padding: 5px 10px;
-            background-color: rgb(102, 111, 120); /* Initial button background color */
-            color: #fff;  /* Text color */
-            text-decoration: none;  /* Removes underline */
-            border-radius: 5px;  /* Rounded corners */
-            font-size: 14px;  /* Font size */
-            transition: background-color 0.3s ease-in-out;  /* Smooth transition for background color change */
+            background-color: rgb(102, 111, 120);
+            /* Initial button background color */
+            color: #fff;
+            /* Text color */
+            text-decoration: none;
+            /* Removes underline */
+            border-radius: 5px;
+            /* Rounded corners */
+            font-size: 14px;
+            /* Font size */
+            transition: background-color 0.3s ease-in-out;
+            /* Smooth transition for background color change */
         }
 
         /* Hover effect for View Profile Button */
         .tooltip-content .view-profile-hover:hover {
-            background-color:rgb(52, 65, 78);  /* Darker background on hover */
+            background-color: rgb(52, 65, 78);
+            /* Darker background on hover */
         }
     </style>
- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.task-status').forEach(function(element) {
                 element.addEventListener('change', function() {
@@ -382,6 +391,6 @@
                         .catch(error => console.error('Error:', error));
                 });
             });
-        });      
+        });
     </script>
 </div>

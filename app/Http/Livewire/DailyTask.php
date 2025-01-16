@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Task;
+use App\Models\TaskLog;
 use Carbon\Carbon;
 use Livewire\Component;
 
@@ -14,6 +15,8 @@ class DailyTask extends Component
     public $assignedTasks = [];
     public $selectedTaskId;
     protected $taskLogs = [];
+    
+    public $startOfWeek, $endOfWeek;
 
     public function mount()
     {
@@ -26,12 +29,12 @@ class DailyTask extends Component
     public function loadTasksForCurrentWeek()
     {
         // Get the start and end of the current week
-        $startOfWeek = Carbon::now()->startOfWeek()->toDateString();
-        $endOfWeek = Carbon::now()->endOfWeek()->toDateString();
+        $this->startOfWeek = Carbon::now()->startOfWeek()->toDateString();
+        $this->endOfWeek = Carbon::now()->endOfWeek()->toDateString();
 
         // Fetch tasks for the current week
-        $todoTasks = Task::whereBetween('todo_date', [$startOfWeek, $endOfWeek])->get();
-        $completedTasks = Task::whereBetween('completed_date', [$startOfWeek, $endOfWeek])->get();
+        $todoTasks = Task::whereBetween('todo_date', [$this->startOfWeek, $this->endOfWeek])->get();
+        $completedTasks = Task::whereBetween('completed_date', [$this->startOfWeek, $this->endOfWeek])->get();
 
         // Group tasks by day name for both To-Do and Completed
         $todoTasksByDay = $todoTasks->groupBy(function ($task) {
@@ -63,22 +66,21 @@ class DailyTask extends Component
     }
 
     public function loadTaskLogs()
-{
-    $taskLogs = Task::with(['assignedUser'])
-        ->where('updated_at', '>=', now()->subWeek())
-        ->whereIn('task_status', ['In Progress', 'Done', 'Stuck'])
-        ->orderBy('updated_at', 'desc')
-        ->get()
-        ->groupBy(function ($task) {
-            return $task->updated_at->format('Y-m-d');
-        });
+    {
+        $taskLogs = TaskLog::with(['task.assignedUser']) // Load related task and its assigned user
+            ->where('created_at', '>=', now()->subWeek()) // Logs from the past week
+            ->whereIn('status', ['In Progress', 'Done', 'Stuck']) // Filter by status
+            ->orderBy('created_at', 'desc') // Order by creation date
+            ->get()
+            ->groupBy(function ($log) {
+                return $log->created_at->format('Y-m-d'); // Group by date
+            });
 
-    $this->taskLogs = $taskLogs;
-}
+        $this->taskLogs = $taskLogs;
+    }
 
     public function addTodoTaskToday()
     {
-
         if ($this->selectedTaskId) {
             $task = Task::find($this->selectedTaskId);
 
@@ -86,6 +88,10 @@ class DailyTask extends Component
                 $task->todo_date = now();
                 $task->task_status = 'In Progress';
                 $task->save();
+                TaskLog::create([
+                    'task_id' => $task->id,
+                    'status' => 'In Progress',
+                ]);
 
                 return redirect()->route('daily.show')->with('success', 'Added task to-do task for today successfully.');
             }
@@ -96,7 +102,6 @@ class DailyTask extends Component
 
     public function addCompletedTaskToday()
     {
-
         if ($this->selectedTaskId) {
             $task = Task::find($this->selectedTaskId);
 
@@ -104,6 +109,10 @@ class DailyTask extends Component
                 $task->completed_date = now();
                 $task->task_status = 'Done';
                 $task->save();
+                TaskLog::create([
+                    'task_id' => $task->id,
+                    'status' => 'Done',
+                ]);
 
                 // Success message
                 return redirect()->route('daily.show')->with('success', 'Added task completed for today successfully.');
@@ -121,6 +130,8 @@ class DailyTask extends Component
             'unassignedTasks' => $this->unassignedTasks,
             'assignedTasks' => $this->assignedTasks,
             'taskLogs' => $this->taskLogs,
+            'startOfWeek' => $this->startOfWeek,
+            'endOfWeek' => $this->endOfWeek,
         ]);
     }
 }
