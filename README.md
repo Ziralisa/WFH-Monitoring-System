@@ -50,16 +50,27 @@ php artisan migrate
     php artisan serve
 ``` 
 
+9.  Seed the database with admin account and the roles and permissions
+```bash
+    php artisan db:seed --class=RolesAndPermissionsSeeder
+``` 
+```bash
+    php artisan db:seed --class=RolesAndPermissionsSeeder
+``` 
 
 ##  Features
 
 All Users:
 - Login & Registration
 - Edit Profile Information
+- Task and Daily Task Management
 
 Staff:
 - Record attendance (user location info will be tracked)
 - View personal attendance report
+- Assign task and update task status, comment task
+- Assigned task status can be updated from Daily Task page
+- Log will be recorded every time task status is updated in task_logs table
 
 Admin:  
 - Track active staff location status
@@ -67,6 +78,8 @@ Admin:
 - Approve new users
 - Edit user settings
 - Edit role settings
+- Create new projects, tasks, sprints, assign staff to specific tasks
+
 
 
 ##  Dependencies
@@ -102,9 +115,9 @@ Admin:
 - view : app/resources/views/livewire/task-management/backlog.blade.php
 - function : app/http/livewire/sprintcontroller.php
 
-7. Daily Task
-- view : app/resources/views/livewire/task-management/components/daily-task-page.blade.php
-- function : app/http/livewire/sprintcontroller.php
+12. Daily Task
+- view: app\resources\views\livewire\daily-task\show.blade.php
+- function: app\Http\Livewire\DailyTask.php
 
 8. Add Sprint
 - view : app/resources/views/livewire/task-management/backlog.blade.php
@@ -125,3 +138,23 @@ Admin:
 11. Role setting
 - view : app/resources/views/livewire/admin/role-settings/show.blade.php
 - function : app/http/livewire/Admin/RoleSettings.php
+
+## Known bugs/flaws/etc.
+## Shahrul
+1. Online users 
+- 1. Online users are only detected when the user is either on Dashboard Admin page or Take Attendance page
+- 2. User last online is not accurate. The actual last online may be 1 hour ago but in database last online is 5 days ago (example). 
+- Code responsible for online users is resources\views\livewire\user-on-this-page.blade.php
+2. Take Attendance
+- 1. User location is using the browser's Geolocation API, therefore easy to exploit
+- 2. User attendance location log doesnt record all user activity logs, therefore may not potray accurate logs
+    - Review app\resources\views\livewire\user\attendance\includes\map.blade.php
+3. Daily Task page
+- 1. When selecting task in Add To-Do/Completed Task Modal, kalau pilih first option and then save, akan ada bug dimana tak boleh save.
+    - In other words, first option is bugged. Second, third, etc. options work just fine.
+    - Workaround to choose the first option is : 1. Pilih second option dulu 2. Pilih first option balik 3. Click save and it works fine
+
+
+
+
+

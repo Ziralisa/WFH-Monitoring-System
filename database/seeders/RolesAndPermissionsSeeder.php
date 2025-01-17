@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Permission;
 class RolesAndPermissionsSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * This seeder is responsible for creating roles and permissions, and also assigning them to specific users.
      */
     public function run(): void
     {
@@ -26,13 +26,11 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'view backlog']);
         Permission::firstOrCreate(['name' => 'view attendance status']);
         Permission::firstOrCreate(['name' => 'view project']);
-        
-
 
         // Create roles and assign created permissions
 
         // User role, no permissions needed for this role
-        Role::firstOrCreate(['name' => 'user']);
+        $userRole = Role::firstOrCreate(['name' => 'user']);
 
         // Staff role
         $staffRole = Role::firstOrCreate(['name' => 'staff']);
@@ -58,5 +56,22 @@ class RolesAndPermissionsSeeder extends Seeder
             'view daily tasks',
             'view project'
         ]);
+
+        // Assign roles to specific users
+        //UNCOMMENT AND ADJUST TO YOUR NEEDS
+        // $user = User::firstWhere('email', 'user@example.com'); // Replace with the actual user's email
+        // if ($user) {
+        //     $user->assignRole($userRole); // Assign 'user' role
+        // }
+
+        // $staff = User::firstWhere('email', 'staff@example.com'); // Replace with the actual staff email
+        // if ($staff) {
+        //     $staff->assignRole($staffRole); // Assign 'staff' role
+        // }
+
+        // $admin = User::firstWhere('email', 'admin@kodewave.my'); // Replace with the actual admin email
+        // if ($admin) {
+        //     $admin->assignRole($adminRole); // Assign 'admin' role
+        // }
     }
 }
