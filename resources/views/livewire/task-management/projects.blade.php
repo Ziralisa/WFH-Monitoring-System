@@ -90,29 +90,30 @@
                 <h3>
                     {{ $project->name }}
                     <!-- Info button (for delete and edit project) -->
-                    <span class="info-icon" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
-                        <i class="fas fa-info-circle" style="font-size:20px"></i>
+                    <!-- <div class="dropdown text-end" style="display: inline-block; float: right;"> -->
+                    <span class="info-icon" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="cursor: pointer; float: right;">
+                        <i class="fas fa-ellipsis-v" style="font-size:20px"></i>
                     </span>
-
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu p-2 shadow-sm">
-                        <h6>Action:</h6>
                         <!-- Edit Project Button -->
-                        <button class="btn btn-sm btn-warning " data-bs-toggle="modal"
+                        <button class="btn btn-sm btn-warning d-block w-100 mb-2" data-bs-toggle="modal"
                             data-bs-target="#EditProjectModal-{{ $project->id }}">
-                            <i class="fas fa-edit" style="font-size: 15px;"></i>
+                            <i class="fas fa-edit" style="font-size: 15px;"></i> Edit
                         </button>
 
                         <!-- Delete Project Button -->
-                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger"
+                            <button type="submit" class="btn btn-sm btn-danger d-block w-100"
                                 onclick="return confirm('Are you sure you want to delete this project?')">
-                                <i class="fas fa-trash-alt" style="font-size: 15px;"></i>
+                                <i class="fas fa-trash-alt" style="font-size: 15px;"></i> Delete
                             </button>
                         </form>
                     </div>
+
                 </h3>
                 <p>{{ $project->description }}</p>
 
