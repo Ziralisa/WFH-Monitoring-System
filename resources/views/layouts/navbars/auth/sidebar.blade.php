@@ -129,7 +129,7 @@
                             class="fa-solid fa-bars-progress text-center
                                             {{ in_array(request()->route()->getName(), ['backlog.show']) ? 'text-white' : 'text-dark' }}"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Backlog</span>
+                    <span class="nav-link-text ms-1">Sprint</span>
                 </a>
             </li>
         @endcan

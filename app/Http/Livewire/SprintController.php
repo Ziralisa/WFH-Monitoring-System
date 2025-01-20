@@ -98,9 +98,6 @@ class SprintController extends Component
         }
     }
 
-    /**
-     * Store a new sprint in the database.
-     */
     public function storeSprint()
     {
         //dd(request()->all());
@@ -114,7 +111,6 @@ class SprintController extends Component
         ]);
 
         //dd($request->validate());
-        // Create and save the sprint
         Sprint::create($validated);
 
         return redirect()->route('backlog.show')->with('success', 'Sprint added successfully!');
@@ -148,18 +144,17 @@ class SprintController extends Component
             ]);
 
             $sprint = Sprint::findOrFail($validated['sprint_id']);
-            // Insert the task_id and sprint_id into the sprint_task pivot table
+            // Insert the task_id and sprint_id into the sprint_task  table
             DB::table('sprint_task')->insert([
                 'sprint_id' => $validated['sprint_id'],
                 'task_id' => $validated['task_id'],
-                'created_at' => now(), // Optional if you want timestamps
-                'updated_at' => now(), // Optional if you want timestamps
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
-            // Return a success response
             return redirect()->route('backlog.show')->with('success', 'Task updated successfully!');
         } catch (\Exception $e) {
-            // Handle errors and return a failure response
+
             return redirect()
                 ->route('backlog.show')
                 ->with('error', 'Failed to update the task: ' . $e->getMessage());
@@ -180,17 +175,36 @@ class SprintController extends Component
 
     public function assignTask(Request $request, Task $task)
     {
-        // Ensure the user has been selected
         if ($request->has('task_assign')) {
-            // Assign the task to the user
             $task->assignedUser()->associate(User::find($request->input('task_assign')));
             $task->save();
 
-            // Redirect back with success message (or you can just reload the page)
             return redirect()->route('backlog.show')->with('success', 'Task assigned successfully.');
         }
 
         return redirect()->route('backlog.show')->with('error', 'Failed to assign the task.');
+    }
+
+    //EDIT AND DELETE SPRINT
+    public function destroySprint(Sprint $sprint)
+    {
+        $sprint->delete();
+
+        return redirect()->back()->with('success', 'Sprint deleted successfully!');
+    }
+
+    public function updateSprint(Request $request, Sprint $sprint)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'desc' => 'nullable|string|max:255',
+            'startdate' => 'required|date',
+            'enddate' => 'required|date|after_or_equal:startdate',
+        ]);
+
+        $sprint->update($validated);
+
+        return redirect()->back()->with('success', 'Sprint updated successfully!');
     }
 
     public function updateTaskStatus(Request $request, Task $task)
@@ -215,7 +229,6 @@ class SprintController extends Component
         $tasks = Task::where('project_id', $selectedProjectId)->get();
         $projects = Project::all();
 
-        // Default to backlog view
         return view('livewire.task-management.backlog', [
             'sprints' => Sprint::all(),
             'staff' => User::role('staff')->get(),

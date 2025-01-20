@@ -111,6 +111,8 @@ Route::group(['middleware' => ['can:view backlog']], function () {
     Route::post('/assign-task/{task}', [SprintController::class, 'assignTask'])->name('assign-task');
     Route::patch('/tasks/{task}/status', [SprintController::class, 'updateTaskStatus'])->name('tasks.updateStatus');
     Route::get('/tasks/{projectId}', [SprintController::class, 'getTasksByProject'])->name('tasks.byProject');
+    Route::delete('/sprints/{sprint}', [SprintController::class, 'destroySprint'])->name('sprints.destroy');
+    Route::put('/sprints/{sprint}', [SprintController::class, 'updateSprint'])->name('sprints.edit');
 });
 
 // DAILY TASK MANAGEMENT

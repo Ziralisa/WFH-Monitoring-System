@@ -12,7 +12,6 @@
         <button type="button" class="btn bg-gradient-primary" data-bs-toggle="modal" data-bs-target="#SprintModal">
             Add Sprint
         </button>
-
         <div class="modal fade" id="SprintModal" tabindex="-1" role="dialog" aria-labelledby="SprintModal"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -28,6 +27,7 @@
                     <form action="{{ route('create-sprint') }}" method="POST">
                         @csrf
                         <div class="modal-body">
+
                             <div class="mb-3">
                                 <label for="name" class="form-label">Sprint Name</label>
                                 <input type="text" name="name" id="name" class="form-control" required>
@@ -44,23 +44,102 @@
                                 <label for="enddate" class="mr-2 px-2">End Date</label>
                                 <input type="date" name="enddate" id="enddate" class="mr-2 px-3" required>
                             </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn bg-gradient-secondary"
                                 data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary">Submit</button>
                         </div>
+
                     </form>
                 </div>
             </div>
         </div>
+        <!-- Edit Sprint Modal -->
+        @foreach ($sprints as $sprint)
+        <div class="modal fade" id="EditSprintModal{{$sprint->id}}" tabindex="-1" aria-labelledby="EditSprintModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('sprints.edit', '$sprint->id') }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id" id="editSprintId">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="editName" class="form-label">Sprint Name</label>
+                                <input type="text" name="name" id="editName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDesc" class="form-label">Description</label>
+                                <textarea name="desc" id="editDesc" class="form-control" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editStartDate" class="form-label">Start Date</label>
+                                <input type="date" name="startdate" id="editStartDate" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editEndDate" class="form-label">End Date</label>
+                                <input type="date" name="enddate" id="editEndDate" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @endforeach
 
         @forelse($sprints as $sprint)
             <div class="sprint-card">
-                <h3> Sprint: {{ $sprint->name }}</h3>
+                <h3>
+                    Sprint: {{ $sprint->name }}
+                    <!-- Hover Edit and Delete  -->
+                    <div class="hover-delete">
+                        <i class="fas fa-ellipsis-v"></i>
+                        <div class="hover-delete-menu">
+                            <form action="{{ route('sprints.edit', $sprint->id) }}" method="GET"
+                                style="margin: 0;">
+                                @csrf
+                                <button type="button" class="edit-button" data-bs-toggle="modal"
+                                    data-bs-target="#EditSprintModal"
+                                    onclick="populateEditModal({{ $sprint->id }}">
+                                    EDIT
+                                </button>
+                            </form>
+
+                            <!-- Delete Button -->
+                            <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST"
+                                style="margin: 0;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this sprint?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </h3>
+
                 <p>Description: {{ $sprint->desc }}</p>
+                <div class="table-options">
+                </div>
                 <div class="sprint-dates">
-                    <span><strong>From: {{ $sprint->startdate }} To {{ $sprint->enddate }} </strong> </span>
+                    <span>
+                        <strong>
+                            From: {{ \Carbon\Carbon::parse($sprint->startdate)->format('Y-m-d') }}
+                            To: {{ \Carbon\Carbon::parse($sprint->enddate)->format('Y-m-d') }}
+                        </strong>
+                    </span>
                 </div>
 
                 <!-- Display task table -->
@@ -83,8 +162,8 @@
                                 <td class="text-center">
                                     <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip"
                                         data-bs-placement="top"
-                                        title="{{ $task->task_description ?? 'No description' }}" data-container="body"
-                                        data-animation="true">
+                                        title="{{ $task->task_description ?? 'No description' }}"
+                                        data-container="body" data-animation="true">
                                         <i class="fa-solid fa-circle-info"></i>
                                     </a>
                                 </td>
@@ -128,8 +207,8 @@
                                                     </div>
                                                 </div>
                                                 <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }}
-                                                            @else
-                                                                {{ route('view-user-profile', $task->assignedUser->id) }} @endif"
+                                                        @else
+                                                            {{ route('view-user-profile', $task->assignedUser->id) }} @endif"
                                                     class="view-profile-hover">View Profile</a>
                                             </div>
                                         </div>
@@ -161,7 +240,7 @@
                                 </td>
 
                                 <!-- Display Project Name -->
-                                <td>
+                                <td style="text-align: center;">
                                     {{ $task->project->name ?? 'No project assigned' }}
                                 </td>
                             </tr>
@@ -170,6 +249,7 @@
                                 <td colspan="7" class="text-center font-weight-bold">No tasks available</td>
                             </tr>
                         @endforelse
+
                     </tbody>
                 </table>
 
@@ -274,10 +354,17 @@
             text-align: center;
         }
 
-        /*Hover  */
+        /*Hover*/
         .avatar-wrapper {
             position: relative;
-            display: inline-block;
+            display: flex;
+            /* Use flexbox for alignment */
+            flex-direction: column;
+            /* Stack items vertically */
+            align-items: center;
+            /* Center items horizontally */
+            justify-content: center;
+            /* Center items vertically */
             cursor: pointer;
         }
 
@@ -286,6 +373,7 @@
             background-color: rgb(102, 111, 120);
             color: #fff;
             text-align: left;
+            /* Keeps tooltip content left-aligned */
             border-radius: 10px;
             padding: 15px;
             position: absolute;
@@ -319,8 +407,7 @@
             color: #dcdcdc;
         }
 
-
-        .tooltip-conent .contact-details {
+        .tooltip-content .contact-details {
             margin-top: 10px;
         }
 
@@ -333,6 +420,13 @@
 
         .tooltip-content .email i {
             margin-right: 8px;
+        }
+
+        /* Center the avatar */
+        .avatar-wrapper .avatar {
+            display: block;
+            margin: 0 auto;
+            /* Centers the avatar horizontally */
         }
 
         /* View Profile Button */
@@ -358,6 +452,112 @@
         .tooltip-content .view-profile-hover:hover {
             background-color: rgb(52, 65, 78);
             /* Darker background on hover */
+        }
+
+        /* Ellipsis option */
+        .hover-delete {
+            position: relative;
+            /* Ensure the delete menu is positioned relative to this container */
+            cursor: pointer;
+        }
+
+        /* Hover menu hidden by default, shown on hover */
+        .hover-delete-menu {
+            display: none;
+            /* Initially hidden */
+            position: absolute;
+            /* Positioned relative to the parent .hover-delete */
+            top: 100%;
+            /* Positioned below the ellipsis button */
+            right: 0;
+            /* Align to the right corner */
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            border-radius: 4px;
+            z-index: 10;
+            /* Ensure it's above other content */
+        }
+
+        /* Display the hover menu when hovering over the container (ellipsis icon + menu) */
+        .hover-delete:hover .hover-delete-menu {
+            display: block;
+        }
+
+        /* Styling for the h3 element */
+        h3 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            /* Adjust size as needed */
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        /* Styling for the ellipsis icon */
+        h3 i {
+            font-size: 1.5rem;
+            /* Size of the ellipsis icon */
+            color: #6c757d;
+            cursor: pointer;
+        }
+
+        /* Hover effect for the ellipsis icon */
+        h3 i:hover {
+            color: #343a40;
+        }
+
+        /* Button inside the hover menu */
+        .hover-delete-menu button {
+            width: 100%;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            /* Consistent font size */
+            font-weight: normal;
+            /* Consistent font weight */
+            font-family: inherit;
+            /* Consistent font family */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+            /* Adds space between buttons */
+        }
+
+        /* Hover effect for the delete button */
+        .hover-delete-menu button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Styling for the Edit button */
+        .hover-delete-menu .edit-button {
+            background-color: #f39c12;
+            /* Yellow background for Edit */
+            color: white;
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            /* Same font size as Delete */
+            font-weight: normal;
+            /* Same font weight as Delete */
+            font-family: inherit;
+            /* Ensures same font family as Delete */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+            /* Adds space between buttons */
+        }
+
+        /* Hover effect for the Edit button */
+        .hover-delete-menu .edit-button:hover {
+            background-color: #e67e22;
+            /* Darker yellow on hover */
         }
     </style>
     <script>
