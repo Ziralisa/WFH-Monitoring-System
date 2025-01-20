@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sprint_task', function (Blueprint $table) {
-            // Drop the foreign key constraint first
-            $table->dropForeign(['project_id']);
+            // Check if the column exists before dropping
+            if (Schema::hasColumn('sprint_task', 'project_id')) {
+                // Drop the foreign key
+                $table->dropForeign(['project_id']);
 
-            // Then drop the column
-            $table->dropColumn('project_id');
+                // Drop the column
+                $table->dropColumn('project_id');
+            }
         });
     }
 
@@ -26,11 +29,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sprint_task', function (Blueprint $table) {
-            // Add the column back
-            $table->unsignedBigInteger('project_id')->nullable();
+            // Re-add the column if not exists
+            if (!Schema::hasColumn('sprint_task', 'project_id')) {
+                $table->unsignedBigInteger('project_id')->nullable();
 
-            // Recreate the foreign key constraint
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+                // Recreate the foreign key constraint
+                $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            }
         });
     }
 };
