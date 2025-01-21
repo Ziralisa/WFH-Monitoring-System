@@ -38,7 +38,7 @@ class SprintController extends Component
             ->get(['id', 'name']);
 
         return response()->json($tasks);
-        dd(request()->all());
+        
     }
 
     public function storeComment(Task $task)

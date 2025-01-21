@@ -126,7 +126,7 @@
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i style="font-size: 1rem;"
-                            class="fa-solid fa-bars-progress text-center
+                            class="fa-solid fa-calendar text-center
                                             {{ in_array(request()->route()->getName(), ['backlog.show']) ? 'text-white' : 'text-dark' }}"></i>
                     </div>
                     <span class="nav-link-text ms-1">Sprint</span>
