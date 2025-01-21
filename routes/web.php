@@ -105,6 +105,9 @@ Route::group(['middleware' => ['can:view laravel examples']], function () {
 
 // SPRINT AND TASK MANAGEMENT
 Route::group(['middleware' => ['can:view backlog']], function () {
+    Route::get('/tasks/{projectId}/{sprintId}', [SprintController::class, 'getTasksByProject'])
+    ->name('tasks.byProject.sprint');
+    
     Route::get('task-management/backlog', SprintController::class)->name('backlog.show');
     Route::post('task-management/backlog/add-sprint', [SprintController::class, 'storeSprint'])->name('create-sprint');
     Route::post('/tasks', [SprintController::class, 'storeTask'])->name('tasks.store');

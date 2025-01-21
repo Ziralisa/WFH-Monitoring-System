@@ -6,105 +6,104 @@
 
     <!-- Add Task Modal -->
     <div class="modal fade" id="addTaskModal-{{ $sprint->id }}" tabindex="-1"
-    aria-labelledby="addTaskModalLabel-{{ $sprint->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTaskModalLabel-{{ $sprint->id }}">Add Task to
-                    {{ $sprint->name }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        aria-labelledby="addTaskModalLabel-{{ $sprint->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTaskModalLabel-{{ $sprint->id }}">Add Task to
+                        {{ $sprint->name }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('tasks.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="sprint_id" value="{{ $sprint->id }}">
+                    <div class="mx-3">
+                        <label for="project_id" class="form-label">Select Project</label>
+                        <select name="project_id" id="project_id-{{ $sprint->id }}" class="form-control" required
+                            onchange="loadTasks(this.value, '{{ $sprint->id }}')">
+                            <option value="" disabled selected>Select Project</option>
+                            @foreach ($projects as $project)
+                                <option value="{{ $project->id }}">{{ $project->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Task Selection -->
+                    <div class="mx-3">
+                        <label for="task_id-{{ $sprint->id }}" class="form-label">Select Task</label>
+                        <select name="task_id" id="task_id-{{ $sprint->id }}" class="form-control" required>
+                            <option value="" disabled selected>Select Task</option>
+                        </select>
+                    </div>
+
+                    <!-- Task Description -->
+                    <div class="mx-3">
+                        <label for="task_description" class="form-label">Task Description</label>
+                        <textarea name="task_description" id="task_description" class="form-control" rows="3"
+                            placeholder="Enter task description">{{ $task->task_description ?? '' }}</textarea>
+                    </div>
+
+
+                    <!-- Priority -->
+                    <div class="row">
+                        <div class="col-md-6 mx-3">
+                            <label for="task_priority" class="form-label">Priority</label>
+                            <select name="task_priority" id="task_priority" class="form-select" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 mx-3">
+                            <label for="task_status" class="form-label">Status</label>
+                            <select name="task_status" id="task_status" class="form-select" required>
+                                <option value="To Do">To Do</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Done">Done</option>
+                                <option value="Stuck">Stuck</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Assign User -->
+                    <div class="mx-3">
+                        <label for="task_assign" class="form-label">Assign Task (Optional)</label>
+                        <select name="task_assign" id="task_assign" class="form-select">
+                            <option value="" disabled selected>Select a user (optional)</option>
+                            @foreach ($staff as $member)
+                                <option value="{{ $member->id }}">{{ $member->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('tasks.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="sprint_id" value="{{ $sprint->id }}">
-                <div class="mx-3">
-                    <label for="project_id" class="form-label">Select Project</label>
-                    <select name="project_id" id="project_id-{{ $sprint->id }}" class="form-control" required onchange="loadTasks(this.value, '{{ $sprint->id }}')">
-                        <option value="" disabled selected>Select Project</option>
-                        @foreach ($projects as $project)
-                            <option value="{{ $project->id }}">{{ $project->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Task Selection -->
-                <div class="mx-3">
-                    <label for="task_id-{{ $sprint->id }}" class="form-label">Select Task</label>
-                    <select name="task_id" id="task_id-{{ $sprint->id }}" class="form-control" required>
-                        <option value="" disabled selected>Select Task</option>
-                    </select>
-                </div>
-
-                <!-- Task Description -->
-                <div class="mx-3">
-                    <label for="task_description" class="form-label">Task Description</label>
-                    <textarea name="task_description" id="task_description" class="form-control" rows="3"
-                        placeholder="Enter task description">{{ $task->task_description ?? '' }}</textarea>
-                </div>
-
-
-                <!-- Priority -->
-                <div class="row">
-                    <div class="col-md-6 mx-3">
-                        <label for="task_priority" class="form-label">Priority</label>
-                        <select name="task_priority" id="task_priority" class="form-select" required>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="col-md-6 mx-3">
-                        <label for="task_status" class="form-label">Status</label>
-                        <select name="task_status" id="task_status" class="form-select" required>
-                            <option value="To Do">To Do</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Done">Done</option>
-                            <option value="Stuck">Stuck</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Assign User -->
-                <div class="mx-3">
-                    <label for="task_assign" class="form-label">Assign Task (Optional)</label>
-                    <select name="task_assign" id="task_assign" class="form-select">
-                        <option value="" disabled selected>Select a user (optional)</option>
-                        @foreach ($staff as $member)
-                            <option value="{{ $member->id }}">{{ $member->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add Task</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
 </div>
 <script>
     function loadTasks(projectId, sprintId) {
-    if (projectId) {
-        fetch(`/tasks/${projectId}`)
-            .then(response => response.json())
-            .then(data => {
-                // Dynamically update the task dropdown for each sprint modal
-                let taskDropdown = document.getElementById(`task_id-${sprintId}`);
-                taskDropdown.innerHTML = '<option value="" disabled selected>Select Task</option>';
-
-                data.forEach(task => {
-                    taskDropdown.innerHTML += `<option value="${task.id}">${task.name}</option>`;
+        if (projectId) {
+            fetch(`/tasks/${projectId}/${sprintId}`)
+                .then(response => response.json())
+                .then(data => {
+                    let taskDropdown = document.getElementById(`task_id-${sprintId}`);
+                    taskDropdown.innerHTML = '<option value="" disabled selected>Select Task</option>';
+                    data.forEach(task => {
+                        taskDropdown.innerHTML += `<option value="${task.id}">${task.name}</option>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching tasks:', error);
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching tasks:', error);
-            });
+        }
     }
-}
 </script>

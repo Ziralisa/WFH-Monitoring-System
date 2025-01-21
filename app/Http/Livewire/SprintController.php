@@ -27,11 +27,18 @@ class SprintController extends Component
     {
         $this->taskId = $id;
     }
-
-    public function getTasksByProject($projectId)
+    public function getTasksByProject($projectId, $sprintId)
     {
-        $tasks = Task::where('project_id', $projectId)->get(['id', 'name']);
+        // Get all task IDs already associated with the sprint
+        $existingTaskIds = DB::table('sprint_task')->where('sprint_id', $sprintId)->pluck('task_id')->toArray();
+
+        // Fetch tasks that are part of the project but not already assigned to the sprint
+        $tasks = Task::where('project_id', $projectId)
+            ->whereNotIn('id', $existingTaskIds)
+            ->get(['id', 'name']);
+
         return response()->json($tasks);
+        dd(request()->all());
     }
 
     public function storeComment(Task $task)
@@ -123,7 +130,7 @@ class SprintController extends Component
             'sprint_id' => 'required|exists:sprints,id',
             'project_id' => 'required|exists:projects,id',
             'task_id' => 'required|exists:tasks,id', // Ensure task_id exists in the tasks table
-            'task_description'=>'nullable',
+            'task_description' => 'nullable',
             'task_priority' => 'required|in:Low,Medium,High',
             'task_status' => 'required|in:To Do,In Progress,Done,Stuck',
             'task_assign' => 'nullable|exists:users,id', // task_assign can be null or must exist in users table
@@ -154,7 +161,6 @@ class SprintController extends Component
 
             return redirect()->route('backlog.show')->with('success', 'Task updated successfully!');
         } catch (\Exception $e) {
-
             return redirect()
                 ->route('backlog.show')
                 ->with('error', 'Failed to update the task: ' . $e->getMessage());
