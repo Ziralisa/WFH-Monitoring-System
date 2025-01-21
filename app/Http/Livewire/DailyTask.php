@@ -13,11 +13,13 @@ class DailyTask extends Component
     public $completedTasksForTable = [];
     public $unassignedTasks = [];
     public $assignedTasks = [];
-    public $selectedTaskId;
+    public $selectedTaskId = null; // Or set to a valid task ID if you have a default task.
+
     protected $taskLogs = [];
     public $startOfWeek, $endOfWeek;
     public $selectedWeek = 0; // Default to the current week
     public $availableWeeks = [];
+    
     public function mount()
     {
         // Load tasks when the component is mounted

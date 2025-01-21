@@ -103,31 +103,27 @@
                 <h3>
                     Sprint: {{ $sprint->name }}
                     <!-- Hover Edit and Delete  -->
-                    <div class="hover-delete">
-                        <i class="fas fa-ellipsis-v"></i>
-                        <div class="hover-delete-menu">
-                            <form action="{{ route('sprints.edit', $sprint->id) }}" method="GET"
-                                style="margin: 0;">
-                                @csrf
-                                <button type="button" class="edit-button" data-bs-toggle="modal"
-                                    data-bs-target="#EditSprintModal"
-                                    onclick="populateEditModal({{ $sprint->id }}">
-                                    EDIT
-                                </button>
-                            </form>
+                    <span class="info-icon" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="cursor: pointer; float: right;">
+                        <i class="fas fa-ellipsis-v" style="font-size:20px"></i>
+                    </span>
+                      <!-- Dropdown Menu -->
+                      <div class="dropdown-menu p-2 shadow-sm">
+                        <!-- Edit Sprint Button -->
+                        <button class="btn btn-sm btn-warning d-block w-100 mb-2" data-bs-toggle="modal"
+                            data-bs-target="#EditSprintModal-{{ $sprint->id }}">
+                            <i class="fas fa-edit" style="font-size: 15px; color: white;"></i> Edit
+                        </button>
 
                             <!-- Delete Button -->
-                            <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST"
-                                style="margin: 0;">
+                            <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger"
+                                <button type="submit" class="btn btn-sm btn-danger d-block w-100"
                                     onclick="return confirm('Are you sure you want to delete this sprint?')">
-                                    Delete
+                                    <i class="fas fa-trash-alt" style="font-size: 15px; color: white;"></i>Delete
                                 </button>
                             </form>
-                        </div>
-                    </div>
                 </h3>
 
                 <p>Description: {{ $sprint->desc }}</p>
@@ -259,6 +255,50 @@
             <div class="no-sprints">No sprints added yet.</div>
         @endforelse
     </div>
+
+    <!-- Edit Sprint Modal -->
+    @forelse ($sprints as $sprint)
+    <div class="modal fade" id="EditSprintModal-{{ $sprint->id }}" tabindex="-1"
+        aria-labelledby="EditSprintModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('sprints.edit', $sprint->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Sprint Name</label>
+                            <input type="text" name="name" class="form-control" value="{{ $sprint->name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="desc" class="form-label">Description</label>
+                            <textarea name="desc" class="form-control" required>{{ $sprint->desc }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startdate" class="form-label">Start Date</label>
+                            <input type="date" name="startdate" class="form-control" value="{{ $sprint->startdate }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="enddate" class="form-label">End Date</label>
+                            <input type="date" name="enddate" class="form-control" value="{{ $sprint->enddate }}" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-gradient-primary">Update Sprint</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@empty
+    <p>No sprints available.</p>
+@endforelse
+
 
     <style>
         .sprint-card {

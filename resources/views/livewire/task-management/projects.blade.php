@@ -1,8 +1,9 @@
 <x-layouts.base>
+    {{-- Include sidebar and navbar if they exist --}}
     @includeIf('layouts.navbars.auth.sidebar') <!-- Sidebar -->
     @includeIf('layouts.navbars.auth.nav') <!-- Navbar -->
 
-    <div class="container mt-4">
+<div class="container mt-4">
         <h1 class="mb-4">Projects</h1>
 
         <!-- Buttons for Add Project and Add Task -->
@@ -272,4 +273,4 @@
                 background-color: #f9f9f9;
             }
         </style>
-</x-layouts.base>
+        </x-layouts.base>

@@ -12,7 +12,8 @@
             </div>
             <div class="modal-body">
                 <select class="form-select" wire:model="selectedTaskId">
-                    <option selected disabled>Select an unassigned task</option>
+                    <option selected disabled></option>
+                    <option value="test">Select an unassigned task</option>
                     @forelse ($unassignedTasks as $task)
                         <option value="{{ $task->id }}">
                            {{ $task->project->name }}: {{ $task->name }}
@@ -22,6 +23,7 @@
                     @endforelse
                 </select>
             </div>
+            
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">
                     Close

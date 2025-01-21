@@ -23,7 +23,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\SprintController;
-use App\Http\Livewire\ProjectController;
+use App\Http\Controllers\ProjectController;
 
 
 
