@@ -8,7 +8,7 @@
 
             <div class="row">
                 <!-- Weekly Status Card -->
-                <div class="col-md-6 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <div class="card text-white bg-secondary">
                         <div class="card-body">
                             <h5 class="card-title">
@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- Monthly Status Card -->
-                <div class="col-md-6 mb-3">
+                <div class="col-12 col-md-6 mb-3">
                     <div class="card text-white bg-secondary">
                         <div class="card-body">
                             <h5 class="card-title">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
 
         <!-- Filter Form -->
         <form method="GET" action="{{ route('report') }}" class="mb-4">
@@ -129,6 +129,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         </div>
     </main>

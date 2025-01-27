@@ -96,7 +96,7 @@ class Attendance extends Component
         logger()->info('Inside clockIn()!');
 
         $now = Carbon::now('Asia/Kuala_Lumpur');
-        $clockInDeadline = Carbon::today('Asia/Kuala_Lumpur')->setHour(9);
+        $clockInDeadline = Carbon::today('Asia/Kuala_Lumpur')->setHour(10);
         $clockInPoints = $now->lessThan($clockInDeadline) ? 20 : 10;
 
         // Debugging log
