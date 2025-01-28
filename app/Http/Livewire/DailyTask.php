@@ -11,22 +11,28 @@ class DailyTask extends Component
 {
     public $todoTasksForTable = [];
     public $completedTasksForTable = [];
+    public $customTasksForTable = [];
     public $unassignedTasks = [];
     public $assignedTasks = [];
-    public $selectedTaskId = null; // Or set to a valid task ID if you have a default task.
-
+    public $selectedTaskId = null;
+    public $customTaskTitle = '';
+    public $customTasks;
     protected $taskLogs = [];
     public $startOfWeek, $endOfWeek;
-    public $selectedWeek = 0; // Default to the current week
+    public $selectedWeek = 0;
     public $availableWeeks = [];
-    
+
     public function mount()
     {
-        // Load tasks when the component is mounted
         $this->generateAvailableWeeks();
         $this->loadTasksForSelectedWeek();
         $this->loadUnassignedAndAssignedTasks();
         $this->loadTaskLogs();
+        $this->customTasks = TaskLog::where('status', 'In Progress')
+            ->whereNotNull('title')
+            ->where('user_id', auth()->id())
+            ->get();
+
     }
 
     public function generateAvailableWeeks()
@@ -58,40 +64,54 @@ class DailyTask extends Component
         if ($this->selectedWeek == 0) {
 
         }
-            $selectedWeekData = $this->availableWeeks[$this->selectedWeek];
+        $selectedWeekData = $this->availableWeeks[$this->selectedWeek];
 
-            $this->startOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['start']);
-            $this->endOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['end']);
+        $this->startOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['start']);
+        $this->endOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['end']);
 
-            // // Get the start and end of the current week
-            // $this->startOfWeek = Carbon::now()->startOfWeek()->toDateString();
-            // $this->endOfWeek = Carbon::now()->endOfWeek()->toDateString();
+        // Fetch tasks for the current week
+        $todoTasks = Task::where('task_assign', auth()->id())
+            ->whereBetween('todo_date', [$this->startOfWeek, $this->endOfWeek])
+            ->get();
 
-            // Fetch tasks for the current week
-            $todoTasks = Task::whereBetween('todo_date', [$this->startOfWeek, $this->endOfWeek])->get();
-            $completedTasks = Task::whereBetween('completed_date', [$this->startOfWeek, $this->endOfWeek])->get();
+        $completedTasks = Task::where('task_assign', auth()->id())
+            ->whereBetween('completed_date', [$this->startOfWeek, $this->endOfWeek])
+            ->get();
 
-            // Group tasks by day name for both To-Do and Completed
-            $todoTasksByDay = $todoTasks->groupBy(function ($task) {
-                return Carbon::parse($task->todo_date)->format('l'); // "Monday", "Tuesday", etc.
-            });
+        $customTasks = TaskLog::where('user_id', auth()->id())
+            ->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])
+            ->get();
+        // Group tasks by day name for both To-Do and Completed
+        $todoTasksByDay = $todoTasks->groupBy(function ($task) {
+            return Carbon::parse($task->todo_date)->format('l');
+        });
 
-            $completedTasksByDay = $completedTasks->groupBy(function ($task) {
-                return Carbon::parse($task->completed_date)->format('l'); // "Monday", "Tuesday", etc.
-            });
+        $completedTasksByDay = $completedTasks->groupBy(function ($task) {
+            return Carbon::parse($task->completed_date)->format('l');
+        });
 
-            // Prepare tasks for each weekday column
-            $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        $customTasksByDay = $customTasks->groupBy(function ($taskLogs) {
+            return Carbon::parse($taskLogs->created_at)->format('l');
+        });
 
-            $this->todoTasksForTable = [];
-            foreach ($weekDays as $day) {
-                $this->todoTasksForTable[$day] = $todoTasksByDay[$day] ?? collect(); // Ensure empty collection if no tasks
-            }
+        // Prepare tasks for each weekday column
+        $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-            $this->completedTasksForTable = [];
-            foreach ($weekDays as $day) {
-                $this->completedTasksForTable[$day] = $completedTasksByDay[$day] ?? collect(); // Ensure empty collection if no tasks
-            }
+        $this->todoTasksForTable = [];
+        foreach ($weekDays as $day) {
+            $this->todoTasksForTable[$day] = $todoTasksByDay[$day] ?? collect();
+        }
+
+        $this->completedTasksForTable = [];
+        foreach ($weekDays as $day) {
+            $this->completedTasksForTable[$day] = $completedTasksByDay[$day] ?? collect();
+        }
+
+        $this->customTasksForTable = [];
+        foreach ($weekDays as $day) {
+            $this->customTasksForTable[$day] = $customTasksByDay[$day] ?? collect();
+        }
+
     }
 
     public function loadUnassignedAndAssignedTasks()
@@ -102,13 +122,14 @@ class DailyTask extends Component
 
     public function loadTaskLogs()
     {
-        $taskLogs = TaskLog::with(['task.assignedUser']) // Load related task and its assigned user
-            ->where('created_at', '>=', now()->subWeek()) // Logs from the past week
-            ->whereIn('status', ['In Progress', 'Done', 'Stuck']) // Filter by status
-            ->orderBy('created_at', 'desc') // Order by creation date
+        $taskLogs = TaskLog::with(['task.assignedUser'])
+            ->where('user_id', auth()->id())
+            ->where('created_at', '>=', now()->subWeek())
+            ->whereIn('status', ['In Progress', 'Done', 'Stuck'])
+            ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function ($log) {
-                return $log->created_at->format('Y-m-d'); // Group by date
+                return $log->created_at->format('Y-m-d');
             });
 
         $this->taskLogs = $taskLogs;
@@ -120,7 +141,7 @@ class DailyTask extends Component
             if ($this->selectedTaskId) {
                 $task = Task::find($this->selectedTaskId);
 
-                if ($task) {
+                if ($task && $task->task_assign == auth()->id()) {
                     $task->todo_date = now();
                     $task->task_status = 'In Progress';
                     $task->save();
@@ -128,6 +149,7 @@ class DailyTask extends Component
                     TaskLog::create([
                         'task_id' => $task->id,
                         'status' => 'In Progress',
+                        'user_id' => auth()->id(),
                     ]);
 
                     return redirect()->route('daily.show')->with('success', 'Added task to-do task for today successfully.');
@@ -147,23 +169,49 @@ class DailyTask extends Component
         }
     }
 
+    public function addCustomTaskToday()
+    {
+        try {
+            if ($this->customTaskTitle) {
+                TaskLog::create([
+                    'title' => $this->customTaskTitle,
+                    'status' => 'In Progress',
+                    'user_id' => auth()->id(),
+                ]);
+
+                $this->customTaskTitle = '';
+                return redirect()->route('daily.show')->with('success', 'Custom task added successfully.');
+            } else {
+                session()->flash('error', 'Please provide a title for the custom task.');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error adding custom task: ' . $e->getMessage(), [
+                'custom_task_title' => $this->customTaskTitle,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', 'An unexpected error occurred while adding the custom task.');
+        }
+    }
+
     public function addCompletedTaskToday()
     {
         try {
             if ($this->selectedTaskId) {
-                $task = Task::find($this->selectedTaskId);
+                // Check if selected task is from assigned tasks or a custom task
+                $task = Task::find($this->selectedTaskId) ?? TaskLog::find($this->selectedTaskId);
 
                 if ($task) {
-                    $task->completed_date = now();
-                    $task->task_status = 'Done';
-                    $task->save();
+                    if ($task instanceof Task) {
+                        $task->completed_date = now();
+                        $task->task_status = 'Done';
+                        $task->save();
+                    } elseif ($task instanceof TaskLog) {
+                        $task->status = 'Done';
+                        $task->save();
+                    }
 
-                    TaskLog::create([
-                        'task_id' => $task->id,
-                        'status' => 'Done',
-                    ]);
-
-                    return redirect()->route('daily.show')->with('success', 'Added task completed for today successfully.');
+                    return redirect()->route('daily.show')->with('success', 'Task marked as completed for today successfully.');
                 } else {
                     session()->flash('error', 'Task not found.');
                 }
@@ -173,6 +221,7 @@ class DailyTask extends Component
         } catch (\Exception $e) {
             \Log::error('Error adding completed task: ' . $e->getMessage(), [
                 'task_id' => $this->selectedTaskId,
+                'custom_task_title' => $this->customTaskTitle,
                 'trace' => $e->getTraceAsString(),
             ]);
 
@@ -183,8 +232,8 @@ class DailyTask extends Component
     public function render()
     {
         return view('livewire.daily-task.show', [
-            'todoTasksForTable' => $this->todoTasksForTable, // Pass To-Do tasks to the view
-            'completedTasksForTable' => $this->completedTasksForTable, // Pass Completed tasks to the view
+            'todoTasksForTable' => $this->todoTasksForTable,
+            'completedTasksForTable' => $this->completedTasksForTable,
             'unassignedTasks' => $this->unassignedTasks,
             'assignedTasks' => $this->assignedTasks,
             'taskLogs' => $this->taskLogs,

@@ -19,6 +19,17 @@
                     @empty
                         <option disabled>No assigned tasks available</option>
                     @endforelse
+
+                    <!-- Display custom tasks from log_tasks -->
+                    <optgroup label="Custom Tasks">
+                        @forelse ($customTasks as $customTask)
+                            <option value="{{ $customTask->id }}">
+                                {{ $customTask->title }}
+                            </option>
+                        @empty
+                            <option disabled>No custom tasks available</option>
+                        @endforelse
+                    </optgroup>
                 </select>
             </div>
             <div class="modal-footer">

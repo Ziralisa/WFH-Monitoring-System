@@ -1,68 +1,107 @@
 <div class="mt-4">
     <h2 class="mb-4">Daily Task Log</h2>
-    <h6 class="mb-4">Displaying task logs from <strong>{{ \Carbon\Carbon::parse($startOfWeek)->format('d/m/Y') }}</strong> to <strong>{{ \Carbon\Carbon::parse($endOfWeek)->format('d/m/Y') }}</strong></h6>
+    <h6 class="mb-4">Displaying task logs from
+        <strong>{{ \Carbon\Carbon::parse($startOfWeek)->format('d/m/Y') }}</strong> to
+        <strong>{{ \Carbon\Carbon::parse($endOfWeek)->format('d/m/Y') }}</strong>
+    </h6>
     @forelse ($taskLogs as $date => $logs)
         <div style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px;">
             <h3>
                 ---- {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }} ----
                 {{ \Carbon\Carbon::parse($date)->format('l') }} ----
             </h3>
-
             @forelse ($logs as $log)
                 @php
                     $task = $log->task; // Retrieve the related Task model
                 @endphp
-                <div class="d-flex align-items-center justify-content-start p-4">
-                    <div class="mx-4">
-                        <p class="h6 mb-0 text-s">Last updated:</p>
-                        <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
-                            {{ $log->created_at }}
-                        </p>
-                    </div>
-                    <div class="d-flex flex-row align-items-center card w-80">
-                        <div class="col-2 p-4 text-center">
-                            <div class="py-2 flex-row user-wrapper">
-                                <a href="javascript:void(0)" class="h6 mb-2 text-s text-center ">
-                                    {{ $task->assignedUser->name ?? 'Unassigned' }}
-                                </a>
-                                <div class="tooltip-content">
-                                    @if ($task->assignedUser)
-                                        <h4>{{ $task->assignedUser->name }}</h4>
-                                        <span>staff</span>
-                                        <div class="contact-details">
-                                            <div class="email">
-                                                <span>{{ $task->assignedUser->email }}</span>
+                @if ($task)
+                    <div class="d-flex align-items-center justify-content-start p-4">
+                        <div class="mx-4">
+                            <p class="h6 mb-0 text-s">Last updated:</p>
+                            <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
+                                {{ $log->created_at }}
+                            </p>
+                        </div>
+                        <div class="d-flex flex-row align-items-center card w-80">
+                            <div class="col-2 p-4 text-center">
+                                <div class="py-2 flex-row user-wrapper">
+                                    <a href="javascript:void(0)" class="h6 mb-2 text-s text-center">
+                                        {{ $task->assignedUser->name ?? 'Unassigned' }}
+                                    </a>
+                                    <div class="tooltip-content">
+                                        @if ($task->assignedUser)
+                                            <h4>{{ $task->assignedUser->name }}</h4>
+                                            <span>staff</span>
+                                            <div class="contact-details">
+                                                <div class="email">
+                                                    <span>{{ $task->assignedUser->email }}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }} @else {{ route('view-user-profile', $task->assignedUser->id) }} @endif"
-                                            class="view-profile-hover">
-                                            View Profile
-                                        </a>
-                                    @else
-                                        <h4>Unassigned</h4>
-                                    @endif
+                                            <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }} @else {{ route('view-user-profile', $task->assignedUser->id) }} @endif"
+                                                class="view-profile-hover">
+                                                View Profile
+                                            </a>
+                                        @else
+                                            <h4>Unassigned</h4>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex-row">
+                                    <span class="badge badge-sm" style="background-color: {{ $log->status == 'To Do'
+                            ? 'grey'
+                            : ($log->status == 'In Progress'
+                                ? 'orange'
+                                : ($log->status == 'Done'
+                                    ? 'green'
+                                    : 'red')) }}; color: white; width: 100px">
+                                        {{ $log->status }}
+                                    </span>
                                 </div>
                             </div>
-                            <div class="flex-row">
-                                <span class="badge badge-sm"
-                                    style="background-color: {{ $log->status == 'To Do'
-                                        ? 'grey'
-                                        : ($log->status == 'In Progress'
-                                            ? 'orange'
-                                            : ($log->status == 'Done'
-                                                ? 'green'
-                                                : 'red')) }}; color: white; width: 100px">
-                                    {{ $log->status }}
-                                </span>
+                            <div class="col-10 p-4">
+                                <p class="h6"><strong>{{ $task->project->name }}</strong>:
+                                    {{ $task->name }}
+                                </p>
+                                <span class="text-s text-secondary mx-3">{{ $task->task_description ?? 'No Description' }}</span>
                             </div>
                         </div>
-                        <div class="col-10 p-4">
-                            <p class="h6"><strong>{{ $task->project->name }}</strong>:
-                                {{ $task->name }}</p>                            <span
-                                class="text-s text-secondary mx-3">{{ $task->task_description ?? 'No Description' }}</span>
+                    </div>
+                @else
+                    <!-- Handle custom task log -->
+                    <div class="d-flex align-items-center justify-content-start p-4">
+                        <div class="mx-4">
+                            <p class="h6 mb-0 text-s">Last updated:</p>
+                            <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
+                                {{ $log->created_at }}
+                            </p>
+                        </div>
+                        <div class="d-flex flex-row align-items-center card w-80">
+                            <div class="col-2 p-4 text-center">
+                                <div class="py-2 flex-row user-wrapper">
+                                    @if ($log->user_id)
+                                        <!-- If the task log has an assigned user -->
+                                        <a href="javascript:void(0)" class="h6 mb-2 text-s text-center">
+                                            {{ $log->user->name ?? 'Unknown User' }}
+                                        </a>
+                                    @else
+                                        <!-- If no user is assigned -->
+                                        <a href="javascript:void(0)" class="h6 mb-2 text-s text-center">
+                                            {{ 'Unassigned' }}
+                                        </a>
+                                    @endif
+                                </div>
+                                <div class="flex-row">
+                                    <span class="badge badge-sm" style="background-color: grey; color: white; width: 100px">
+                                        Open Task
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-10 p-4">
+                                <p class="h6"><strong>{{ $log->title ?? 'Custom Task' }}</strong></p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @empty
                 <p>No tasks available for this date.</p>
             @endforelse

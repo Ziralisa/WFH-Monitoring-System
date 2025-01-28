@@ -12,11 +12,18 @@ class TaskLog extends Model
     protected $fillable = [
         'task_id',
         'status',
+        'title',
+        'user_id',
     ];
 
     public function task()
     {
         return $this->belongsTo(Task::class);
     }
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id'); 
+    }
+    
 
 }
