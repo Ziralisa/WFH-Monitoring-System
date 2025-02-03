@@ -39,9 +39,9 @@
 
                     <!-- Task Description -->
                     <div class="mx-3">
-                        <label for="task_description" class="form-label">Task Description</label>
-                        <textarea name="task_description" id="task_description" class="form-control" rows="3"
-                            placeholder="Enter task description">{{ $task->task_description ?? '' }}</textarea>
+                        <label for="task_description-{{ $sprint->id }}" class="form-label">Task Description</label>
+                        <textarea name="task_description" id="task_description-{{ $sprint->id }}" class="form-control" rows="3"
+                            placeholder="Enter task description"></textarea>
                     </div>
 
 
@@ -95,11 +95,47 @@
             fetch(`/tasks/${projectId}/${sprintId}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log("Fetched Tasks:", data);
+
                     let taskDropdown = document.getElementById(`task_id-${sprintId}`);
+                    let taskDescription = document.getElementById(`task_description-${sprintId}`);
+
+                    if (!taskDropdown || !taskDescription) {
+                        console.error("Dropdown or description field not found!");
+                        return;
+                    }
+
+                    // Clear existing options
                     taskDropdown.innerHTML = '<option value="" disabled selected>Select Task</option>';
+
                     data.forEach(task => {
-                        taskDropdown.innerHTML += `<option value="${task.id}">${task.name}</option>`;
+                        console.log("Task Data:", task);
+
+                        let option = document.createElement("option");
+                        option.value = task.id;
+                        option.textContent = task.name;
+
+                        // Check if 'task description' exists
+                        if (task.task_description) {
+                            option.setAttribute("data-description", task.task_description);
+                        } else {
+                            console.warn(`Task ${task.id} has no description!`);
+                        }
+
+                        taskDropdown.appendChild(option);
                     });
+
+                    // Reset task description
+                    taskDescription.value = '';
+
+                    taskDropdown.onchange = function() {
+                        let selectedTask = taskDropdown.options[taskDropdown.selectedIndex];
+                        let description = selectedTask.getAttribute("data-description") ||
+                            'No description available';
+                        console.log("Selected Task Description:",
+                        description); // Debug: Log selected task description
+                        taskDescription.value = description;
+                    };
                 })
                 .catch(error => {
                     console.error('Error fetching tasks:', error);
