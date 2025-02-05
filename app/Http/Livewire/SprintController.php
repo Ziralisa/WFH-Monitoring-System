@@ -28,20 +28,28 @@ class SprintController extends Component
         $this->taskId = $id;
     }
     public function getTasksByProject($projectId, $sprintId)
-    {
-        // Get all task ID
-        $existingTaskIds = DB::table('sprint_task')
-            ->where('sprint_id', $sprintId)
-            ->pluck('task_id')
-            ->toArray();
+{
+    // Get all task IDs that are marked as "Done" in any sprint
+    $doneTaskIds = DB::table('sprint_task')
+        ->join('tasks', 'sprint_task.task_id', '=', 'tasks.id')
+        ->where('tasks.task_status', 'Done')
+        ->pluck('tasks.id')
+        ->toArray();
 
-        // Fetch tasks
-        $tasks = Task::where('project_id', $projectId)
-            ->whereNotIn('id', $existingTaskIds)
-            ->get(['id', 'name', 'task_description']);
+    // Get all task IDs already associated with the current sprint
+    $existingTaskIds = DB::table('sprint_task')
+        ->where('sprint_id', $sprintId)
+        ->pluck('task_id')
+        ->toArray();
 
-        return response()->json($tasks);
-    }
+    // Fetch tasks that are not marked as "Done" and not already in the current sprint
+    $tasks = Task::where('project_id', $projectId)
+        ->whereNotIn('id', $doneTaskIds)
+        ->whereNotIn('id', $existingTaskIds)
+        ->get(['id', 'name', 'task_description']);
+
+    return response()->json($tasks);
+}
 
 
     public function storeComment(Task $task)
