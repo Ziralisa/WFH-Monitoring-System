@@ -200,17 +200,30 @@ class DailyTask extends Component
             if ($this->selectedTaskId) {
                 // Check if selected task is from assigned tasks or a custom task
                 $task = Task::find($this->selectedTaskId) ?? TaskLog::find($this->selectedTaskId);
-
+    
                 if ($task) {
                     if ($task instanceof Task) {
+                        // Update the task in the tasks table
                         $task->completed_date = now();
                         $task->task_status = 'Done';
                         $task->save();
+    
+                        // Find the latest task log for this task and update its status
+                        $taskLog = TaskLog::where('task_id', $task->id)
+                            ->where('user_id', auth()->id())
+                            ->latest() // Get the most recent log entry
+                            ->first();
+    
+                        if ($taskLog) {
+                            $taskLog->status = 'Done';
+                            $taskLog->save();
+                        }
                     } elseif ($task instanceof TaskLog) {
+                        // For custom tasks (TaskLog), update the status directly
                         $task->status = 'Done';
                         $task->save();
                     }
-
+    
                     return redirect()->route('daily.show')->with('success', 'Task marked as completed for today successfully.');
                 } else {
                     session()->flash('error', 'Task not found.');
@@ -224,7 +237,7 @@ class DailyTask extends Component
                 'custom_task_title' => $this->customTaskTitle,
                 'trace' => $e->getTraceAsString(),
             ]);
-
+    
             session()->flash('error', 'An unexpected error occurred while adding the task.');
         }
     }
