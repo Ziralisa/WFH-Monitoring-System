@@ -84,11 +84,13 @@ Route::group(['middleware' => ['can:view attendance status']], function () {
 //ATTENDANCE REPORT (STAFF)
 Route::group(['middleware' => ['can:view attendance report']], function () {
     Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
+    Route::get('/report/export', [Attandance::class, 'export'])->name('report.export');
 });
 
 //ATTENDANCE REPORT (ADMIN)
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
+    Route::get('/report-pdf/pdf', [AttendanceController::class, 'downloadPdf'])->name('report-pdf.pdf');
 });
 
 //DEMO PAGES ROUTES

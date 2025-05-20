@@ -33,7 +33,7 @@
                                                 Latitude</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Longitude</th>
+                                                Longitude</th>  
                                         </tr>
                                     </thead>
                                     <tbody>

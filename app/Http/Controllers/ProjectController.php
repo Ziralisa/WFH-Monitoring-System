@@ -22,9 +22,11 @@ class ProjectController extends Component
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        Project::create($request->only(['name', 'description']));
+        Project::create($request->only(['name', 'description', 'start_date', 'end_date']));
 
         return redirect()->back()->with('success', 'Project created successfully!');
     }
@@ -71,6 +73,8 @@ class ProjectController extends Component
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
         $project->update($validated);

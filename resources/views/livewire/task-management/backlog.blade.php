@@ -156,32 +156,49 @@
                             <tr>
                                 <td>{{ $task->name }}</td>
                                 <td class="text-center">
-                                    <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="{{ $task->task_description ?? 'No description' }}"
-                                        data-container="body" data-animation="true">
+                                    <!-- Trigger Button -->
+                                    <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="modal"
+                                    data-bs-target="#descriptionModal-{{ $task->id }}">
                                         <i class="fa-solid fa-circle-info"></i>
                                     </a>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="descriptionModal-{{ $task->id }}" tabindex="-1" aria-labelledby="descModalLabel-{{ $task->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="descModalLabel-{{ $task->id }}">Task Description</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body" style="white-space: normal; word-wrap: break-word; overflow-wrap: break-word;">
+                                                    {{ $task->task_description ?? 'No description available' }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
+                                
+
                                 <td>
+                                    <!--WAFA ADD-->
+                                    @php
+                                        $isAssignedUser = $task->assignedUser && $task->assignedUser->id == auth()->id();
+                                        $isAdmin = auth()->user()->role == 'admin';
+                                    @endphp
+
                                     <form>
-                                        <select id="task-status-{{ $task->id }}" class="task-status"
-                                            data-task-id="{{ $task->id }}" required>
-                                            <option value="To Do"
-                                                {{ $task->task_status == 'To Do' ? 'selected' : '' }}>To Do
-                                            </option>
-                                            <option value="In Progress"
-                                                {{ $task->task_status == 'In Progress' ? 'selected' : '' }}>In Progress
-                                            </option>
-                                            <option value="Done"
-                                                {{ $task->task_status == 'Done' ? 'selected' : '' }}>Done
-                                            </option>
-                                            <option value="Stuck"
-                                                {{ $task->task_status == 'Stuck' ? 'selected' : '' }}>Stuck
-                                            </option>
+                                        <select id="task-status-{{ $task->id }}" class="task-status" data-task-id="{{ $task->id }}"
+                                           {{ !$isAssignedUser || $isAdmin ? 'disabled' : '' }} required>
+                                        <option value="To Do" {{ $task->task_status == 'To Do' ? 'selected' : '' }}>To Do</option>
+                                        <option value="In Progress" {{ $task->task_status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                                        <option value="Done" {{ $task->task_status == 'Done' ? 'selected' : '' }}>Completed</option>
                                         </select>
-                                    </form>
+                                    </form>    
                                 </td>
+
                                 <td
                                     class="text-center font-weight-bolder
                                         @if ($task->task_priority === 'Low') priority-low
@@ -214,7 +231,7 @@
                                             @csrf
                                             <select name="task_assign" id="task_assign_{{ $task->id }}"
                                                 class="form-select" onchange="this.form.submit()">
-                                                <option value="" disabled selected>Select a user (optional)
+                                                <option value="" disabled selected>Assign To
                                                 </option>
                                                 @foreach ($staff as $member)
                                                     <option value="{{ $member->id }}"
@@ -236,7 +253,7 @@
                                 </td>
 
                                 <!-- Display Project Name -->
-                                <td style="text-align: center;">
+                                <td>
                                     {{ $task->project->name ?? 'No project assigned' }}
                                 </td>
                             </tr>
@@ -305,6 +322,7 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 16px;
+            width: fit-content;
             margin-bottom: 24px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -349,12 +367,14 @@
         }
 
         .status {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
+            display: block;
+            padding: 0.5rem 1rem 0.5rem 0.75rem;
+            border: 1px solid #d2d6da;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.4rem;
+            color: #495057;
         }
 
         .status-in-progress {

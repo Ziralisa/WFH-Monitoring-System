@@ -208,7 +208,7 @@ strong {
 }
 
 small, .small {
-  font-size: 0.875em;
+  font-size: 0.810em;
 }
 
 mark, .mark {
@@ -643,6 +643,7 @@ progress {
 .container-md,
 .container-sm {
   width: 100%;
+  overflow-x: auto;
   padding-right: var(--bs-gutter-x, 1.5rem);
   padding-left: var(--bs-gutter-x, 1.5rem);
   margin-right: auto;
@@ -1603,7 +1604,7 @@ progress {
 
   .col-lg-5 {
     flex: 0 0 auto;
-    width: 41.66666667%;
+    width: 42.66666667%;
   }
 
   .col-lg-6 {
@@ -2793,6 +2794,18 @@ textarea.form-control-lg {
   border-radius: 0.5rem;
 }
 
+/*.task-status {
+  display: block;
+  width: 160%;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  /*-moz-padding-start: calc(0.75rem - 3px);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4rem;
+  color: #495057;
+}*/
+
+/*di sini*/
 .form-select {
   display: block;
   width: 100%;
@@ -8227,6 +8240,7 @@ textarea.form-control-lg {
 
 .mt-8 {
   margin-top: 8rem !important;
+  margin-bottom: 3rem !important;
 }
 
 .mt-9 {
@@ -8794,7 +8808,8 @@ textarea.form-control-lg {
 }
 
 .p-4 {
-  padding: 1.5rem !important;
+  padding: 1rem !important;
+  max-width: max-content;
 }
 
 .p-5 {
@@ -19146,8 +19161,14 @@ textarea.form-control-lg {
 .btn.bg-gradient-primary:not(:disabled):not(.disabled):active,
 .show > .btn.bg-gradient-primary.dropdown-toggle {
   color: color-yiq(#f53939);
-  background-color: #f53939;
+  background-color: #f53939; /*tukar color profile*/
 }
+
+/*Color untuk profile (biru)*/
+.btn-primary-pf:not(:disabled):not(.disabled).active, .btn-primary-pf:not(:disabled):not(.disabled):active, .show > .btn-primary-pf.dropdown-toggle {
+  background-color: #637AF3; /*tukar color profile*/
+}
+
 .btn-primary.focus, .btn-primary:focus,
 .btn.bg-gradient-primary.focus,
 .btn.bg-gradient-primary:focus {
@@ -19527,7 +19548,7 @@ textarea.form-control-lg {
 }
 .card .card-body {
   font-family: "Open Sans";
-  padding: 1.5rem;
+  padding: 0.5rem;
 }
 .card.card-plain {
   background-color: transparent;
@@ -19574,7 +19595,7 @@ textarea.form-control-lg {
   min-height: 330px;
   max-width: 450px;
   padding-top: 60px;
-  padding-bottom: 60px;
+  padding-bottom: 10px;
 }
 .card.card-background .card-body .content-center {
   text-align: center;
@@ -21584,7 +21605,7 @@ hr.horizontal.gray-light {
 }
 .g-sidenav-show .sidenav .nav-link-text {
   transition: 0.3s ease;
-  opacity: 1;
+  opacity: 2;
 }
 
 /* @media (max-width: 1199.98px) { */
@@ -21632,12 +21653,17 @@ hr.horizontal.gray-light {
   box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
   border-radius: 0.5rem;
 }
+
+/*Tulisan sidebar jadi lagi bold*/
 .navbar-vertical .navbar-nav > .nav-item .nav-link.active {
   color: #344767;
-  background-color: #fff;
+  font-weight: bold; /*Tambah ni bagi dia lagi bold*/
+  background-color: #DAEFFB; 
 }
+
+/*Background untuk icon task bar*/
 .navbar-vertical .navbar-nav > .nav-item .nav-link.active .icon {
-  background-image: linear-gradient(310deg, #f53939 0%, #f53939 100%);
+  background-image: linear-gradient(310deg, #0070ff 0%, #0070ff 100%); /*Merah - biru*/
 }
 .navbar-vertical .navbar-nav > .nav-item .nav-link.active .icon svg .color-background,
 .navbar-vertical .navbar-nav > .nav-item .nav-link.active .icon svg .color-foreground {
@@ -22815,7 +22841,7 @@ p, .p {
 }
 
 .text-sm {
-  font-size: 0.875rem !important;
+  font-size: 0.810rem !important;
 }
 
 .text-xs {
@@ -22892,7 +22918,7 @@ p {
   background-image: linear-gradient(310deg, #7928CA, #FF0080);
 }
 .text-gradient.text-info {
-  background-image: linear-gradient(310deg, #2152FF, #21D4FD);
+  background-image: linear-gradient( #1a237e, #54DDFD); /*warna untuk login-welcome,signup*/
 }
 .text-gradient.text-success {
   background-image: linear-gradient(310deg, #17AD37, #C1E823);
@@ -24457,3 +24483,5 @@ pre[class*=language-] {
     overflow: auto !important;
   }
 }
+
+

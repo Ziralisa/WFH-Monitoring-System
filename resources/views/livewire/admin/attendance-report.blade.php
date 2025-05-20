@@ -19,11 +19,18 @@
                             value="{{ request('date') }}">
                     </div>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="submit" class="btn btn-primary">Search</button>
                         <a href="{{ route('attendance-report') }}" class="btn btn-secondary">Reset</a>
                     </div>
                 </div>
             </form>
+
+            @if(session('message'))
+                <div class="alert alert-warning text-center">
+                    {{ session('message') }}
+                </div>
+            @endif
+
 
             <!-- Attendance Records Table -->
             <div class="card mb-4">
@@ -31,7 +38,6 @@
                     <h5 class="mb-0">Attendance Records</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Responsive Table Wrapper -->
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -65,10 +71,18 @@
                         </table>
                     </div>
 
-                    <!-- Pagination Links -->
+                    <!-- Pagination -->
                     <div class="d-flex justify-content-center mt-3">
-                        {{ $allUserLocations->links() }}
+                        {{ $allUserLocations->appends(request()->query())->links() }}
                     </div>
+
+                    <!-- Export Button -->
+                    <div class="mb-3">
+                        <a href="{{ route('report-pdf.pdf', request()->query()) }}" class="btn btn-danger">
+                            Download PDF
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>

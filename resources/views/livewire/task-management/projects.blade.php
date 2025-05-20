@@ -35,6 +35,17 @@
                                 <label for="description" class="form-label">Description</label>
                                 <textarea name="description" class="form-control"></textarea>
                             </div>
+
+                            <!--WAFA ADD START AND END DATE-->
+                            <div class="mb-3">
+                                <label for="start_date" class="mr-2 px-2">Start Date</label>
+                                <input type="date" name="start_date" id="start_date" class="mr-2 px-3" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="end_date" class="mr-2 px-2">End Date</label>
+                                <input type="date" name="end_date" id="end_date" class="mr-2 px-3" required>
+                            </div>
+                            <!--WAFA ADD START AND END DATE-->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn bg-gradient-secondary"
@@ -85,8 +96,36 @@
             </div>
         </div>
 
+        <div class="container mt-4">
+            <div class="mb-4">
+                <a href="{{route('projects.index', ['sort' => 'latest'])}}" class="btn btn-sm btn-primary">Sort by latest</a>
+                <a href="{{route('projects.index', ['sort' => 'oldest'])}}" class="btn btn-sm btn-secondary">Sort by Oldest</a>
+            </div>
+        </div>
+
         <!-- Display List Projects and Tasks -->
         @forelse ($projects as $project)
+
+            <!--WAFA ADD-->
+            @php
+                $today = \Carbon\Carbon::today();
+                $endDate = \Carbon\Carbon::parse($project->end_date);
+                $daysLeft = $today->diffInDays($endDate, false);
+            @endphp
+
+            @if($daysLeft > 0 && $daysLeft <= 3)
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Project Deadline Approaching!',
+                    text: 'The project "{{ $project->name }}" is ending soon on {{ $endDate->format("d M Y") }}.',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok'
+                });
+            });
+            </script>
+            @endif
+
             <div class="project-card">
                 <h3>
                     {{ $project->name }}
@@ -118,21 +157,30 @@
                 </h3>
                 <p>{{ $project->description }}</p>
 
+                <!--WAFA ADD-->
+                <p>
+                    <strong>Start Date:</strong> {{ \Carbon\Carbon::parse($project->start_date)->format('d M Y') }}<br>
+                    <strong>End Date:</strong> {{ \Carbon\Carbon::parse($project->end_date)->format('d M Y')}}
+                </p>
+
                 <!-- Display Task List -->
                 @if($project->tasks->isNotEmpty())
                     <table class="table modern-table">
                         <thead>
                             <tr>
                                 <th style="width: 40%">Task</th>
-                                <th>Description</th>
-                                <th style="width: 20%">Actions</th>
+                                <th >Description</th>
+                                <th style="width: 100%">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($project->tasks as $task)
                                 <tr>
                                     <td>{{ $task->name }}</td>
-                                    <td>{{ $task->task_description }}</td>
+                                    <td style="white-space: normal; word-wrap: break-word; overflow-wrap: break-word; max-width: 600px; width: 100%;">
+                                        {{ $task->task_description }}
+                                    </td>
+
                                     <td>
                                         <!-- Edit Task Button -->
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
@@ -228,7 +276,7 @@
                 </div>
             </div>
         @empty
-            <p>No projects available.</p>
+            <p>No projects  available.</p>
         @endforelse
 
 
@@ -237,6 +285,7 @@
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 padding: 16px;
+                width: fit-content;
                 margin-bottom: 24px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }

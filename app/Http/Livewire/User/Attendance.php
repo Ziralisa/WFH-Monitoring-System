@@ -19,6 +19,9 @@ class Attendance extends Component
     public $isClockOutDisabled = true;
     public $attendanceSession = 'active';
     public $usersOnPage = [];
+    public $filterWeek;
+    public $filterMonth;
+
 
     public function mount()
     {
@@ -393,4 +396,109 @@ class Attendance extends Component
             'attendanceSession' => $this->attendanceSession,
         ]);
     }
+
+    /*Export Report*/
+    public function export(Request $request)
+    {
+        $selectedWeek = $request->input('week');
+        $selectedMonth = $request->input('month');
+
+        $query = UserLocation::with('user')->where('user_id', auth()->id());
+
+        if ($selectedMonth) {
+            $query->whereMonth('created_at', $selectedMonth);
+        }
+
+        if ($selectedWeek) {
+            if ($selectedMonth) {
+                $year = now()->year;
+                $startOfMonth = Carbon::createFromDate($year, $selectedMonth, 1)->startOfMonth();
+                $startOfWeek = $startOfMonth->copy()->addWeeks($selectedWeek - 1)->startOfWeek();
+                $endOfWeek = $startOfWeek->copy()->endOfWeek();
+
+                $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
+            } else {
+                $startOfWeek = now()->setISODate(now()->year, $selectedWeek)->startOfWeek();
+                $endOfWeek = $startOfWeek->copy()->endOfWeek();
+
+                $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
+            }
+        }
+
+        $records = $query->orderBy('created_at')->get();
+
+        $filename = 'attendance_report_' . now()->format('Ymd_His') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ];
+
+        $callback = function () use ($records) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [
+                'Date', 'Clock In', 'Clock Out', 'Clock In Points', 'Working Hour Points', 'Total Points'
+            ]);
+
+            foreach ($records as $record) {
+                fputcsv($handle, [
+                    $record->created_at->format('Y-m-d'),
+                    $record->created_at->format('g:i A'),
+                    $record->type === 'clock_out' ? $record->updated_at->format('g:i A') : 'N/A',
+                    $record->clockinpoints ?? 'N/A',
+                    $record->workinghourpoints ?? 'N/A',
+                    $record->total_points ?? 'N/A',
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /*Report Filtering*/
+    public function index(Request $request)
+{
+    $filterWeek = $request->input('filterWeek');
+    $filterMonth = $request->input('filterMonth');
+
+    $query = UserLocation::where('user_id', auth()->id());
+
+    if ($filterWeek) {
+        $query->whereRaw('WEEK(created_at, 1) = ?', [$filterWeek]);
+    }
+
+    if ($filterMonth) {
+        $query->whereMonth('created_at', $filterMonth);
+    }
+
+    $records = $query->orderBy('created_at', 'desc')->get();
+
+    //$noRecords = $records->isEmpty(); // ✅ Check if empty
+
+    return view('livewire.user.attendance.show', [
+        'records' => $records,
+       // 'noRecords' => $noRecords, // ✅ Pass this to the view
+        'weeklyStatus' => $this->calculateWeeklyStatus($records),
+        'clockInTime' => optional($records->first())->created_at?->format('Y-m-d H:i:s') ?? 'N/A',
+        'clockOutTime' => optional($records->last())->updated_at?->format('g:i A , d F Y') ?? 'N/A',
+        'clockInPoints' => optional($records->first())->clockinpoints ?? 'N/A',
+        'workingHourPoints' => optional($records->first())->workinghourpoints ?? 'N/A',
+        'totalPoints' => optional($records->first())->total_points ?? 'N/A',
+        'isClockInDisabled' => $this->isClockInDisabled ?? false,
+        'isClockOutDisabled' => $this->isClockOutDisabled ?? false,
+        'attendanceSession' => $this->attendanceSession ?? null,
+        'filterWeek' => $filterWeek,
+        'filterMonth' => $filterMonth,
+    ]);
+}
+
+
+    public function resetFilters()
+    {
+        $this->filterWeek = null;
+        $this->filterMonth = null;
+    }
+
 }

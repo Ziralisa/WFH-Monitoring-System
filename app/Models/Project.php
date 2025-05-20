@@ -9,7 +9,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'start_date', 'end_date'];
 
     // A project has many tasks
     public function tasks()
@@ -18,3 +18,6 @@ class Project extends Model
     }
     
 }
+
+
+
