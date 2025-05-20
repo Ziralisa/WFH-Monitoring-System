@@ -84,23 +84,11 @@ Route::group(['middleware' => ['can:view attendance status']], function () {
 //ATTENDANCE REPORT (STAFF)
 Route::group(['middleware' => ['can:view attendance report']], function () {
     Route::get('/attendance/report', [Attendance::class, 'showReport'])->name('report');
-<<<<<<< HEAD
-=======
-    Route::get('/report/export', [Attandance::class, 'export'])->name('report.export');
->>>>>>> a2f031c (initial commit)
 });
 
 //ATTENDANCE REPORT (ADMIN)
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
-<<<<<<< HEAD
-=======
-    Route::get('/report-pdf/pdf', [AttendanceController::class, 'downloadPdf'])->name('report-pdf.pdf');
->>>>>>> a2f031c (initial commit)
-});
-
-//DEMO PAGES ROUTES
-Route::group(['middleware' => ['can:view laravel examples']], function () {
     Route::get('/billing', Billing::class)->name('billing');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/tables', Tables::class)->name('tables');

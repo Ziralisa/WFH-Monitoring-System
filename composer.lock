@@ -4,11 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "66d7e8f6470d59076f0f28e7409b8ca4",
-    "packages": [
-        {
-=======
     "content-hash": "564a8e881ab5e9d81a0aa42b4da9d4b8",
     "packages": [
         {
@@ -89,7 +84,6 @@
             "time": "2025-02-13T15:07:54+00:00"
         },
         {
->>>>>>> a2f031c (initial commit)
             "name": "brick/math",
             "version": "0.12.1",
             "source": {
@@ -462,8 +456,6 @@
             "time": "2024-02-05T11:56:58+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "dompdf/dompdf",
             "version": "v3.1.0",
             "source": {
@@ -619,7 +611,6 @@
             "time": "2024-04-29T13:26:35+00:00"
         },
         {
->>>>>>> a2f031c (initial commit)
             "name": "dragonmantank/cron-expression",
             "version": "v3.3.3",
             "source": {
@@ -2138,8 +2129,6 @@
             "time": "2024-10-10T20:03:38+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "masterminds/html5",
             "version": "2.9.0",
             "source": {
@@ -2207,7 +2196,6 @@
             "time": "2024-03-31T07:05:07+00:00"
         },
         {
->>>>>>> a2f031c (initial commit)
             "name": "monolog/monolog",
             "version": "3.7.0",
             "source": {
@@ -3826,8 +3814,6 @@
             "time": "2024-04-27T21:32:50+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "sabberworm/php-css-parser",
             "version": "v8.8.0",
             "source": {
@@ -3893,7 +3879,6 @@
             "time": "2025-03-23T17:59:05+00:00"
         },
         {
->>>>>>> a2f031c (initial commit)
             "name": "spatie/laravel-permission",
             "version": "6.10.1",
             "source": {
@@ -9133,20 +9118,12 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-<<<<<<< HEAD
-    "stability-flags": [],
-=======
     "stability-flags": {},
->>>>>>> a2f031c (initial commit)
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1"
     },
-<<<<<<< HEAD
-    "platform-dev": [],
-=======
     "platform-dev": {},
->>>>>>> a2f031c (initial commit)
     "plugin-api-version": "2.6.0"
 }

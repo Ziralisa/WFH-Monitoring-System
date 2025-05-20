@@ -50,9 +50,6 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class)->latest();
     }
 
-<<<<<<< HEAD
-=======
     
 
->>>>>>> a2f031c (initial commit)
 }

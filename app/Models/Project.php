@@ -9,11 +9,7 @@ class Project extends Model
 {
     use HasFactory;
 
-<<<<<<< HEAD
-    protected $fillable = ['name', 'description'];
-=======
     protected $fillable = ['name', 'description', 'start_date', 'end_date'];
->>>>>>> a2f031c (initial commit)
 
     // A project has many tasks
     public function tasks()
@@ -22,9 +18,6 @@ class Project extends Model
     }
     
 }
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> a2f031c (initial commit)
