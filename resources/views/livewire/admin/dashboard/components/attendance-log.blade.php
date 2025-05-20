@@ -33,7 +33,11 @@
                                                 Latitude</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+<<<<<<< HEAD
                                                 Longitude</th>
+=======
+                                                Longitude</th>  
+>>>>>>> a2f031c (initial commit)
                                         </tr>
                                     </thead>
                                     <tbody>

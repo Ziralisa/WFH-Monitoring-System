@@ -15,7 +15,11 @@
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
                 <div class="nav-item d-flex align-self-end mx-4">
                     <a href="{{route('user-profile')}}"
+<<<<<<< HEAD
                         class="btn btn-primary active mb-0 text-white" role="button" aria-pressed="true">
+=======
+                        class="btn btn-primary-pf active mb-0 text-white" role="button" aria-pressed="true">
+>>>>>>> a2f031c (initial commit)
                         {{Auth::user()->name}}
                     </a>
                 </div>
@@ -28,5 +32,9 @@
                 </ul>
             </div>
         </div>
+<<<<<<< HEAD
     </nav>
 
+=======
+    </nav>
+>>>>>>> a2f031c (initial commit)

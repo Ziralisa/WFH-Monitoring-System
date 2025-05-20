@@ -6,6 +6,7 @@
         </div>
         <div class="card card-body blur shadow-blur mx-4 mt-n6">
             <div class="row gx-4">
+<<<<<<< HEAD
                 <div class="col-auto">
                     <div class="avatar avatar-xl position-relative">
                         <img src="../assets/img/team-5.jpg" alt="..." class="w-100 border-radius-lg shadow-sm">
@@ -18,6 +19,34 @@
                         @endif
                     </div>
                 </div>
+=======
+                <!--Profile Photo Upload-->
+                <div class="col-auto">
+                    <div class="avatar avatar-xl position-relative">
+                        {{-- Show preview if uploading, else show saved photo or fallback --}}
+                        @if ($photo)
+                            <img  src="{{ $photo->temporaryUrl() }}" alt="Preview" class="w-100 border-radius-lg shadow-sm">
+                        @elseif ($user->profile_photo_path)
+                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}" alt="Profile Photo" class="w-100 border-radius-lg shadow-sm">
+                        @endif
+
+                        {{-- Upload button (only for own profile) --}}
+                        @if (!$selectedUserId)
+                            <label for="photo" class="btn btn-sm btn-icon-only bg-gradient-light position-absolute bottom-0 end-0 mb-n2 me-n2" style="cursor: pointer;">
+                                <i class="fa fa-pen top-0" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Image"></i>
+                                <input type="file" id="photo" wire:model="photo" class="d-none" accept="image/*">
+                            </label>
+                        @endif
+                    </div>
+
+                    @error('photo') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+
+                    @if (session()->has('success'))
+                        <div class="mt-2 text-success text-sm">{{ session('success') }}</div>
+                    @endif
+                </div>
+
+>>>>>>> a2f031c (initial commit)
                 <div class="col-auto my-auto">
                     <div class="h-100 row gx-4 d-flex align-items-center">
                         <div class="col-auto">
@@ -27,7 +56,11 @@
                                 <p class="h5">{{ $user->name }}</p>
                             @endif
                         </div>
+<<<<<<< HEAD
                         <div class="col-auto">
+=======
+                        <!--<div class="col-auto">
+>>>>>>> a2f031c (initial commit)
                             <span class="badge bg-secondary text-xxs font-weight-bolder align-self-center opacity-7">
                                 <span
                                     class="badge badge-md badge-circle badge-floating badge-danger border-white bg-success">
@@ -35,7 +68,11 @@
                                 <span>Last online:
                                     {{ \Carbon\Carbon::parse($user['last_online'])->diffForHumans() }}</span>
                             </span>
+<<<<<<< HEAD
                         </div>
+=======
+                        </div>-->
+>>>>>>> a2f031c (initial commit)
                     </div>
                     <div class="col-auto my-n2">
                         <p class="mb-0 font-weight-bold text-sm">
@@ -43,6 +80,7 @@
                         </p>
                     </div>
                 </div>
+<<<<<<< HEAD
                 @if (!empty($user->contact_link))
                     <div
                         class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3 d-flex justify-content-end px-8">
@@ -65,6 +103,8 @@
                     </div>
                 @endif
 
+=======
+>>>>>>> a2f031c (initial commit)
             </div>
         </div>
     </div>
@@ -88,10 +128,21 @@
                 @endif
 
                 @if (session()->has('success'))
+<<<<<<< HEAD
                     <div class="mt-3 alert alert-primary alert-dismissible fade show" role="alert">
                         <span class="alert-icon text-white"><i class="ni ni-like-2"></i></span>
                         <span class="alert-text text-white">{{ session('success') }}</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+=======
+                    <div 
+                        x-data="{ show: true }" 
+                        x-init="setTimeout(() => show = false, 3000)" 
+                        x-show="show"
+                        x-transition 
+                        class="alert alert-success text-white font-weight-bold">
+                        
+                        {{ session('success') }}
+>>>>>>> a2f031c (initial commit)
                     </div>
                 @endif
 

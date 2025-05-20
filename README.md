@@ -103,7 +103,11 @@ Admin:
 - view : app/resources/views/livewire/staff/report.blade.php
 - function : app/http/livewire/user/attendance.php
 
+<<<<<<< HEAD
 4. Attendance report (Staff side)
+=======
+4. Attendance report (Staff admin)
+>>>>>>> a2f031c (initial commit)
 - view : app/resources/views/livewire/admin/attendance-report.blade.php
 - function : app/http/livewire/user/attendance.php
 

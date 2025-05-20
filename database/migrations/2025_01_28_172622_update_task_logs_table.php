@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::table('task_logs', function (Blueprint $table) {
             $table->string('title')->nullable()->after('id');
+<<<<<<< HEAD
             $table->foreignId('task_id')->nullable()->constrained()->cascadeOnDelete()->after('title');
+=======
+            //$table->foreignId('task_id')->nullable()->constrained()->cascadeOnDelete()->after('title');
+>>>>>>> a2f031c (initial commit)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->after('task_id');
         });
     }

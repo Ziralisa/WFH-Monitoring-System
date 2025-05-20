@@ -1,8 +1,16 @@
+<<<<<<< HEAD
+=======
+<!--Show untuk Timing Tunjuk Dekat Depan tu-->
+>>>>>>> a2f031c (initial commit)
     <div class="container-fluid py-4">
         <!-- Top row-->
         <div class="row">
             <div class="page-header min-height-250 border-radius-xl mt-4"
+<<<<<<< HEAD
                 style="background-image: url('../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
+=======
+                style="background-image: url('../assets/img/curved-images/curved14.jpg'); background-position-y: 50%;">
+>>>>>>> a2f031c (initial commit)
                 <h2 class="text-white font-weight-bolder mx-6 mb-4 pt-2"
                     style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">
                     Hello, {{ auth()->user()->name }}!

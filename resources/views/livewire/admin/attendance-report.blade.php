@@ -19,19 +19,36 @@
                             value="{{ request('date') }}">
                     </div>
                     <div class="col-md-4">
+<<<<<<< HEAD
                         <button type="submit" class="btn btn-primary">Filter</button>
+=======
+                        <button type="submit" class="btn btn-primary">Search</button>
+>>>>>>> a2f031c (initial commit)
                         <a href="{{ route('attendance-report') }}" class="btn btn-secondary">Reset</a>
                     </div>
                 </div>
             </form>
 
+<<<<<<< HEAD
+=======
+            @if(session('message'))
+                <div class="alert alert-warning text-center">
+                    {{ session('message') }}
+                </div>
+            @endif
+
+
+>>>>>>> a2f031c (initial commit)
             <!-- Attendance Records Table -->
             <div class="card mb-4">
                 <div class="card-header pb-0">
                     <h5 class="mb-0">Attendance Records</h5>
                 </div>
                 <div class="card-body">
+<<<<<<< HEAD
                     <!-- Responsive Table Wrapper -->
+=======
+>>>>>>> a2f031c (initial commit)
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -65,12 +82,31 @@
                         </table>
                     </div>
 
+<<<<<<< HEAD
                     <!-- Pagination Links -->
                     <div class="d-flex justify-content-center mt-3">
                         {{ $allUserLocations->links() }}
                     </div>
+=======
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $allUserLocations->appends(request()->query())->links() }}
+                    </div>
+
+                    <!-- Export Button -->
+                    <div class="mb-3">
+                        <a href="{{ route('report-pdf.pdf', request()->query()) }}" class="btn btn-danger">
+                            Download PDF
+                        </a>
+                    </div>
+
+>>>>>>> a2f031c (initial commit)
                 </div>
             </div>
         </div>
     </main>
+<<<<<<< HEAD
 </x-layouts.base>
+=======
+</x-layouts.base>
+>>>>>>> a2f031c (initial commit)
