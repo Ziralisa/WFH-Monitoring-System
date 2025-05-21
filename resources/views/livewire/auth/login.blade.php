@@ -1,18 +1,4 @@
 <section>
-<<<<<<< HEAD
-    <div class="page-header section-height-75">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
-                    <div class="card card-plain mt-8">
-                        <div class="card-header pb-0 text-left bg-transparent">
-                            <h3 class="font-weight-bolder text-info text-gradient">{{ __('Welcome back') }}</h3>
-                            <p class="mb-0">{{ __('Create a new acount')}}<br></p>
-                            <p class="mb-0">{{__('OR Sign in with these credentials:') }}</p>
-                            <p class="mb-0">{{ __('Email ') }}<b>{{ __('admin@softui.com') }}</b></p>
-                            <p class="mb-0">{{ __('Password ') }}<b>{{ __('secret') }}</b></p>
-                        </div>
-=======
 <div class="page-header min-vh-100 d-flex align-items-center" style="background: linear-gradient(to right, #e0f7fa, #e0f2f1); overflow: hidden;">
         <div class="container">
             <div class="row">
@@ -30,7 +16,6 @@
                         </div>
 
                         <!-- Login Form -->
->>>>>>> a2f031c (initial commit)
                         <div class="card-body">
                             <form wire:submit="login" action="#" method="POST" role="form text-left">
                                 <div class="mb-3">
@@ -107,10 +92,13 @@
                             </small>
                             <p class="mb-4 text-sm mx-auto">
                                 {{ __('Don\'t have an account?') }}
+<<<<<<< HEAD
                                 <a href="{{ route('sign-up') }}" class="text-info text-gradient font-weight-bold">{{ __('Sign Up') }}</a>
 >>>>>>> a2f031c (initial commit)
+=======
+                            <a href="{{ route('company-registration') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
+>>>>>>> a9abd56 (minor fix for login)
                             </p>
-                                <a href="{{ route('company-registration') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
                         </div>
                     </div>
                 </div>
