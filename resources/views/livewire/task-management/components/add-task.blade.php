@@ -18,16 +18,7 @@
                 <form action="{{ route('tasks.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="sprint_id" value="{{ $sprint->id }}">
-                    <div class="mx-3">
-                        <label for="project_id" class="form-label">Select Project</label>
-                        <select name="project_id" id="project_id-{{ $sprint->id }}" class="form-control" required
-                            onchange="loadTasks(this.value, '{{ $sprint->id }}')">
-                            <option value="" disabled selected>Select Project</option>
-                            @foreach ($projects as $project)
-                                <option value="{{ $project->id }}">{{ $project->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    
 
                     <!-- Task Selection -->
                     <div class="mx-3">
@@ -90,9 +81,9 @@
 
 </div>
 <script>
-    function loadTasks(projectId, sprintId) {
-        if (projectId) {
-            fetch(`/tasks/${projectId}/${sprintId}`)
+    function loadTasks(sprintId) {
+
+            fetch(`/tasks/sprint/${sprintId}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Fetched Tasks:", data);
@@ -140,6 +131,17 @@
                 .catch(error => {
                     console.error('Error fetching tasks:', error);
                 });
-        }
+        
     }
+        document.addEventListener('DOMContentLoaded', function () {
+            const modals = document.querySelectorAll('.modal');
+
+            modals.forEach(modal => {
+                modal.addEventListener('show.bs.modal', function (event) {
+                    const modalId = this.getAttribute('id');
+                    const sprintId = modalId.split('-')[1];
+                    loadTasks(sprintId); 
+                });
+            });
+        });
 </script>
