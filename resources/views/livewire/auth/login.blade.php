@@ -56,9 +56,8 @@
                             </small>
                             <p class="mb-4 text-sm mx-auto">
                                 {{ __('Don\'t have an account?') }}
-                                <a href="{{ route('sign-up') }}" class="text-info text-gradient font-weight-bold">{{ __('Sign Up') }}</a>
+                            <a href="{{ route('company-registration') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
                             </p>
-                                <a href="{{ route('company-registration') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
                         </div>
                     </div>
                 </div>
