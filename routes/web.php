@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Auth\ForgotPassword;
 use App\Http\Livewire\Auth\ResetPassword;
 use App\Http\Livewire\Auth\SignUp;
+use App\Http\Livewire\Auth\RegisterCompany;
 use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\NewUserHomepage;
@@ -34,6 +35,7 @@ Route::get('/', function () {
 
 // Public Routes
 Route::get('/sign-up', SignUp::class)->name('sign-up');
+Route::get('/company-registration', RegisterCompany::class)->name('company-registration');
 Route::get('/login', Login::class)->name('login');
 Route::get('/logout', [Logout::class, 'logout'])->name('logout');
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
