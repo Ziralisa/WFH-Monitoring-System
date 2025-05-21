@@ -28,9 +28,10 @@ class UserSettings extends Component
 
     public function fetchUsers()
     {
-        $query = User::query();
+        $query = User::query()
+        ->where('company_id', auth()->user()->company_id);
         if ($this->filter) {
-            $query = User::role($this->filter);
+            $query = $query::role($this->filter);
         }
         $this->users = $query->get();
     }

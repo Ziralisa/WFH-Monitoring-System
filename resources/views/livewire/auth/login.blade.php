@@ -110,6 +110,7 @@
                                 <a href="{{ route('sign-up') }}" class="text-info text-gradient font-weight-bold">{{ __('Sign Up') }}</a>
 >>>>>>> a2f031c (initial commit)
                             </p>
+                                <a href="{{ route('company-registration') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
                         </div>
                     </div>
                 </div>

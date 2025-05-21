@@ -1,5 +1,10 @@
 <div class="mt-3 row">
     <h1 class="m-4">Users</h1>
+
+    <div class="mb-4 mx-4">
+        <livewire:send-invitation-form />
+    </div> 
+     
     <div class="col-12">
         <div class="row">
             @include('components.alerts.success')
