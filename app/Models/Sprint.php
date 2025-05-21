@@ -15,6 +15,7 @@ class Sprint extends Model
         'desc',
         'startdate',
         'enddate',
+        'project_id',
     ];
 
 public function tasks()
@@ -25,5 +26,10 @@ public function tasks()
 public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+ public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

@@ -40,7 +40,7 @@ class User extends Authenticatable
     ];
 
      // Role column
-     protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location', 'contact_link'];
+     protected $fillable = ['name', 'email', 'password', 'role', 'phone', 'location', 'contact_link', 'company_id'];
 
      public function locations(){
         return $this->hasMany(Location::class);
@@ -50,6 +50,10 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class)->latest();
     }
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
     
 
 }
