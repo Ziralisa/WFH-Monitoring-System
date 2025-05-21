@@ -12,7 +12,11 @@ class ProjectController extends Component
     //----------------DISPLAY PROJECTS------------------
     public function index()
     {
-        $projects = Project::with('tasks')->get();
+        $user = auth()->user();
+
+        $projects = Project::with('tasks')
+        ->where('company_id', $user->company_id)
+        ->get();
         return view('livewire.task-management.projects', compact('projects'));
     }
 
@@ -24,7 +28,17 @@ class ProjectController extends Component
             'description' => 'nullable|string',
         ]);
 
+<<<<<<< HEAD
         Project::create($request->only(['name', 'description']));
+=======
+        Project::create([
+            'name' => $request->name,
+            'description' => $request->description, 
+            'start_date' => $request->start_date, 
+            'end_date' => $request->end_date,
+            'company_id' => auth()->user()->company_id,
+        ]);
+>>>>>>> fbb6fa4 (company filtering implementation)
 
         return redirect()->back()->with('success', 'Project created successfully!');
     }
