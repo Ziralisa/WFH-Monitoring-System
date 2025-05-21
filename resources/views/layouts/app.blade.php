@@ -8,7 +8,6 @@
         @elseif (in_array(request()->route()->getName(),['sign-in', 'login']))
             @include('layouts.navbars.guest.login')
             {{ $slot }}
-            @include('layouts.footers.guest.description')
         @elseif (in_array(request()->route()->getName(),['profile', 'my-profile']))
             @include('layouts.navbars.auth.sidebar')
             <div class="main-content position-relative bg-gray-100">
@@ -42,6 +41,12 @@
             <div class="mt-5">
                 @include('layouts.footers.guest.with-socials')
             </div>
+        @elseif (!auth()->check() && in_array(request()->route()->getName(),['company-registration']))
+        <div>
+            @include('layouts.navbars.guest.sign-up')
+            {{ $slot }}
+            @include('layouts.footers.guest.with-socials')
+        </div>
         @elseif (!auth()->check() && in_array(request()->route()->getName(),['sign-up']))
             <div>
                 @include('layouts.navbars.guest.sign-up')
