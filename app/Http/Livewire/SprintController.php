@@ -27,9 +27,12 @@ class SprintController extends Component
     {
         $this->taskId = $id;
     }
-    public function getTasksByProject($projectId, $sprintId)
+    public function getTasksByProject($sprintId)
 {
     // Get all task IDs that are marked as "Done" in any sprint
+    $sprint = Sprint::findOrFail($sprintId);
+    $projectId = $sprint->project_id;
+
     $doneTaskIds = DB::table('sprint_task')
         ->join('tasks', 'sprint_task.task_id', '=', 'tasks.id')
         ->where('tasks.task_status', 'Done')
@@ -126,6 +129,8 @@ class SprintController extends Component
             'desc' => 'nullable|string|max:255',
             'startdate' => 'required|date',
             'enddate' => 'required|date|after_or_equal:startdate',
+            'project_id' => 'required|exists:projects,id',
+
         ]);
 
         //dd($request->validate());
@@ -139,7 +144,6 @@ class SprintController extends Component
         // Validate the incoming request data
         $validated = $request->validate([
             'sprint_id' => 'required|exists:sprints,id',
-            'project_id' => 'required|exists:projects,id',
             'task_id' => 'required|exists:tasks,id', // Ensure task_id exists in the tasks table
             'task_description' => 'nullable',
             'task_priority' => 'required|in:Low,Medium,High',
@@ -242,12 +246,18 @@ class SprintController extends Component
 
     public function render()
     {
+        $userCompanyId = auth()->user()->company_id;
+
         $selectedProjectId = request()->route('projectId');
         $tasks = Task::where('project_id', $selectedProjectId)->get();
-        $projects = Project::all();
+        $projects = Project::where('company_id',$userCompanyId)->get();
+
+        $sprints = Sprint::whereHas('project', function ($query) use ($userCompanyId){
+            $query->where('company_id', $userCompanyId);
+        })->get();
 
         return view('livewire.task-management.backlog', [
-            'sprints' => Sprint::all(),
+            'sprints' => $sprints,
             'staff' => User::role('staff')->get(),
             'projects' => $projects,
             'tasks' => $tasks,

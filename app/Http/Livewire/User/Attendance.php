@@ -360,8 +360,14 @@ class Attendance extends Component
     //--------ATTENDANCE REPORT ADMIN SIDE---------
     public function attendanceReport()
     {
+        $admin = auth()->user(); // Get the logged-in admin
+        $companyId = $admin->company_id;
+
         // Fetch all user locations (admin can see all)
         $allUserLocations = Location::with('user') // Use relationships if `Location` belongs to `User`
+        ->whereHas('user',function ($query) use ($companyId) {
+            $query->where('company_id', $companyId);
+        })
             ->orderBy('created_at', 'desc') // Order by most recent
             ->paginate(10); // Adjust pagination as needed
 

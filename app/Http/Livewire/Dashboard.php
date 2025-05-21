@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends Component
 {
@@ -123,9 +124,11 @@ class Dashboard extends Component
 
     public function syncUserData($users)
     {
+        $companyId = Auth::user()->company_id;
         $userIds = collect($users)->pluck('id');
 
         $this->usersOnPage = User::whereIn('id', $userIds)
+        ->where('company_id', $companyId)
             ->with([
                 'locations' => function ($query) {
                     $query->whereDate('created_at', today())->orderBy('created_at', 'desc')->limit(1);
@@ -157,6 +160,7 @@ class Dashboard extends Component
 
     // Simulate adding a new row with dummy data
     public $showOfflineUser = false;
+    
     public $offlineUsers = [];
 
     public function viewOfflineUsers()
@@ -165,26 +169,33 @@ class Dashboard extends Component
 
         $this->showOfflineUser = true;
 
+         $companyId = Auth::user()->company_id;
+
         // Extract the user IDs from $usersOnPage
         $userIdsOnPage = collect($this->usersOnPage)
             ->pluck('id')
             ->toArray();
 
-        $users = User::whereNotIn('id', $userIdsOnPage)
+        // $users = User::whereNotIn('id', $userIdsOnPage)
+            $this->offlineUsers = User::where('company_id', $companyId)        
+            ->whereNotIn('id', $userIdsOnPage)
             ->orderBy('last_online', 'desc') // Sort by last_online in descending order
             ->get(['id', 'name', 'email', 'contact_link', 'last_online']);
 
         // Assign the result to offlineUsers
-        $this->offlineUsers = $users;
+        // $this->offlineUsers = $users;
     }
 
     public function showReport()
     {
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
+         $companyId = Auth::user()->company_id;
 
         // Fetch all users with their weekly points and weekly status
-        $this->userReports = User::with([
+        $this->userReports = User::where('company_id',$companyId)
+        ->with([
+
             'locations' => function ($query) use ($startOfWeek, $endOfWeek) {
                 $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
             },
