@@ -1,6 +1,11 @@
 <div>
     <div class="container mt-4">
-        <h1 class="mb-4">Sprint</h1>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4 class="mb-4"><b>SPRINT</b></h4>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btnproject" data-bs-toggle="modal" data-bs-target="#SprintModal">Add Sprint</button>
+            </div>
+        </div>
 
         @if (session('success'))
             <div class="alert alert-success">
@@ -9,25 +14,16 @@
         @endif
 
         <!-- Add Sprint Modal -->
-        <button type="button" class="btn bg-gradient-primary" data-bs-toggle="modal" data-bs-target="#SprintModal">
-            Add Sprint
-        </button>
-        <div class="modal fade" id="SprintModal" tabindex="-1" role="dialog" aria-labelledby="SprintModal"
-            aria-hidden="true">
+        <div class="modal fade" id="SprintModal" tabindex="-1" role="dialog" aria-labelledby="SprintModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="SprintModal">
-                            New Sprint
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h5 class="modal-title" id="SprintModal">New Sprint</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('create-sprint') }}" method="POST">
                         @csrf
                         <div class="modal-body">
-
                             <div class="mb-3">
                                 <label for="name" class="form-label">Sprint Name</label>
                                 <input type="text" name="name" id="name" class="form-control" required>
@@ -35,14 +31,6 @@
                             <div class="mb-3">
                                 <label for="desc" class="form-label">Description</label>
                                 <textarea name="desc" id="desc" class="form-control" required></textarea>
-                            </div>
-                             <div class="form-group">
-                                <label for="project_id">Select Project</label>
-                                <select name="project_id" id="project_id" class="form-control" required>
-                                    @foreach ($projects as $project)
-                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="startdate" class="mr-2 px-2">Start Date</label>
@@ -52,57 +40,55 @@
                                 <label for="enddate" class="mr-2 px-2">End Date</label>
                                 <input type="date" name="enddate" id="enddate" class="mr-2 px-3" required>
                             </div>
-
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn bg-gradient-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn bg-gradient-primary">Submit</button>
+                            <button type="button" class="btn btnclose" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btnproject">Submit</button>
                         </div>
-
                     </form>
                 </div>
             </div>
         </div>
-        <!-- Edit Sprint Modal -->
+
+        <!-- Edit Sprint Modals -->
         @foreach ($sprints as $sprint)
-        <div class="modal fade" id="EditSprintModal{{$sprint->id}}" tabindex="-1" aria-labelledby="EditSprintModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal fade" id="EditSprintModal-{{ $sprint->id }}" tabindex="-1" aria-labelledby="EditSprintModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('sprints.edit', $sprint->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="editName-{{ $sprint->id }}" class="form-label">Sprint Name</label>
+                                    <input type="text" name="name" id="editName-{{ $sprint->id }}" class="form-control" value="{{ $sprint->name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editDesc-{{ $sprint->id }}" class="form-label">Description</label>
+                                    <textarea name="desc" id="editDesc-{{ $sprint->id }}" class="form-control" required>{{ $sprint->desc }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="startdDate-{{ $sprint->id }}" class="form-label">Start Date</label>
+                                    <input type="date" name="startdate" id="startdate" class="form-control" value="{{ $sprint->startdate }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="enddate-{{ $sprint->id }}" class="form-label">End Date</label>
+                                    <input type="date" name="enddate" id="endDate" class="form-control" value="{{ $sprint->enddate }}" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btnclose" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btnproject">Update Sprint</button>
+                            </div>
+                        </form>
                     </div>
-                    <form action="{{ route('sprints.edit', '$sprint->id') }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="id" id="editSprintId">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="editName" class="form-label">Sprint Name</label>
-                                <input type="text" name="name" id="editName" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editDesc" class="form-label">Description</label>
-                                <textarea name="desc" id="editDesc" class="form-control" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editStartDate" class="form-label">Start Date</label>
-                                <input type="date" name="startdate" id="editStartDate" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editEndDate" class="form-label">End Date</label>
-                                <input type="date" name="enddate" id="editEndDate" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
                 </div>
             </div>
+<<<<<<< HEAD
         </div>
 <<<<<<< HEAD
 
@@ -192,22 +178,21 @@
 >>>>>>> 039ec79 (Reapply "merge")
 =======
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
         @endforeach
 
+        <!-- Sprint Display -->
         @forelse($sprints as $sprint)
             <div class="sprint-card">
-                <h3>
-                    Sprint: {{ $sprint->name }}
-                    <!-- Hover Edit and Delete  -->
-                    <span class="info-icon" data-bs-toggle="dropdown" aria-expanded="false"
-                        style="cursor: pointer; float: right;">
+                <h5><b>{{ $sprint->name }}</b>
+                    <span class="info-icon float-end" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
                         <i class="fas fa-ellipsis-v" style="font-size:20px"></i>
                     </span>
-                      <!-- Dropdown Menu -->
-                      <div class="dropdown-menu p-2 shadow-sm">
-                        <!-- Edit Sprint Button -->
-                        <button class="btn btn-sm btn-warning d-block w-100 mb-2" data-bs-toggle="modal"
+                    <div class="dropdown-menu p-2 shadow-sm">
+                        <button class="btn btnproject d-block w-100 mb-2" data-bs-toggle="modal"
                             data-bs-target="#EditSprintModal-{{ $sprint->id }}">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -241,6 +226,10 @@
 =======
                             <i class="fas fa-edit" style="font-size: 15px;"></i> Edit
                         </button>
+=======
+                            <i class="fas fa-edit" style="font-size: 15px;"></i> Edit
+                        </button>
+>>>>>>> 0e35d15 (Reapply "merge")
                         <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -251,6 +240,7 @@
                         </form>
                     </div>
                 </h5>
+<<<<<<< HEAD
 >>>>>>> 039ec79 (Reapply "merge")
 =======
                             <i class="fas fa-edit" style="font-size: 15px; color: white;"></i> Edit
@@ -267,19 +257,15 @@
                             </form>
                 </h3>
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
 
                 <p>Description: {{ $sprint->desc }}</p>
-                <div class="table-options">
-                </div>
                 <div class="sprint-dates">
-                    <span>
-                        <strong>
-                            From: {{ \Carbon\Carbon::parse($sprint->startdate)->format('Y-m-d') }}
-                            To: {{ \Carbon\Carbon::parse($sprint->enddate)->format('Y-m-d') }}
-                        </strong>
-                    </span>
+                    <strong>From: {{ \Carbon\Carbon::parse($sprint->startdate)->format('Y-m-d') }} To: {{ \Carbon\Carbon::parse($sprint->enddate)->format('Y-m-d') }}</strong>
                 </div>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -806,51 +792,91 @@
                     </tbody>
                 </table>
 
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
                 @include('livewire.task-management.components.add-task')
-            </div>
-        @empty
-            <div class="no-sprints">No sprints added yet.</div>
-        @endforelse
-    </div>
 
-    <!-- Edit Sprint Modal -->
-    @forelse ($sprints as $sprint)
-    <div class="modal fade" id="EditSprintModal-{{ $sprint->id }}" tabindex="-1"
-        aria-labelledby="EditSprintModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('sprints.edit', $sprint->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Sprint Name</label>
-                            <input type="text" name="name" class="form-control" value="{{ $sprint->name }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="desc" class="form-label">Description</label>
-                            <textarea name="desc" class="form-control" required>{{ $sprint->desc }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="startdate" class="form-label">Start Date</label>
-                            <input type="date" name="startdate" class="form-control" value="{{ $sprint->startdate }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="enddate" class="form-label">End Date</label>
-                            <input type="date" name="enddate" class="form-control" value="{{ $sprint->enddate }}" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn bg-gradient-primary">Update Sprint</button>
-                    </div>
-                </form>
+                <div class="table-container">
+                    <table class="table modern-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%; text-align: center">Task</th>
+                                <th style="text-align: center">Description</th>
+                                <th style="text-align: center">Status</th>
+                                <th style="text-align: center">Priority</th>
+                                <th style="text-align: center">Assign</th>
+                                <th style="text-align: center">Comment</th>
+                                <th style="text-align: center">Project</th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                    @forelse($sprint->tasks as $task)
+                        <tr>
+                            <td>{{ $task->name }}</td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip" title="{{ $task->task_description ?? 'No description' }}">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </a>
+                                </td>
+                            <td>
+                                <form>
+                                    <select id="task-status-{{ $task->id }}" class="task-status" data-task-id="{{ $task->id }}" required>
+                                        <option value="To Do" {{ $task->task_status == 'To Do' ? 'selected' : '' }}>To Do</option>
+                                        <option value="In Progress" {{ $task->task_status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                                        <option value="Done" {{ $task->task_status == 'Done' ? 'selected' : '' }}>Done</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td class="text-center font-weight-bolder @if ($task->task_priority === 'Low') priority-low @elseif($task->task_priority === 'Medium') priority-medium @elseif($task->task_priority === 'High') priority-high @endif">{{ $task->task_priority }}</td>
+                            <td>
+                                @if ($task->assignedUser)
+                                <div class="avatar-wrapper">
+                                    <img src="{{ $task->assignedUser->img ? asset($task->assignedUser->img) : asset('assets/img/team-' . rand(1, 6) . '.jpg') }}" alt="{{ $task->assignedUser->name }}" class="avatar avatar-sm">
+                                    <div class="tooltip-content">
+                                        <h4>{{ $task->assignedUser->name }}</h4>
+                                        <span>staff</span>
+                                        <div class="contact-details">
+                                            <div class="email">
+                                                <span>{{ $task->assignedUser->email }}</span>
+                                            </div>
+                                        </div>
+                                            <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }} @else {{ route('view-user-profile', $task->assignedUser->id) }} @endif" class="view-profile-hover">View Profile</a>
+                                    </div>
+                                </div>
+                                @else
+                                <form id="assign-form-{{ $task->id }}" action="{{ route('assign-task', $task->id) }}" method="POST">
+                                    @csrf
+                                    <select name="task_assign" id="task_assign_{{ $task->id }}" class="form-select" onchange="this.form.submit()">
+                                        <option value="" disabled selected>Select a user (optional)</option>
+                                        @foreach ($staff as $member)
+                                        <option value="{{ $member->id }}" {{ $task->assignedUser && $task->assignedUser->id == $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <a href="javascript:void(0)" class="mb-3" data-bs-toggle="modal" data-bs-target="#modal-{{ $task->id }}" wire:click='setTaskId({{ $task->id }})'>
+                                    <i class="fa-solid fa-message"></i>
+                                </a>
+                                @include('livewire.task-management.components.comment')
+                            </td>
+
+                            <!-- Display Project Name -->
+                            <td style="text-align: center;">
+                                {{ $task->project->name ?? 'No project assigned' }}
+                            </td>
+                            </tr>
+                            @empty
+                        <tr>
+                            <td colspan="7" class="text-center font-weight-bold">No tasks available</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -863,19 +889,25 @@
 <<<<<<< HEAD
 >>>>>>> bf7d4fe (Revert "merge")
 =======
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
     @empty
     <div class="no-sprints">No sprints added yet.</div>
     @endforelse
 </div>
+<<<<<<< HEAD
 >>>>>>> 039ec79 (Reapply "merge")
 =======
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
 
     <style>
         .sprint-card {
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 16px;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -894,8 +926,12 @@
 =======
             width: fit-content;
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
             margin-bottom: 24px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            background-color: #fff;
         }
 
         .sprint-card h3 {
@@ -923,21 +959,27 @@
         }
 
         .modern-table th {
-            background-color: #f4f6f9;
+            background-color: #e4effe;
             font-weight: bold;
             color: #2c3e50;
             border-bottom: 2px solid #ddd;
         }
 
         .modern-table td {
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #a5caff;
         }
 
         .modern-table tr:hover {
             background-color: #f9f9f9;
         }
 
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;   /* Allows horizontal scrolling for smaller screens */
+        }
+
         .status {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -947,12 +989,15 @@
 >>>>>>> 270919a (merge)
 =======
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
             display: inline-block;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
             color: white;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -979,6 +1024,8 @@
 >>>>>>> 039ec79 (Reapply "merge")
 =======
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
         }
 
         .status-in-progress {
@@ -1018,7 +1065,7 @@
             text-align: center;
         }
 
-        /*Hover*/
+        /Hover/
         .avatar-wrapper {
             position: relative;
             display: flex;
@@ -1223,14 +1270,47 @@
             background-color: #e67e22;
             /* Darker yellow on hover */
         }
+
+        .btnproject, .btntask {
+            background-color: #2657c1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .btnproject:hover, .btntask:hover {
+            background-color: #2657c1;
+            color: white;
+        }
+
+        .btnclose {
+            background-color: #7f9dde;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .btnclose:hover {
+            background-color: #7f9dde;
+            color: white;
+        }
+
     </style>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.task-status').forEach(function(element) {
-                element.addEventListener('change', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.task-status').forEach(function (element) {
+                element.addEventListener('change', function () {
                     let taskId = this.dataset.taskId;
                     let status = this.value;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1280,6 +1360,8 @@
                         .catch(error => console.error('Error:', error));
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
                     fetch(/tasks/${taskId}/status, {
                         method: 'PATCH',
                         headers: {
@@ -1298,13 +1380,17 @@
                         }
                     })
                     .catch(error => console.error('Error:', error));
+<<<<<<< HEAD
 >>>>>>> 039ec79 (Reapply "merge")
 =======
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
                 });
             });
         });
     </script>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1322,3 +1408,8 @@
 =======
 </div>
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+>>>>>>> 0e35d15 (Reapply "merge")

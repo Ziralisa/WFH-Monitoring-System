@@ -76,6 +76,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bf7d4fe (Revert "merge")
 =======
@@ -137,40 +138,85 @@
 >>>>>>> 039ec79 (Reapply "merge")
 =======
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+            <!-- Charts Section -->
+            @php
+                $total = $staffRecords->count();
+>>>>>>> 0e35d15 (Reapply "merge")
 
-                    @forelse($sortedRecords as $record)
-                        <tr>
-                            <td>{{ $record->user->name }}</td>
-                            <td>{{ $record->user->email }}</td>
+                $weeklyExcellent = $staffRecords->where('weeklyStatus', 'Excellent')->count();
+                $weeklyGood = $staffRecords->where('weeklyStatus', 'Good')->count();
+                $weeklyBad = $total - $weeklyExcellent - $weeklyGood;
 
-                            <!-- Weekly Status with color -->
-                            <td>
+                $weeklyExcellentPercent = $total > 0 ? round(($weeklyExcellent / $total) * 100) : 0;
+                $weeklyGoodPercent = $total > 0 ? round(($weeklyGood / $total) * 100) : 0;
+                $weeklyBadPercent = $total > 0 ? round(($weeklyBad / $total) * 100) : 0;
+
+                $monthlyExcellent = $staffRecords->where('monthlyStatus', 'Excellent')->count();
+                $monthlyGood = $staffRecords->where('monthlyStatus', 'Good')->count();
+                $monthlyBad = $total - $monthlyExcellent - $monthlyGood;
+
+                $monthlyExcellentPercent = $total > 0 ? round(($monthlyExcellent / $total) * 100) : 0;
+                $monthlyGoodPercent = $total > 0 ? round(($monthlyGood / $total) * 100) : 0;
+                $monthlyBadPercent = $total > 0 ? round(($monthlyBad / $total) * 100) : 0;
+            @endphp
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Weekly Status Distribution</h5>
+                            <div style="height: 250px;">
+                                <canvas id="weeklyPieChart" style="height: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Monthly Status Distribution</h5>
+                            <div style="height: 250px;">
+                                <canvas id="monthlyPieChart" style="height: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Records Table (Fixed Display) -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Attendance Records</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Weekly Status</th>
+                                    <th>Monthly Status</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 @php
-                                    $weeklyColor = match($record->weeklyStatus) {
-                                        'Excellent' => 'color: #4169E1; font-weight: bold;',
-                                        'Good' => 'color: green; font-weight: bold;',
-                                        default => 'color: red; font-weight: bold;'
-                                    };
+                                    $sortedRecords = $staffRecords->sortBy(function ($record) {
+                                        return match($record->weeklyStatus) {
+                                            'Excellent' => 0,
+                                            'Good' => 1,
+                                            default => 2,
+                                        };
+                                    });
                                 @endphp
-                                <span style="{{ $weeklyColor }}">
-                                    {{ $record->weeklyStatus ?? 'No status' }}
-                                </span>
-                            </td>
 
-                            <!-- Monthly Status with color -->
-                            <td>
-                                @php
-                                    $monthlyColor = match($record->monthlyStatus) {
-                                        'Excellent' => 'color: #4169E1; font-weight: bold;',
-                                        'Good' => 'color: green; font-weight: bold;',
-                                        default => 'color: red; font-weight: bold;'
-                                    };
-                                @endphp
-                                <span style="{{ $monthlyColor }}">
-                                    {{ $record->monthlyStatus ?? 'No status' }}
-                                </span>
-                            </td>
+                                @forelse($sortedRecords as $record)
+                                    <tr>
+                                        <td>{{ $record->user->name }}</td>
+                                        <td>{{ $record->user->email }}</td>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -281,6 +327,48 @@
         </div>
     </main>
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+                                        <td>
+                                            @php
+                                                $weeklyColor = match($record->weeklyStatus) {
+                                                    'Excellent' => 'color: #4169E1; font-weight: bold;',
+                                                    'Good' => 'color: green; font-weight: bold;',
+                                                    default => 'color: red; font-weight: bold;'
+                                                };
+                                            @endphp
+                                            <span style="{{ $weeklyColor }}">
+                                                {{ $record->weeklyStatus ?? 'No status' }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @php
+                                                $monthlyColor = match($record->monthlyStatus) {
+                                                    'Excellent' => 'color: #4169E1; font-weight: bold;',
+                                                    'Good' => 'color: green; font-weight: bold;',
+                                                    default => 'color: red; font-weight: bold;'
+                                                };
+                                            @endphp
+                                            <span style="{{ $monthlyColor }}">
+                                                {{ $record->monthlyStatus ?? 'No status' }}
+                                            </span>
+                                        </td>
+
+                                        <td>{{ $record->total_points }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">No records found</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+>>>>>>> 0e35d15 (Reapply "merge")
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -354,6 +442,7 @@
         });
     </script>
 <<<<<<< HEAD
+<<<<<<< HEAD
 </x-layouts.base>
 >>>>>>> 270919a (merge)
 =======
@@ -369,3 +458,6 @@
     </main>
 </x-layouts.base>
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+</x-layouts.base>
+>>>>>>> 0e35d15 (Reapply "merge")

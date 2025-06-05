@@ -1,6 +1,6 @@
 <div>
     <!-- Add Task Button -->
-    <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addTaskModal-{{ $sprint->id }}">
+    <button class="btn btnaddtask mt-3" data-bs-toggle="modal" data-bs-target="#addTaskModal-{{ $sprint->id }}">
         Add Task
     </button>
 
@@ -18,7 +18,16 @@
                 <form action="{{ route('tasks.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="sprint_id" value="{{ $sprint->id }}">
-                    
+                    <div class="mx-3">
+                        <label for="project_id" class="form-label">Select Project</label>
+                        <select name="project_id" id="project_id-{{ $sprint->id }}" class="form-control" required
+                            onchange="loadTasks(this.value, '{{ $sprint->id }}')">
+                            <option value="" disabled selected>Select Project</option>
+                            @foreach ($projects as $project)
+                                <option value="{{ $project->id }}">{{ $project->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <!-- Task Selection -->
                     <div class="mx-3">
@@ -54,7 +63,6 @@
                                 <option value="To Do">To Do</option>
                                 <option value="In Progress">In Progress</option>
                                 <option value="Done">Done</option>
-                                <option value="Stuck">Stuck</option>
                             </select>
                         </div>
                     </div>
@@ -71,8 +79,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Add Task</button>
+                        <button type="button" class="btn btnclose" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btntask">Add Task</button>
                     </div>
                 </form>
             </div>
@@ -80,16 +88,63 @@
     </div>
 
 </div>
-<script>
-    function loadTasks(sprintId) {
 
-            fetch(`/tasks/sprint/${sprintId}`)
+<style>
+    .btnaddtask {
+        background-color: #2657c1;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 10px;
+    }
+
+    .btnaddtask:hover {
+        background-color: #1a4a9c;
+        color: white;
+    }
+
+    .btnproject, .btntask {
+        background-color: #2657c1;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 10px;
+    }
+
+    .btnproject:hover, .btntask:hover {
+        background-color: #2657c1;
+        color: white;
+    }
+
+    .btnclose {
+        background-color: #7f9dde;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 10px;
+    }
+
+    .btnclose:hover {
+        background-color: #7f9dde;
+        color: white;
+    }
+</style>
+<script>
+    function loadTasks(projectId, sprintId) {
+        if (projectId) {
+            fetch(/tasks/${projectId}/${sprintId})
                 .then(response => response.json())
                 .then(data => {
                     console.log("Fetched Tasks:", data);
 
-                    let taskDropdown = document.getElementById(`task_id-${sprintId}`);
-                    let taskDescription = document.getElementById(`task_description-${sprintId}`);
+                    let taskDropdown = document.getElementById(task_id-${sprintId});
+                    let taskDescription = document.getElementById(task_description-${sprintId});
 
                     if (!taskDropdown || !taskDescription) {
                         console.error("Dropdown or description field not found!");
@@ -110,7 +165,7 @@
                         if (task.task_description) {
                             option.setAttribute("data-description", task.task_description);
                         } else {
-                            console.warn(`Task ${task.id} has no description!`);
+                            console.warn(Task ${task.id} has no description!);
                         }
 
                         taskDropdown.appendChild(option);
@@ -131,17 +186,6 @@
                 .catch(error => {
                     console.error('Error fetching tasks:', error);
                 });
-        
+        }
     }
-        document.addEventListener('DOMContentLoaded', function () {
-            const modals = document.querySelectorAll('.modal');
-
-            modals.forEach(modal => {
-                modal.addEventListener('show.bs.modal', function (event) {
-                    const modalId = this.getAttribute('id');
-                    const sprintId = modalId.split('-')[1];
-                    loadTasks(sprintId); 
-                });
-            });
-        });
 </script>

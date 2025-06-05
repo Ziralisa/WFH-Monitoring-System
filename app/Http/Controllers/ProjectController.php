@@ -10,13 +10,23 @@ use App\Models\Task;
 class ProjectController extends Component
 {
     //----------------DISPLAY PROJECTS------------------
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
 
         $projects = Project::with('tasks')
         ->where('company_id', $user->company_id)
         ->get();
+        return view('livewire.task-management.projects', compact('projects'));
+
+        $sort = $request->query('sort', 'latest');
+
+        if ($sort === 'oldest') {
+            $projects = Project::orderBy('created_at', 'asc')->get();
+        } else {
+            $projects = Project::orderBy('created_at', 'desc')->get();
+        }
+
         return view('livewire.task-management.projects', compact('projects'));
     }
 
@@ -28,6 +38,7 @@ class ProjectController extends Component
             'description' => 'nullable|string',
         ]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -48,12 +59,16 @@ class ProjectController extends Component
 =======
         Project::create([
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+ Project::create([
+>>>>>>> 0e35d15 (Reapply "merge")
             'name' => $request->name,
             'description' => $request->description, 
             'start_date' => $request->start_date, 
             'end_date' => $request->end_date,
             'company_id' => auth()->user()->company_id,
         ]);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -70,6 +85,8 @@ class ProjectController extends Component
 =======
 
 >>>>>>> 1a6b553 (Revert "merge")
+=======
+>>>>>>> 0e35d15 (Reapply "merge")
         return redirect()->back()->with('success', 'Project created successfully!');
     }
 
