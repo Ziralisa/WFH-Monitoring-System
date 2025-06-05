@@ -78,7 +78,7 @@
 
                                 <div class="text-center">
                                     <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0" style="transition: all 0.3s ease;">
-                                        {{ __('Sign in') }}
+                                        {{ __('Sign in to your account') }}
                                     </button>
                                 </div>
                             </form>
