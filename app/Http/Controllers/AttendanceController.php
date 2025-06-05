@@ -109,6 +109,7 @@ class AttendanceController extends Controller
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $query = Location::with('user');
 =======
         $query = UserLocation::with('user');
@@ -116,12 +117,18 @@ class AttendanceController extends Controller
 =======
 =======
 >>>>>>> 0e35d15 (Reapply "merge")
+=======
+         $admin = auth()->user(); // get the logged-in admin
+        $companyId = $admin->company_id;
+
+>>>>>>> d0f84b0 (fix attendance status)
         $query = DB::table('user_locations')
             ->join('users', 'user_locations.user_id', '=', 'users.id')
             ->select(
                 'user_locations.*',
                 'users.name as user_name',
                 DB::raw('DATE(user_locations.created_at) as date')
+<<<<<<< HEAD
             );
 <<<<<<< HEAD
 >>>>>>> 039ec79 (Reapply "merge")
@@ -130,6 +137,11 @@ class AttendanceController extends Controller
 >>>>>>> 1a6b553 (Revert "merge")
 =======
 >>>>>>> 0e35d15 (Reapply "merge")
+=======
+            )
+             ->where('users.company_id', $companyId);
+            
+>>>>>>> d0f84b0 (fix attendance status)
 
         if ($request->filled('name')) {
             $query->where('users.name', 'like', '%' . $request->name . '%');
@@ -153,7 +165,8 @@ class AttendanceController extends Controller
                 'user_locations.*',
                 'users.name as user_name',
                 DB::raw('DATE(user_locations.created_at) as date')
-            );
+            )
+            ->where('users.company_id', $companyId);
 
         if ($request->filled('name')) {
             $chartQuery->where('users.name', 'like', '%' . $request->name . '%');
