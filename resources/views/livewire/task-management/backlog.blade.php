@@ -53,41 +53,41 @@
         <!-- Edit Sprint Modals -->
         @foreach ($sprints as $sprint)
             <div class="modal fade" id="EditSprintModal-{{ $sprint->id }}" tabindex="-1" aria-labelledby="EditSprintModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="{{ route('sprints.edit', $sprint->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="editName-{{ $sprint->id }}" class="form-label">Sprint Name</label>
-                                    <input type="text" name="name" id="editName-{{ $sprint->id }}" class="form-control" value="{{ $sprint->name }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="editDesc-{{ $sprint->id }}" class="form-label">Description</label>
-                                    <textarea name="desc" id="editDesc-{{ $sprint->id }}" class="form-control" required>{{ $sprint->desc }}</textarea>
-                                </div>
-                                <div class="mb-3">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('sprints.edit', $sprint->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="editName-{{ $sprint->id }}" class="form-label">Sprint Name</label>
+                                <input type="text" name="name" id="editName-{{ $sprint->id }}" class="form-control" value="{{ $sprint->name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDesc-{{ $sprint->id }}" class="form-label">Description</label>
+                                <textarea name="desc" id="editDesc-{{ $sprint->id }}" class="form-control" required>{{ $sprint->desc }}</textarea>
+                            </div>
+                            <div class="mb-3">
                                     <label for="startdDate-{{ $sprint->id }}" class="form-label">Start Date</label>
                                     <input type="date" name="startdate" id="startdate" class="form-control" value="{{ $sprint->startdate }}" required>
-                                </div>
-                                <div class="mb-3">
+                            </div>
+                            <div class="mb-3">
                                     <label for="enddate-{{ $sprint->id }}" class="form-label">End Date</label>
                                     <input type="date" name="enddate" id="endDate" class="form-control" value="{{ $sprint->enddate }}" required>
-                                </div>
                             </div>
-                            <div class="modal-footer">
+                        </div>
+                        <div class="modal-footer">
                                 <button type="button" class="btn btnclose" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btnproject">Update Sprint</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </div>
         @endforeach
 
         <!-- Sprint Display -->
@@ -101,15 +101,15 @@
                         <button class="btn btnproject d-block w-100 mb-2" data-bs-toggle="modal"
                             data-bs-target="#EditSprintModal-{{ $sprint->id }}">
                             <i class="fas fa-edit" style="font-size: 15px;"></i> Edit
-                        </button>
-                        <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
+                    </button>
+                    <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
                             <button type="submit" class="btn btnclose d-block w-100"
-                                onclick="return confirm('Are you sure you want to delete this sprint?')">
+                                    onclick="return confirm('Are you sure you want to delete this sprint?')">
                                 <i class="fas fa-trash-alt" style="font-size: 15px;"></i> Delete
-                            </button>
-                        </form>
+                        </button>
+                    </form>
                     </div>
                 </h5>
 
@@ -305,77 +305,77 @@
                                 <th style="text-align: center">Project</th>
                             </tr>
                         </thead>
-                    <tbody>
-                    @forelse($sprint->tasks as $task)
-                        <tr>
-                            <td>{{ $task->name }}</td>
+                        <tbody>
+                        @forelse($sprint->tasks as $task)
+                            <tr>
+                                <td>{{ $task->name }}</td>
                                 <td class="text-center">
                                     <a href="javascript:void(0)" class="btn-tooltip" data-bs-toggle="tooltip" title="{{ $task->task_description ?? 'No description' }}">
                                         <i class="fa-solid fa-circle-info"></i>
                                     </a>
                                 </td>
-                            <td>
-                                <form>
+                                <td>
+                                    <form>
                                     <select id="task-status-{{ $task->id }}" class="task-status" data-task-id="{{ $task->id }}" required>
                                         <option value="To Do" {{ $task->task_status == 'To Do' ? 'selected' : '' }}>To Do</option>
                                         <option value="In Progress" {{ $task->task_status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
                                         <option value="Done" {{ $task->task_status == 'Done' ? 'selected' : '' }}>Done</option>
-                                    </select>
-                                </form>
-                            </td>
+                                        </select>
+                                    </form>
+                                </td>
                             <td class="text-center font-weight-bolder @if ($task->task_priority === 'Low') priority-low @elseif($task->task_priority === 'Medium') priority-medium @elseif($task->task_priority === 'High') priority-high @endif">{{ $task->task_priority }}</td>
-                            <td>
-                                @if ($task->assignedUser)
-                                <div class="avatar-wrapper">
+                                <td>
+                                    @if ($task->assignedUser)
+                                        <div class="avatar-wrapper">
                                     <img src="{{ $task->assignedUser->img ? asset($task->assignedUser->img) : asset('assets/img/team-' . rand(1, 6) . '.jpg') }}" alt="{{ $task->assignedUser->name }}" class="avatar avatar-sm">
-                                    <div class="tooltip-content">
-                                        <h4>{{ $task->assignedUser->name }}</h4>
-                                        <span>staff</span>
-                                        <div class="contact-details">
-                                            <div class="email">
-                                                <span>{{ $task->assignedUser->email }}</span>
+                                            <div class="tooltip-content">
+                                                <h4>{{ $task->assignedUser->name }}</h4>
+                                                <span>staff</span>
+                                                <div class="contact-details">
+                                                    <div class="email">
+                                                        <span>{{ $task->assignedUser->email }}</span>
+                                                    </div>
+                                                </div>
+                                            <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }} @else {{ route('view-user-profile', $task->assignedUser->id) }} @endif" class="view-profile-hover">View Profile</a>
                                             </div>
                                         </div>
-                                            <a href="@if ($task->assignedUser->id === auth()->user()->id) {{ route('user-profile') }} @else {{ route('view-user-profile', $task->assignedUser->id) }} @endif" class="view-profile-hover">View Profile</a>
-                                    </div>
-                                </div>
-                                @else
+                                    @else
                                 <form id="assign-form-{{ $task->id }}" action="{{ route('assign-task', $task->id) }}" method="POST">
-                                    @csrf
+                                            @csrf
                                     <select name="task_assign" id="task_assign_{{ $task->id }}" class="form-select" onchange="this.form.submit()">
                                         <option value="" disabled selected>Select a user (optional)</option>
-                                        @foreach ($staff as $member)
+                                                @foreach ($staff as $member)
                                         <option value="{{ $member->id }}" {{ $task->assignedUser && $task->assignedUser->id == $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </form>
-                                @endif
-                            </td>
-                            <td class="text-center">
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                    @endif
+                                </td>
+                                <td class="text-center">
                                 <a href="javascript:void(0)" class="mb-3" data-bs-toggle="modal" data-bs-target="#modal-{{ $task->id }}" wire:click='setTaskId({{ $task->id }})'>
-                                    <i class="fa-solid fa-message"></i>
-                                </a>
-                                @include('livewire.task-management.components.comment')
-                            </td>
+                                        <i class="fa-solid fa-message"></i>
+                                    </a>
+                                    @include('livewire.task-management.components.comment')
+                                </td>
 
-                            <!-- Display Project Name -->
-                            <td style="text-align: center;">
-                                {{ $task->project->name ?? 'No project assigned' }}
-                            </td>
+                                <!-- Display Project Name -->
+                                <td style="text-align: center;">
+                                    {{ $task->project->name ?? 'No project assigned' }}
+                                </td>
                             </tr>
-                            @empty
-                        <tr>
-                            <td colspan="7" class="text-center font-weight-bold">No tasks available</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                @empty
+                            <tr>
+                                <td colspan="7" class="text-center font-weight-bold">No tasks available</td>
+                            </tr>
+                                @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    @empty
-    <div class="no-sprints">No sprints added yet.</div>
-    @endforelse
-</div>
+        @empty
+            <div class="no-sprints">No sprints added yet.</div>
+        @endforelse
+    </div>
 
     <style>
         .sprint-card {
@@ -747,28 +747,28 @@
                     let taskId = this.dataset.taskId;
                     let status = this.value;
 
-                    fetch(/tasks/${taskId}/status, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
+                                        fetch(/tasks/${taskId}/status, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
+                            },
                         body: JSON.stringify({ task_status: status })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Task status updated successfully');
-                            location.reload();
-                        } else {
-                            alert('Failed to update task status');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Task status updated successfully');
+                                location.reload();
+                            } else {
+                                alert('Failed to update task status');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
                 });
             });
         });
     </script>
 
-         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </div>

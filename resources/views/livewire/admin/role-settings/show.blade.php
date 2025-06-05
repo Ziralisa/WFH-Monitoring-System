@@ -1,5 +1,5 @@
 <div class="mt-3 row">
-    <h1 class="m-4">Roles</h1>
+    <h4 class="m-4"><b>ROLES</b></h4>
     <div class="row">
         <div class="col-12">
             @include('components.alerts.success')
