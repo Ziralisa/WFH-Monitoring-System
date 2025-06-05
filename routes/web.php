@@ -94,7 +94,17 @@ Route::group(['middleware' => ['can:view attendance report']], function () {
 
 //ATTENDANCE REPORT (ADMIN)
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
+<<<<<<< HEAD
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
+=======
+    //Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
+    Route::get('/attendance-report', [AttendanceController::class, 'index'])->name('attendance-report');
+    Route::get('/report-pdf/pdf', [AttendanceController::class, 'downloadPdf'])->name('report-pdf.pdf');
+});
+
+//DEMO PAGES ROUTES
+Route::group(['middleware' => ['can:view laravel examples']], function () {
+>>>>>>> 270919a (merge)
     Route::get('/billing', Billing::class)->name('billing');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/tables', Tables::class)->name('tables');

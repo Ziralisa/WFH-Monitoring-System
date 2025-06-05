@@ -10,13 +10,23 @@ use App\Models\Task;
 class ProjectController extends Component
 {
     //----------------DISPLAY PROJECTS------------------
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
 
         $projects = Project::with('tasks')
         ->where('company_id', $user->company_id)
         ->get();
+        return view('livewire.task-management.projects', compact('projects'));
+
+        $sort = $request->query('sort', 'latest');
+
+        if ($sort === 'oldest') {
+            $projects = Project::orderBy('created_at', 'asc')->get();
+        } else {
+            $projects = Project::orderBy('created_at', 'desc')->get();
+        }
+
         return view('livewire.task-management.projects', compact('projects'));
     }
 
@@ -29,17 +39,24 @@ class ProjectController extends Component
         ]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         Project::create($request->only(['name', 'description']));
 =======
         Project::create([
+=======
+ Project::create([
+>>>>>>> 270919a (merge)
             'name' => $request->name,
             'description' => $request->description, 
             'start_date' => $request->start_date, 
             'end_date' => $request->end_date,
             'company_id' => auth()->user()->company_id,
         ]);
+<<<<<<< HEAD
 >>>>>>> fbb6fa4 (company filtering implementation)
 
+=======
+>>>>>>> 270919a (merge)
         return redirect()->back()->with('success', 'Project created successfully!');
     }
 
