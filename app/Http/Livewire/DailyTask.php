@@ -10,9 +10,6 @@ use Livewire\Component;
 class DailyTask extends Component
 {
     public $todoTasksForTable = [];
-    //TAMBAH
-    public $inprogressTasksForTable = [];
-    //
     public $completedTasksForTable = [];
     public $customTasksForTable = [];
     public $unassignedTasks = [];
@@ -72,20 +69,14 @@ class DailyTask extends Component
         $this->startOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['start']);
         $this->endOfWeek = Carbon::createFromFormat('d/m/Y', $selectedWeekData['end']);
 
-        //TAMBAH
         // Fetch tasks for the current week
         $todoTasks = Task::where('task_assign', auth()->id())
             ->whereBetween('todo_date', [$this->startOfWeek, $this->endOfWeek])
             ->get();
 
-        $inprogressTasks = Task::where('task_assign', auth()->id())
-            ->whereBetween('inprogress_date', [$this->startOfWeek, $this->endOfWeek])
-            ->get();
-
         $completedTasks = Task::where('task_assign', auth()->id())
             ->whereBetween('completed_date', [$this->startOfWeek, $this->endOfWeek])
             ->get();
-        //
 
         $customTasks = TaskLog::where('user_id', auth()->id())
             ->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])
@@ -94,12 +85,6 @@ class DailyTask extends Component
         $todoTasksByDay = $todoTasks->groupBy(function ($task) {
             return Carbon::parse($task->todo_date)->format('l');
         });
-
-        //TAMBAH
-        $inprogressTasksByDay = $inprogressTasks->groupBy(function ($task) {
-            return Carbon::parse($task->inprogress_date)->format('l');
-        });
-        //
 
         $completedTasksByDay = $completedTasks->groupBy(function ($task) {
             return Carbon::parse($task->completed_date)->format('l');
@@ -117,13 +102,6 @@ class DailyTask extends Component
             $this->todoTasksForTable[$day] = $todoTasksByDay[$day] ?? collect();
         }
 
-        //TAMBAH
-        $this->inprogressTasksForTable = [];
-        foreach ($weekDays as $day) {
-            $this->inprogressTasksForTable[$day] = $inprogressTasksByDay[$day] ?? collect();
-        }
-        //
-
         $this->completedTasksForTable = [];
         foreach ($weekDays as $day) {
             $this->completedTasksForTable[$day] = $completedTasksByDay[$day] ?? collect();
@@ -136,18 +114,10 @@ class DailyTask extends Component
 
     }
 
-    //TAMBAH
     public function loadUnassignedAndAssignedTasks()
     {
         $this->unassignedTasks = Task::where('task_assign', auth()->id())->whereNull('todo_date')->get();
-        $this->assignedTasks = Task::where('task_assign', auth()
-             ->id())
-             ->whereNull('completed_date')
-             ->where(function($query) {
-                 $query->whereNotNull('todo_date')
-                       ->orWhereNotNull('inprogress_date');
-             })
-             ->get();
+        $this->assignedTasks = Task::where('task_assign', auth()->id())->whereNull('completed_date')->whereNotNull('todo_date')->get();
     }
 
     public function loadTaskLogs()
@@ -199,45 +169,6 @@ class DailyTask extends Component
         }
     }
 
-    //TAMBAH
-    public function addInprogressTaskToday()
-    {
-        try {
-            if ($this->selectedTaskId) {
-                $task = Task::find($this->selectedTaskId);
-
-                if ($task && $task->task_assign == auth()->id()) {
-                    $task->inprogress_date = now();
-                    //TAMBAH
-                    $task->completed_date = null; // Clear completed
-                    $task->todo_date = null;        // Clear to do
-                    //
-                    $task->task_status = 'In Progress';
-                    $task->save();
-
-                    TaskLog::create([
-                        'task_id' => $task->id,
-                        'status' => 'In Progress',
-                        'user_id' => auth()->id(),
-                    ]);
-
-                    return redirect()->route('daily.show')->with('success', 'Added task in progress for today successfully.');
-                } else {
-                    session()->flash('error', 'Task not found.');
-                }
-            } else {
-                session()->flash('error', 'Please select a task.');
-            }
-        } catch (\Exception $e) {
-            \Log::error('Error adding task in progress: ' . $e->getMessage(), [
-                'task_id' => $this->selectedTaskId,
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            session()->flash('error', 'An unexpected error occurred while adding the task.');
-        }
-    }
-
     public function addCustomTaskToday()
     {
         try {
@@ -272,13 +203,8 @@ class DailyTask extends Component
     
                 if ($task) {
                     if ($task instanceof Task) {
-                        
                         // Update the task in the tasks table
                         $task->completed_date = now();
-                        //TAMBAH
-                        $task->inprogress_date = null; // Clear in progress
-                        $task->todo_date = null;        // Clear to do
-                        //
                         $task->task_status = 'Done';
                         $task->save();
     
@@ -320,7 +246,6 @@ class DailyTask extends Component
     {
         return view('livewire.daily-task.show', [
             'todoTasksForTable' => $this->todoTasksForTable,
-            'inprogressTasksForTable' => $this->inprogressTasksForTable,
             'completedTasksForTable' => $this->completedTasksForTable,
             'unassignedTasks' => $this->unassignedTasks,
             'assignedTasks' => $this->assignedTasks,

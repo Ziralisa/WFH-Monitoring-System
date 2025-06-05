@@ -51,25 +51,4 @@ class SprintController extends Controller
 
         return redirect()->route('backlog.show')->with('success', 'Sprint added successfully!');
     }
-
-    public function updateSprint(Request $request, Sprint $sprint)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'startdate' => 'required|date',
-            'enddate' => 'required|date|after_or_equal:startdate',
-        ]);
-
-        $sprint->update($validated);
-
-        return redirect()->back()->with('success', 'Sprint updated successfully!');
-    }
-
-    public function destroySprint(Sprint $sprint)
-    {
-        $sprint->delete();
-
-        return redirect()->back()->with('success', 'Sprint deleted successfully!');
-    }
 }

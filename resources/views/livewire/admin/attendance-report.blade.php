@@ -1,68 +1,24 @@
+<!-- resources/views/attendance-report.blade.php -->
 <x-layouts.base>
     @include('layouts.navbars.auth.sidebar')
-
     <main class="main-content mt-1 border-radius-lg">
         @include('layouts.navbars.auth.nav')
 
         <div class="container mt-5">
-            <h1 class="my-4">Admin Attendance Report</h1>
-
-            @php
-                $complete = $late = $incomplete = 0;
-                foreach ($userLocations as $record) {
-                    $clockIn = $record->created_at;
-                    $clockOut = $record->updated_at;
-
-                    $clockInPoints = 0;
-
-                    if ($clockIn) {
-                        $clockInTime = \Carbon\Carbon::parse($clockIn);
-                        $nine = $clockInTime->copy()->setTime(9, 0);
-                        $nineThirty = $clockInTime->copy()->setTime(9, 30);
-                        $ten = $clockInTime->copy()->setTime(10, 0);
-
-                        if ($clockInTime->lte($nine)) {
-                            $clockInPoints = 50;
-                        } elseif ($clockInTime->lte($nineThirty)) {
-                            $clockInPoints = 30;
-                        } elseif ($clockInTime->lte($ten)) {
-                            $clockInPoints = 20;
-                        }
-                    }
-
-                    if (!$clockOut) {
-                        $incomplete++;
-                    } elseif ($clockInPoints < 50) {
-                        $late++;
-                    } else {
-                        $complete++;
-                    }
-                }
-
-                $totalStatus = $complete + $late + $incomplete;
-                $completePercent = $totalStatus ? round(($complete / $totalStatus) * 100) : 0;
-                $latePercent = $totalStatus ? round(($late / $totalStatus) * 100) : 0;
-                $incompletePercent = $totalStatus ? round(($incomplete / $totalStatus) * 100) : 0;
-            @endphp
+            <h1 class="my-4">Attendance Report</h1>
 
             <!-- Filter Form -->
             <form method="GET" action="{{ route('attendance-report') }}" class="mb-4">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <input type="text" name="name" class="form-control" placeholder="Search by name"
-                               value="{{ request('name') }}">
+                            value="{{ request('name') }}">
                     </div>
-
-                    <div class="col-md-3">
-                        <select name="month" class="form-control">
-                            <option value="">Select Month</option>
-                            @foreach(range(1, 12) as $m)
-                                <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <input type="date" name="date" class="form-control" placeholder="Search by date"
+                            value="{{ request('date') }}">
                     </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -97,11 +53,16 @@
 >>>>>>> bf7d4fe (Revert "merge")
 =======
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary">Search</button>
+>>>>>>> 1a6b553 (Revert "merge")
                         <a href="{{ route('attendance-report') }}" class="btn btn-secondary">Reset</a>
                     </div>
                 </div>
             </form>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -126,25 +87,14 @@
 >>>>>>> bf7d4fe (Revert "merge")
 =======
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+            @if(session('message'))
+                <div class="alert alert-warning text-center">
+                    {{ session('message') }}
+>>>>>>> 1a6b553 (Revert "merge")
                 </div>
-                <div class="card-body">
-                    <div style="width: 100%;">
-                        <canvas id="attendanceStatusBarChart" style="width: 100%; height: 250px;"></canvas>
-                    </div>
-                </div>
-            </div>
+            @endif
 
-            <!-- Indicators Legend -->
-            <div class="mb-3 d-flex gap-3 align-items-center">
-                <span style="width: 16px; height: 16px; background-color: green; border-radius: 3px;"></span>
-                <span>Attendance Complete</span>
-
-                <span style="width: 16px; height: 16px; background-color: orange; border-radius: 3px;"></span>
-                <span>Late Arrival</span>
-
-                <span style="width: 16px; height: 16px; background-color: red; border-radius: 3px;"></span>
-                <span>Attendance Incomplete</span>
-            </div>
 
 >>>>>>> a2f031c (initial commit)
             <!-- Attendance Records Table -->
@@ -161,83 +111,29 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Staff Name</th>
-                                    <th>Clock In Time</th>
-                                    <th>Clock Out Time</th>
-                                    <th>Clock In Points</th>
-                                    <th>Working Hour Points</th>
-                                    <th>Total Points</th>
-                                    <th>Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Staff Name</th>
+                                    <th scope="col">Clock In Time</th>
+                                    <th scope="col">Clock Out Time</th>
+                                    <th scope="col">Clock In Points</th>
+                                    <th scope="col">Working Hour Points</th>
+                                    <th scope="col">Total Points</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($userLocations as $record)
-                                    @php
-                                        $clockIn = $record->created_at;
-                                        $clockOut = $record->updated_at;
-
-                                        $clockInPoints = 0;
-                                        $workingHourPoints = 0;
-                                        $totalPoints = 0;
-
-                                        if ($clockIn) {
-                                            $clockInTime = \Carbon\Carbon::parse($clockIn);
-                                            $nine = $clockInTime->copy()->setTime(9, 0);
-                                            $nineThirty = $clockInTime->copy()->setTime(9, 30);
-                                            $ten = $clockInTime->copy()->setTime(10, 0);
-
-                                            if ($clockInTime->lte($nine)) {
-                                                $clockInPoints = 50;
-                                            } elseif ($clockInTime->lte($nineThirty)) {
-                                                $clockInPoints = 30;
-                                            } elseif ($clockInTime->lte($ten)) {
-                                                $clockInPoints = 20;
-                                            }
-                                        }
-
-                                        if ($clockIn && $clockOut) {
-                                            $in = \Carbon\Carbon::parse($clockIn);
-                                            $out = \Carbon\Carbon::parse($clockOut);
-                                            $hoursWorked = $in->diffInHours($out);
-
-                                            $workingHourPoints = $hoursWorked >= 8 ? 50 : 0;
-                                        }
-
-                                        $totalPoints = $clockInPoints + $workingHourPoints;
-
-                                        if (!$clockOut) {
-                                            $statusColor = 'red';
-                                            $statusText = 'Attendance Incomplete';
-                                        } elseif ($clockInPoints < 50) {
-                                            $statusColor = 'orange';
-                                            $statusText = 'Late Arrival';
-                                        } else {
-                                            $statusColor = 'green';
-                                            $statusText = 'Attendance Complete';
-                                        }
-                                    @endphp
+                                @forelse($allUserLocations as $record)
                                     <tr>
-                                        <td class="text-center">{{ \Carbon\Carbon::parse($record->date)->format('Y-m-d') }}</td>
-                                        <td class="text-center">{{ $record->user_name ?? 'N/A' }}</td>
-                                        <td class="text-center">
-                                            {{ $clockIn ? \Carbon\Carbon::parse($clockIn)->format('g:i A') : 'N/A' }}
-                                        </td>
-                                        <td class="text-center">
-                                            {{ $clockOut ? \Carbon\Carbon::parse($clockOut)->format('g:i A') : 'N/A' }}
-                                        </td>
-                                        <td class="text-center">{{ $clockInPoints }}</td>
-                                        <td class="text-center">{{ $workingHourPoints }}</td>
-                                        <td class="text-center">{{ $totalPoints }}</td>
-                                        <td class="text-center">
-                                            <span class="badge" style="background-color: {{ $statusColor }};">
-                                                {{ $statusText }}
-                                            </span>
-                                        </td>
+                                        <td class="text-center">{{ $record->created_at->format('Y-m-d') }}</td>
+                                        <td class="text-center">{{ $record->user->name ?? 'N/A' }}</td>
+                                        <td class="text-center">{{ $record->created_at->format('g:i A') ?? 'N/A' }}</td>
+                                        <td class="text-center">{{ $record->updated_at->format('g:i A') ?? 'N/A' }}</td>
+                                        <td class="text-center">{{ $record->clockinpoints ?? 'N/A' }}</td>
+                                        <td class="text-center">{{ $record->workinghourpoints ?? 'N/A' }}</td>
+                                        <td class="text-center">{{ $record->total_points ?? 'N/A' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">No records found.</td>
+                                        <td colspan="7" class="text-center">No records found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -252,7 +148,7 @@
 =======
                     <!-- Pagination -->
                     <div class="d-flex justify-content-center mt-3">
-                        {{ $userLocations->appends(request()->query())->links() }}
+                        {{ $allUserLocations->appends(request()->query())->links() }}
                     </div>
 
                     <!-- Export Button -->
@@ -261,6 +157,7 @@
                             Download PDF
                         </a>
                     </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -273,11 +170,14 @@
 >>>>>>> bf7d4fe (Revert "merge")
 =======
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+
+>>>>>>> 1a6b553 (Revert "merge")
                 </div>
             </div>
-
         </div>
     </main>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -352,3 +252,6 @@
 =======
 </x-layouts.base>
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+</x-layouts.base>
+>>>>>>> 1a6b553 (Revert "merge")

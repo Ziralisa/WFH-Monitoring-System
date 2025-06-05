@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use App\Models\Attendance;
-use App\Models\UserLocation;
+
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -102,9 +102,10 @@ class AttendanceController extends Controller
         return response()->json(['success' => true, 'in_range' => $inRange]);
     }
 
-    //----- Attendance report admin ------
+    //----------------- ATTENDANCE REPORT FILTERING STAFF -----------------
     public function attendanceReport(Request $request)
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         $query = Location::with('user');
@@ -120,102 +121,124 @@ class AttendanceController extends Controller
                 DB::raw('DATE(user_locations.created_at) as date')
             );
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+        $query = UserLocation::with('user');
+>>>>>>> 1a6b553 (Revert "merge")
 
+        // Filter by name (from related user table)
         if ($request->filled('name')) {
-            $query->where('users.name', 'like', '%' . $request->name . '%');
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
+            });
         }
 
+        // Filter by month (e.g. 1 = January)
         if ($request->filled('month')) {
-            $query->whereMonth('user_locations.created_at', $request->month);
+            $query->whereMonth('created_at', (int)$request->month);
         }
 
+        // *Filter by year*
         if ($request->filled('year')) {
-            $query->whereYear('user_locations.created_at', $request->year);
+            $query->whereYear('created_at', (int)$request->year);
         }
 
-        $query->orderBy('user_locations.created_at', 'desc');
-        $userLocations = $query->paginate(10)->withQueryString();
-
-        // Get all records without pagination for chart calculation
-        $chartQuery = DB::table('user_locations')
-            ->join('users', 'user_locations.user_id', '=', 'users.id')
-            ->select(
-                'user_locations.*',
-                'users.name as user_name',
-                DB::raw('DATE(user_locations.created_at) as date')
-            );
-
-        if ($request->filled('name')) {
-            $chartQuery->where('users.name', 'like', '%' . $request->name . '%');
+        // Filter by specific date (format: YYYY-MM-DD)
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
         }
 
-        if ($request->filled('month')) {
-            $chartQuery->whereMonth('user_locations.created_at', $request->month);
+        // Optional: Filter by week (assumes you calculate the week number elsewhere)
+        if ($request->filled('week')) {
+            $query->whereRaw('WEEK(created_at, 1) = ?', [(int)$request->week]); // WEEK mode 1 = ISO-8601 (Monday-based)
         }
 
-        if ($request->filled('year')) {
-            $chartQuery->whereYear('user_locations.created_at', $request->year);
-        }
+        // Order by full date (latest first), then by total points descending
+        $query->orderBy('created_at', 'desc')
+              ->orderBy('total_points', 'desc');
 
-        $allRecords = $chartQuery->get();
+        // Paginate and preserve filters
+        $userLocations = $query->paginate(10)->appends($request->query());
 
-        // Status distribution calculation
-        $statusCounts = [
-            'Attendance Complete' => 0,
-            'Late Arrival' => 0,
-            'Attendance Incomplete' => 0,
-        ];
+        // Get current week and month (for display)
+        $currentWeek = now()->isoWeek();
+        $currentMonth = now()->month;
 
-        foreach ($allRecords as $record) {
-            $clockIn = $record->created_at;
-            $clockOut = $record->updated_at;
+        // Pass selected filters (if any)
+        $selectedWeek = $request->week ?? null;
+        $selectedMonth = $request->month ?? null;
+        $selectedYear = $request->year ?? null;
 
-            $clockInPoints = 0;
-            if ($clockIn) {
-                $clockInTime = \Carbon\Carbon::parse($clockIn);
-                $nine = $clockInTime->copy()->setTime(9, 0);
-                $nineThirty = $clockInTime->copy()->setTime(9, 30);
-                $ten = $clockInTime->copy()->setTime(10, 0);
+        // Calculate weekly and monthly performance (you can customize this logic)
+        $weeklyStatus = 'N/A';
+        $monthlyStatus = 'N/A';
 
-                if ($clockInTime->lte($nine)) {
-                    $clockInPoints = 50;
-                } elseif ($clockInTime->lte($nineThirty)) {
-                    $clockInPoints = 30;
-                } elseif ($clockInTime->lte($ten)) {
-                    $clockInPoints = 20;
-                }
-            }
+        // Example logic (customize based on your point system)
+        $weeklyTotal = $userLocations->whereBetween('created_at', [
+            now()->startOfWeek(), now()->endOfWeek()
+        ])->sum('total_points');
 
-            if (!$clockOut) {
-                $statusCounts['Attendance Incomplete']++;
-            } elseif ($clockInPoints < 50) {
-                $statusCounts['Late Arrival']++;
-            } else {
-                $statusCounts['Attendance Complete']++;
-            }
-        }
+        $monthlyTotal = $userLocations->whereMonth('created_at', $currentMonth)->sum('total_points');
 
-        $total = array_sum($statusCounts);
-        $statusPercentages = [];
-        foreach ($statusCounts as $status => $count) {
-            $statusPercentages[$status] = $total > 0 ? round(($count / $total) * 100, 2) : 0;
-        }
+        $weeklyStatus = $weeklyTotal >= 50 ? ($weeklyTotal >= 80 ? 'Excellent' : 'Good') : 'Bad';
+        $monthlyStatus = $monthlyTotal >= 200 ? 'Excellent' : ($monthlyTotal >= 120 ? 'Good' : 'Bad');
 
-        return view('livewire.admin.attendance-report', [
-            'userLocations' => $userLocations,
-            'statusPercentages' => $statusPercentages,
-            'selectedYear' => $request->year,
-        ]);
+        return view('report', compact(
+            'userLocations',
+            'currentWeek',
+            'currentMonth',
+            'selectedWeek',
+            'selectedMonth',
+            'selectedYear',
+            'weeklyStatus',
+            'monthlyStatus'
+        ));
     }
 
-        public function index()
-        {
-            return $this->attendanceReport(request());
+    //-------------- ATTENDANCE REPORT ADMIN---------------------
+    public function index(Request $request)
+    {
+        $query = Attendance::with('user');
+
+        // Filter by staff name (partial match)
+        if ($request->filled('name')) {
+            $name = $request->input('name');
+            $query->whereHas('user', function ($q) use ($name) {
+                $q->where('name', 'like', "%{$name}%");
+            });
         }
 
-    //----- Attendance status admin ------
+        // Filter by month (1-12)
+        if ($request->filled('month')) {
+            $month = (int) $request->input('month');
+            $query->whereMonth('created_at', $month);
+        }
+
+        // Filter by year (4-digit)
+        if ($request->filled('year')) {
+            $year = (int) $request->input('year');
+            $query->whereYear('created_at', $year);
+        }
+
+        // Optional: filter by date (exact date)
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        // Default order by date descending
+        $query->orderBy('created_at', 'desc');
+
+        // Pagination with filters preserved in query string
+        $attendances = $query->paginate(10)->withQueryString();
+
+        return view('attendance-report.index', compact('attendances'));
+    }
+
+
+    //----------------- ATTENDANCE STATUS ADMIN -----------------
+
     public function attendanceStatus(Request $request)
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
           $admin = auth()->user();
@@ -226,6 +249,11 @@ class AttendanceController extends Controller
 
 =======
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+        $admin = auth()->user();
+        $companyId = $admin->company_id;
+
+>>>>>>> 1a6b553 (Revert "merge")
         $selectedWeek = $request->input('week', null);
         $selectedMonth = $request->input('month', null);
         $selectedYear = $request->input('year', null);
@@ -242,23 +270,30 @@ class AttendanceController extends Controller
 =======
             ->with('user')
 <<<<<<< HEAD
+<<<<<<< HEAD
             ->whereHas('user',function ($q)use ($companyId) {
             $q->where('company_id',$companyId);
             })
 >>>>>>> bf7d4fe (Revert "merge")
 =======
 >>>>>>> 039ec79 (Reapply "merge")
+=======
+            ->whereHas('user',function ($q)use ($companyId) {
+            $q->where('company_id',$companyId);
+            })
+>>>>>>> 1a6b553 (Revert "merge")
             ->groupBy('user_id');
             
 
         if ($selectedWeek) {
-            $query->whereRaw('WEEK(created_at, 1) = ?', [$selectedWeek]);
+            $query->whereRaw('WEEK(created_at,1)=?', $selectedWeek);
         }
 
         if ($selectedMonth) {
             $query->whereMonth('created_at', $selectedMonth);
         }
 
+        // *Filter by year*
         if ($selectedYear) {
             $query->whereYear('created_at', $selectedYear);
         }
@@ -272,7 +307,6 @@ class AttendanceController extends Controller
         $totalWeeklyPoints = $this->calculateTotalPointsForWeek($selectedWeek);
         $totalMonthlyPoints = $this->calculateTotalPointsForMonth($selectedMonth);
 
-        // Assign status labels to each staff record
         $staffRecords->each(function ($record) {
             $record->weeklyStatus = $this->getWeeklyStatus((int) $record->total_points);
             $record->monthlyStatus = $this->getMonthlyStatus((int) $record->total_points);
@@ -281,26 +315,6 @@ class AttendanceController extends Controller
         $calculatedWeeklyStatus = $this->getWeeklyStatus($totalWeeklyPoints);
         $calculatedMonthlyStatus = $this->getMonthlyStatus($totalMonthlyPoints);
 
-        // Pie chart data calculation
-        $statusCounts = [
-            'Excellent' => 0,
-            'Good' => 0,
-            'Bad' => 0
-        ];
-
-        foreach ($staffRecords as $record) {
-            $status = $record->weeklyStatus ?? 'Bad';
-            if (array_key_exists($status, $statusCounts)) {
-                $statusCounts[$status]++;
-            }
-        }
-
-        $totalStaff = $staffRecords->count();
-        $statusPercentages = [];
-        foreach ($statusCounts as $status => $count) {
-            $statusPercentages[$status] = $totalStaff > 0 ? round(($count / $totalStaff) * 100, 2) : 0;
-        }
-
         return view('livewire.admin.attendance-status', compact(
             'staffRecords',
             'calculatedWeeklyStatus',
@@ -308,12 +322,10 @@ class AttendanceController extends Controller
             'selectedWeek',
             'selectedMonth',
             'selectedYear',
-            'selectedDate',
-            'statusPercentages'
+            'selectedDate'
         ));
     }
 
-    //---- Calculation Points-----
     private function getWeeklyStatus($points)
     {
         if ($points >= 30) {
