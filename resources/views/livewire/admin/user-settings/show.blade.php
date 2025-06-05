@@ -1,5 +1,5 @@
 <div class="mt-3 row">
-    <h1 class="m-4">Users</h1>
+    <h4 class="m-4"><b>USERS</b></h4>
 
     <div class="mb-4 mx-4">
         <livewire:send-invitation-form />
