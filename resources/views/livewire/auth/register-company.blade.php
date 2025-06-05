@@ -20,7 +20,11 @@
                     <div class="card-body">
                         <form wire:submit.prevent="createcompany" method="POST" role="form text-left">
                             @csrf
-
+                            <!-- Company Information -->
+                            <div class="card-header ">
+                                <p class="mb-0"><strong>{{ __('COMPANY:') }}</strong></p>
+                            </div>
+                            
                             <!-- Company Name -->
                             <div class="mb-3">
                                 <input wire:model.live="company_name" type="text" class="form-control" placeholder="Company Name" required>
@@ -52,6 +56,11 @@
                             </div>
 
                             <hr class="my-4" />
+
+                            <!-- Admin Information -->
+                            <div class="card-header">
+                                <p class="mb-0"><strong>{{ __('COMPANY ADMIN:') }}</strong></p>
+                            </div>
 
                             <!-- User Name -->
                             <div class="mb-3">
