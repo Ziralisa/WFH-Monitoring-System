@@ -96,6 +96,7 @@ Route::group(['middleware' => ['can:view attendance report']], function () {
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
 =======
     //Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
@@ -103,6 +104,10 @@ Route::group(['middleware' => ['can:view attendance report staff']], function ()
 =======
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
 >>>>>>> bf7d4fe (Revert "merge")
+=======
+    //Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
+    Route::get('/attendance-report', [AttendanceController::class, 'index'])->name('attendance-report');
+>>>>>>> 039ec79 (Reapply "merge")
     Route::get('/report-pdf/pdf', [AttendanceController::class, 'downloadPdf'])->name('report-pdf.pdf');
 });
 
