@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@kodewave.my',
             'password' => Hash::make('secret'),
-               
+            'company_id' => 1,   
         ]);
 
          // Assign the admin role to the newly created admin user

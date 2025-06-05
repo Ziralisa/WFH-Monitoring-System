@@ -10,23 +10,13 @@ use App\Models\Task;
 class ProjectController extends Component
 {
     //----------------DISPLAY PROJECTS------------------
-    public function index(Request $request)
+    public function index()
     {
         $user = auth()->user();
 
         $projects = Project::with('tasks')
         ->where('company_id', $user->company_id)
         ->get();
-        return view('livewire.task-management.projects', compact('projects'));
-
-        $sort = $request->query('sort', 'latest');
-
-        if ($sort === 'oldest') {
-            $projects = Project::orderBy('created_at', 'asc')->get();
-        } else {
-            $projects = Project::orderBy('created_at', 'desc')->get();
-        }
-
         return view('livewire.task-management.projects', compact('projects'));
     }
 
@@ -40,13 +30,14 @@ class ProjectController extends Component
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
- Project::create([
+        Project::create([
             'name' => $request->name,
             'description' => $request->description, 
             'start_date' => $request->start_date, 
             'end_date' => $request->end_date,
             'company_id' => auth()->user()->company_id,
         ]);
+
         return redirect()->back()->with('success', 'Project created successfully!');
     }
 

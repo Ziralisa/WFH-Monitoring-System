@@ -10,9 +10,9 @@
                             <img src="{{ asset('assets/img/kodewave_logo.png') }}" alt="Company Logo" class="mb-3" style="height: 80px;">
                             <h4 class="font-weight-bolder text-info text-gradient">{{ __('Welcome back') }}</h4>
                             <!--<p class="mb-0">{{ __('Create a new account')}}<br></p>
-                            <p class="mb-0">{{__('OR Sign in with these credentials:') }}</p>
+                            <p class="mb-0">{{__('OR Sign in with these credentials:') }}</p>-->
                             <p class="mb-0">{{ __('Email: ') }}<b>{{ __('admin@kodewave.my') }}</b></p>
-                            <p class="mb-0">{{ __('Password: ') }}<b>{{ __('secret') }}</b></p>-->
+                            <p class="mb-0">{{ __('Password: ') }}<b>{{ __('secret') }}</b></p>
                         </div>
 
                         <!-- Login Form -->
