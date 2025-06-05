@@ -105,7 +105,11 @@ class AttendanceController extends Controller
     //----------------- ATTENDANCE REPORT FILTERING STAFF -----------------
     public function attendanceReport(Request $request)
     {
+<<<<<<< HEAD
         $query = Location::with('user');
+=======
+        $query = UserLocation::with('user');
+>>>>>>> bf7d4fe (Revert "merge")
 
         // Filter by name (from related user table)
         if ($request->filled('name')) {
@@ -220,7 +224,11 @@ class AttendanceController extends Controller
 
     public function attendanceStatus(Request $request)
     {
+<<<<<<< HEAD
           $admin = auth()->user();
+=======
+        $admin = auth()->user();
+>>>>>>> bf7d4fe (Revert "merge")
         $companyId = $admin->company_id;
 
         $selectedWeek = $request->input('week', null);
@@ -229,12 +237,19 @@ class AttendanceController extends Controller
         $selectedDate = $request->input('date');
 
         $query = Location::select('user_id', DB::raw('SUM(total_points) as total_points'))
+<<<<<<< HEAD
             
         ->with('user')
         ->whereHas('user',function ($q)use ($companyId) {
             $q->where('company_id',$companyId);
             })
             
+=======
+            ->with('user')
+            ->whereHas('user',function ($q)use ($companyId) {
+            $q->where('company_id',$companyId);
+            })
+>>>>>>> bf7d4fe (Revert "merge")
             ->groupBy('user_id');
             
 

@@ -95,10 +95,14 @@ Route::group(['middleware' => ['can:view attendance report']], function () {
 //ATTENDANCE REPORT (ADMIN)
 Route::group(['middleware' => ['can:view attendance report staff']], function () {
 <<<<<<< HEAD
+<<<<<<< HEAD
     Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
 =======
     //Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
     Route::get('/attendance-report', [AttendanceController::class, 'index'])->name('attendance-report');
+=======
+    Route::get('/attendance-report', [Attendance::class, 'attendanceReport'])->name('attendance-report');
+>>>>>>> bf7d4fe (Revert "merge")
     Route::get('/report-pdf/pdf', [AttendanceController::class, 'downloadPdf'])->name('report-pdf.pdf');
 });
 
