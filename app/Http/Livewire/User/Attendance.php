@@ -281,7 +281,14 @@ class Attendance extends Component
 
     public function attendanceReport()
     {
-        $allUserLocations = Location::with('user')->orderBy('created_at', 'desc')->paginate(10);
+         $admin = auth()->user(); // Get the logged-in admin
+        $companyId = $admin->company_id;
+
+        $allUserLocations = Location::with('user')
+            ->whereHas('user',function ($query) use ($companyId) {
+            $query->where('company_id', $companyId);
+        })
+        ->orderBy('created_at', 'desc')->paginate(10);
         return view('livewire.admin.attendance-report', compact('allUserLocations'));
     }
 

@@ -105,13 +105,18 @@ class AttendanceController extends Controller
     //----- Attendance report admin ------
     public function attendanceReport(Request $request)
     {
+         $admin = auth()->user(); // get the logged-in admin
+        $companyId = $admin->company_id;
+
         $query = DB::table('user_locations')
             ->join('users', 'user_locations.user_id', '=', 'users.id')
             ->select(
                 'user_locations.*',
                 'users.name as user_name',
                 DB::raw('DATE(user_locations.created_at) as date')
-            );
+            )
+             ->where('users.company_id', $companyId);
+            
 
         if ($request->filled('name')) {
             $query->where('users.name', 'like', '%' . $request->name . '%');
@@ -135,7 +140,8 @@ class AttendanceController extends Controller
                 'user_locations.*',
                 'users.name as user_name',
                 DB::raw('DATE(user_locations.created_at) as date')
-            );
+            )
+            ->where('users.company_id', $companyId);
 
         if ($request->filled('name')) {
             $chartQuery->where('users.name', 'like', '%' . $request->name . '%');
