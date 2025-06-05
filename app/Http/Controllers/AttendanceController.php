@@ -208,14 +208,23 @@ class AttendanceController extends Controller
     //----- Attendance status admin ------
     public function attendanceStatus(Request $request)
     {
+          $admin = auth()->user();
+        $companyId = $admin->company_id;
+
         $selectedWeek = $request->input('week', null);
         $selectedMonth = $request->input('month', null);
         $selectedYear = $request->input('year', null);
         $selectedDate = $request->input('date');
 
         $query = Location::select('user_id', DB::raw('SUM(total_points) as total_points'))
-            ->with('user')
+            
+        ->with('user')
+        ->whereHas('user',function ($q)use ($companyId) {
+            $q->where('company_id',$companyId);
+            })
+            
             ->groupBy('user_id');
+            
 
         if ($selectedWeek) {
             $query->whereRaw('WEEK(created_at, 1) = ?', [$selectedWeek]);
