@@ -55,11 +55,5 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class);
     }
     
-    // UserLocation.php
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
 
 }

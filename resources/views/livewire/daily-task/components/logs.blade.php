@@ -1,16 +1,15 @@
 <div class="mt-4">
-    <h4 class="mb-4"><b>Daily Task Log</b></h4>
+    <h2 class="mb-4">Daily Task Log</h2>
     <h6 class="mb-4">Displaying task logs from
         <strong>{{ \Carbon\Carbon::parse($startOfWeek)->format('d/m/Y') }}</strong> to
         <strong>{{ \Carbon\Carbon::parse($endOfWeek)->format('d/m/Y') }}</strong>
     </h6>
-
     @forelse ($taskLogs as $date => $logs)
-        <div class=" log logbox">
-            <h5>
-                | {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }} |
-                {{ \Carbon\Carbon::parse($date)->format('l') }} |
-            </h5>
+        <div style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px;">
+            <h3>
+                ---- {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }} ----
+                {{ \Carbon\Carbon::parse($date)->format('l') }} ----
+            </h3>
             @forelse ($logs as $log)
                 @php
                     $task = $log->task; // Retrieve the related Task model
@@ -18,7 +17,7 @@
                 @if ($task)
                     <div class="d-flex align-items-center justify-content-start p-4">
                         <div class="mx-4">
-                            <p class="h6 mb-0 text-s"><b>Last updated:</b></p>
+                            <p class="h6 mb-0 text-s">Last updated:</p>
                             <p class="h6 text-uppercase text-secondary text-xs text-center opacity-7">
                                 {{ $log->created_at }}
                             </p>
@@ -49,11 +48,11 @@
                                 </div>
                                 <div class="flex-row">
                                     <span class="badge badge-sm" style="background-color: {{ $log->status == 'To Do'
-                            ? '#FFD700'
+                            ? 'grey'
                             : ($log->status == 'In Progress'
-                                ? '#627bbf'
+                                ? 'orange'
                                 : ($log->status == 'Done'
-                                    ? '#66d080'
+                                    ? 'green'
                                     : 'red')) }}; color: white; width: 100px">
                                         {{ $log->status }}
                                     </span>
@@ -118,28 +117,6 @@
         position: relative;
         display: inline-block;
         cursor: pointer;
-    }
-
-    .log {
-        background-color: rgb(228, 232, 240);
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 12px;
-        margin: 4px 2px;
-        cursor: pointer;
-        -webkit-transition-duration: 0.4s;
-        transition-duration: 0.4s;
-        width: 1100px;
-    }
-
-    .logbox {
-        margin-bottom: 20px; 
-        padding: 10px; 
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     }
 
     .tooltip-content {
