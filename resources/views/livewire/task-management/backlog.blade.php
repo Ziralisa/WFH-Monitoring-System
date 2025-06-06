@@ -32,6 +32,14 @@
                                 <label for="desc" class="form-label">Description</label>
                                 <textarea name="desc" id="desc" class="form-control" required></textarea>
                             </div>
+                            <div class="form-group">
+                                <label for="project_id">Select Project</label>
+                                <select name="project_id" id="project_id" class="form-control" required>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="mb-3">
                                 <label for="startdate" class="mr-2 px-2">Start Date</label>
                                 <input type="date" name="startdate" id="startdate" class="mr-2 px-3" required>

@@ -18,16 +18,7 @@
                 <form action="{{ route('tasks.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="sprint_id" value="{{ $sprint->id }}">
-                    <div class="mx-3">
-                        <label for="project_id" class="form-label">Select Project</label>
-                        <select name="project_id" id="project_id-{{ $sprint->id }}" class="form-control" required
-                            onchange="loadTasks(this.value, '{{ $sprint->id }}')">
-                            <option value="" disabled selected>Select Project</option>
-                            @foreach ($projects as $project)
-                                <option value="{{ $project->id }}">{{ $project->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
 
                     <!-- Task Selection -->
                     <div class="mx-3">
@@ -136,15 +127,15 @@
     }
 </style>
 <script>
-    function loadTasks(projectId, sprintId) {
-        if (projectId) {
-            fetch(/tasks/${projectId}/${sprintId})
+    function loadTasks(sprintId) {
+
+            fetch(`/tasks/sprint/${sprintId}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Fetched Tasks:", data);
 
-                    let taskDropdown = document.getElementById(task_id-${sprintId});
-                    let taskDescription = document.getElementById(task_description-${sprintId});
+                    let taskDropdown = document.getElementById(`task_id-${sprintId}`);
+                    let taskDescription = document.getElementById(`task_description-${sprintId}`);
 
                     if (!taskDropdown || !taskDescription) {
                         console.error("Dropdown or description field not found!");
@@ -165,7 +156,7 @@
                         if (task.task_description) {
                             option.setAttribute("data-description", task.task_description);
                         } else {
-                            console.warn(Task ${task.id} has no description!);
+                            console.warn(`Task ${task.id} has no description!`);
                         }
 
                         taskDropdown.appendChild(option);
@@ -186,6 +177,17 @@
                 .catch(error => {
                     console.error('Error fetching tasks:', error);
                 });
-        }
+        
     }
+        document.addEventListener('DOMContentLoaded', function () {
+            const modals = document.querySelectorAll('.modal');
+
+            modals.forEach(modal => {
+                modal.addEventListener('show.bs.modal', function (event) {
+                    const modalId = this.getAttribute('id');
+                    const sprintId = modalId.split('-')[1];
+                    loadTasks(sprintId); 
+                });
+            });
+        });
 </script>
