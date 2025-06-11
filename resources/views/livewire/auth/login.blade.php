@@ -82,7 +82,21 @@
                                     </button>
                                 </div>
                             </form>
+                         <div>
+                        <hr class="my-4">
+                         </div>   
+                            <a href="{{ route('google.login') }}"
+                            class="btn btn-outline-danger w-100 py-2 mb-3 d-flex justify-content-center align-items-center gap-2 fs-6">
+                                <i class="fab fa-google"></i> Sign In with Google
+                            </a>
                         </div>
+
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
 
                         <!-- Footer Links -->
                         <div class="card-footer text-center pt-0 px-lg-2 px-1">
@@ -93,11 +107,15 @@
                             <p class="mb-4 text-sm mx-auto">
                                 {{ __('Don\'t have an account?') }}
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 <a href="{{ route('sign-up') }}" class="text-info text-gradient font-weight-bold">{{ __('Sign Up') }}</a>
 >>>>>>> a2f031c (initial commit)
 =======
                             <a href="{{ route('company-registration') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
 >>>>>>> a9abd56 (minor fix for login)
+=======
+                            <a href="{{ route('userregister') }}" class="text-info text-gradient font-weight-bold">{{ __('Register') }}</a>
+>>>>>>> 3f0b44e (Auth SSO--fix registration)
                             </p>
                         </div>
                     </div>

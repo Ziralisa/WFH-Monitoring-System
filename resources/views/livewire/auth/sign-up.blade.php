@@ -128,7 +128,6 @@
                                       class="text-dark font-weight-bolder">{{ __('Sign in') }}</a>
                               </p>
                           </form>
-
                       </div>
                   </div>
               </div>

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\User;
 use App\Events\MyEvent;
 use App\Events\UserLocationUpdated;
 use App\Models\Location;
+use App\Models\Project;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -313,6 +314,7 @@ class Attendance extends Component
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 }
@@ -436,3 +438,6 @@ class Attendance extends Component
 =======
 }
 >>>>>>> 0e35d15 (Reapply "merge")
+=======
+}
+>>>>>>> 3f0b44e (Auth SSO--fix registration)
