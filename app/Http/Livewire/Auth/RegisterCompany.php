@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Auth;
 
+use Auth;
 use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -16,10 +17,10 @@ class RegisterCompany extends Component
     public $contact_email = '';
     public $contact_phone = '';
 
-    public $name = '';
-    public $email = '';
-    public $password = '';
-    public $password_confirmation = '';
+    // public $name = '';
+    // public $email = '';
+    // public $password = '';
+    // public $password_confirmation = '';
 
 
     protected $rules = [
@@ -28,9 +29,9 @@ class RegisterCompany extends Component
         'address' => 'required|min:3',
         'contact_email' => 'required|email:rfc,dns|unique:companies',
         'contact_phone' => 'required|min:3',
-        'name' => 'required|min:3',
-        'email' => 'required|email:rfc,dns|unique:users',
-        'password' => 'required|min:6'
+        // 'name' => 'required|min:3',
+        // 'email' => 'required|email:rfc,dns|unique:users',
+        // 'password' => 'required|min:6'
     ];
 
 //     public function mount() {
@@ -48,9 +49,9 @@ public function createcompany()
         'contact_email' => 'required|email|max:255',
         'contact_phone' => 'required|string|max:20',
 
-        'name' => 'required|min:3',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|min:6|same:password_confirmation',
+        // 'name' => 'required|min:3',
+        // 'email' => 'required|email|unique:users',
+        // 'password' => 'required|min:6|same:password_confirmation',
         
     ]);
 
@@ -62,22 +63,26 @@ public function createcompany()
         'contact_phone' => $this->contact_phone,
     ]);
 
-    $user = User::create([
-        'name' => $this->name,
-        'email' => $this->email,
-        'password' => Hash::make($this->password),
-        'company_id' => $company->id,
-        // 'company_id' => $company->id,
-    ]);
+    // $user = User::create([
+    //     'name' => $this->name,
+    //     'email' => $this->email,
+    //     'password' => Hash::make($this->password),
+    //     'company_id' => $company->id,
+    //     // 'company_id' => $company->id,
+    // ]);
 
-        // Assign role to the user
-        $user->assignRole('admin');
+    //     // Assign role to the user
+    //     $user->assignRole('admin');
+
+    $user = Auth::user();
+    $user->company_id = $company->id;
+    $user->save();
 
     session()->flash('success', 'Company registered successfully!');
     return redirect()->route('login');
 }
     public function render()
     {
-        return view('livewire.auth.register-company');
+        return view('livewire.register-company');
     }
 }

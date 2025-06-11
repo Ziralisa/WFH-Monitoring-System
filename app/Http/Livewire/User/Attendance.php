@@ -5,6 +5,7 @@ namespace App\Http\Livewire\User;
 use App\Events\MyEvent;
 use App\Events\UserLocationUpdated;
 use App\Models\Location;
+use App\Models\Project;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
