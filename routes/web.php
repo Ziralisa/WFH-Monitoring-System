@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\Auth\ForgotPassword;
 use App\Http\Livewire\Auth\ResetPassword;
 use App\Http\Livewire\Auth\SignUp;
+use App\Http\Livewire\Auth\UserRegister;
 use App\Http\Livewire\Auth\RegisterCompany;
 use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Dashboard;
@@ -25,6 +26,8 @@ use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\SprintController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\googleController;
+
 
 
 
@@ -35,8 +38,12 @@ Route::get('/', function () {
 
 // Public Routes
 Route::get('/sign-up', SignUp::class)->name('sign-up');
+Route::get('/user-register', UserRegister::class)->name('userregister');
 Route::get('/company-registration', RegisterCompany::class)->name('company-registration');
 Route::get('/login', Login::class)->name('login');
+Route::get('/auth/redirect/google/login', [GoogleController::class, 'redirectToGoogleLogin'])->name('google.login');
+Route::get('/auth/redirect/google/register', [GoogleController::class, 'redirectToGoogleRegister'])->name('google.register');
+Route::get('/auth/callback/google', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 Route::get('/logout', [Logout::class, 'logout'])->name('logout');
 Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
 Route::get('/reset-password/{id}', ResetPassword::class)
@@ -45,6 +52,7 @@ Route::get('/reset-password/{id}', ResetPassword::class)
 Route::middleware('role:user')->group(function () {
     Route::get('/new-user-homepage', action: NewUserHomepage::class)->name('new-user-homepage');
 });
+
 
 //ADMIN DASHBOARD
 Route::group(['middleware' => ['can:view admin dashboard']], function () {

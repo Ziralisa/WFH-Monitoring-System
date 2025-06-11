@@ -18,6 +18,9 @@
                 </div>
             </div>
             @include('components.plugins.fixed-plugin')
+        @elseif (request()->route()->getName() == 'company-registration')
+        {{-- Just render the slot without sidebar, navbar, footer --}}
+        {{ $slot }}
         @else
             @include('layouts.navbars.auth.sidebar')
             @include('layouts.navbars.auth.nav')
@@ -41,17 +44,16 @@
             <div class="mt-5">
                 @include('layouts.footers.guest.with-socials')
             </div>
-        @elseif (!auth()->check() && in_array(request()->route()->getName(),['company-registration']))
-        <div>
-            @include('layouts.navbars.guest.sign-up')
-            {{ $slot }}
-            @include('layouts.footers.guest.with-socials')
-        </div>
+ 
         @elseif (!auth()->check() && in_array(request()->route()->getName(),['sign-up']))
             <div>
                 @include('layouts.navbars.guest.sign-up')
                 {{ $slot }}
                 @include('layouts.footers.guest.with-socials')
+            </div>
+        @elseif (!auth()->check() && in_array(request()->route()->getName(),['userregister']))
+            <div>
+                {{ $slot }}
             </div>
         @endif
     @endguest

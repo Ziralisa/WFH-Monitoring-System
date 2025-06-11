@@ -11,7 +11,15 @@ class Location extends Model
 
     protected $table = 'user_locations';
     protected $fillable = [
-        'user_id', 'latitude', 'longitude', 'type', 'status', 'clockinpoints', 'workinghourpoints', 'total_points', 'in_range'
+        'user_id', 
+        'latitude', 
+        'longitude', 
+        'type', 
+        'status', 
+        // 'clockinpoints', 
+        // 'workinghourpoints', 
+        'total_points', 
+        'in_range'
     ];
 
     public function user() {
