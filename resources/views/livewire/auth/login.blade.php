@@ -86,7 +86,7 @@
                         <hr class="my-4">
                          </div>   
                             <a href="{{ route('google.login') }}"
-                            class="btn btn-outline-danger w-100 py-2 mb-3 d-flex justify-content-center align-items-center gap-2 fs-6">
+                            class="btn btn-outline-danger w-100 py-2 mb-3 d-flex justify-content-center align-items-center gap-2">
                                 <i class="fab fa-google"></i> Sign In with Google
                             </a>
                         </div>
