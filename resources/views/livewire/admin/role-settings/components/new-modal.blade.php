@@ -1,3 +1,19 @@
+<style>
+  .btnsave {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnsave:hover {
+        background-color: #4395ff;
+        color: white;
+    }
+</style>
 <div wire:ignore.self class="modal fade" id="newRoleModal" tabindex="-1"
                 aria-labelledby="newRoleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -6,6 +22,9 @@
                             <h5 class="modal-title" id="newRoleModalLabel">New Role</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
+                            <div data-bs-dismiss="modal">
+                    <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                </div>
                         </div>
                         <div class="modal-body">
                             <form>
@@ -35,8 +54,7 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" wire:click="store">Save Changes</button>
+                            <button type="button" class="btn btnsave" wire:click="store">Save Changes</button>
                         </div>
                     </div>
                 </div>
