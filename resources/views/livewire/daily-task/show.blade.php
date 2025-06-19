@@ -11,6 +11,7 @@
             </option>
         @endforeach
     </select>
+
     <div class="p-4">
         <h6>Task Card Color:</h6>
 
@@ -33,14 +34,15 @@
             </span>
         </div>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
             const options = {
-                weekday: 'long', // Full name of the day (e.g., Monday)
-                year: 'numeric', // Four-digit year (e.g., 2025)
-                month: 'long', // Full name of the month (e.g., January)
-                day: '2-digit', // Two-digit day (e.g., 14)
+                weekday: 'long',
+                year: 'numeric', 
+                month: 'long', 
+                day: '2-digit', 
             };
             // Format the date
             const formattedDate = new Intl.DateTimeFormat('en-US', options).format(now);
@@ -51,16 +53,24 @@
         updateTime();
         setInterval(updateTime, 1000); // Update every second
     </script>
+
+    <style>
+        
+        .content-wrapper {
+            transition: margin-left 0.3s ease;
+        }
+        .shifted {
+            margin-left: 250px; /* match your offcanvas width */
+        }
+    </style>
     <div class="card">
-        {{-- @dump('assigned tasks: ', $assignedTasks)
-        @dump('unassigned tasks: ', $unassignedTasks) --}}
         <div class="table-responsive">
             <table class="table align-items-center mb-0">
                 <thead>
-                    <tr class="text-center" style="background-color: #debda6; color: white;">
+                    <tr class="text-center" style="background-color: #ffc5a3; color: white;">
                         <th> </th>
                         @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
-                            <th @if ($day === $currentDay) style="background-color: #a98872; color: white" @endif><strong>
+                            <th @if ($day === $currentDay) style="background-color: #f4894b; color: white" @endif><strong>
                                 {{ $day }}
                             </strong></th>
                         @endforeach
@@ -87,22 +97,6 @@
 
                                     @endif
 
-                                    <!-- Check for custom tasks only if they are marked as completed -->
-                                    @if (isset($customTasksForTable[$day]) && $customTasksForTable[$day]->isNotEmpty())
-                                        @foreach ($customTasksForTable[$day] as $taskLog)
-                                            @if (!empty($taskLog->title) && $taskLog->status == 'Done')
-                                                <!-- Check if title is not null and task is completed -->
-                                                <div class="h6 shadow-lg card border p-2 mb-1"
-                                                    style="@if ($taskLog->status == 'Done') background-color: #66d080; @else background-color: #FFDE75; @endif">
-                                                    <p class="h6"><strong>Open Task:</strong> {{ $taskLog->title }}</p>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @elseif (!isset($customTasksForTable[$day]) || $customTasksForTable[$day]->isEmpty())
-                                        <p class="h6 font-italic font-weight-bold">No tasks</p>
-                                    @endif
-
-
                                     {{-- Bottom content: Add Task button --}}
                                     @if ($day === $currentDay)
                                         <div class="flex-fill mt-auto">
@@ -125,7 +119,7 @@
                         @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as $day)
                             <td class="text-center align-top" style="height: 20rem; vertical-align: top;">
                                 <div class="d-flex flex-column h-100">
-                                    <!-- Display Regular To-Do Tasks -->
+                                    <!-- Display Regular In Progress Tasks -->
                                     @if (isset($inprogressTasksForTable[$day]) && $inprogressTasksForTable[$day]->isNotEmpty())
                                         @foreach ($inprogressTasksForTable[$day] as $task)
                                             <div class="h6 shadow-lg card border p-2 mb-1"
@@ -136,20 +130,6 @@
                                             </div>
                                         @endforeach
                                     @endif
-
-                                    @if (isset($customTasksForTable[$day]) && $customTasksForTable[$day]->isNotEmpty())
-                                        @foreach ($customTasksForTable[$day] as $taskLog)
-                                            @if (!empty($taskLog->title) && $taskLog->status == 'In Progress')
-                                                <div class="h6 shadow-lg card border p-2 mb-1"
-                                                    style="@if ($taskLog->status == 'In Progress') background-color: #9db3e9; @else background-color: #FFDE75; @endif">
-                                                    <p class="h6"><strong>Open Task:</strong>{{ $taskLog->title }}</p>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @elseif (!isset($customTasksForTable[$day]) || $customTasksForTable[$day]->isEmpty())
-                                        <p class="h6 font-italic font-weight-bold">No tasks</p>
-                                    @endif
-
 
                                     @if ($day === $currentDay)
                                         <div class="flex-fill mt-auto">
@@ -175,27 +155,14 @@
                                     @if (isset($todoTasksForTable[$day]) && $todoTasksForTable[$day]->isNotEmpty())
                                         @foreach ($todoTasksForTable[$day] as $task)
                                             <div class="h6 shadow-lg card border p-2 mb-1"
-                                                style="@if ($task->task_status == 'Done') background-color: #66d080; @else background-color: #FFDE75; @endif">
+                                                style="
+                                                @if ($task->task_status == 'Done') background-color: #66d080; @else background-color: #FFDE75; @endif">
                                                 <p class="h6"><strong>{{ $task->project->name ?? 'No Project' }}</strong>:
                                                     <small>{{ $task->name }}</small>
                                                 </p>
                                             </div>
                                         @endforeach
                                     @endif
-
-                                    @if (isset($customTasksForTable[$day]) && $customTasksForTable[$day]->isNotEmpty())
-                                        @foreach ($customTasksForTable[$day] as $taskLog)
-                                            @if (!empty($taskLog->title) && $taskLog->status == 'To Do')
-                                                <div class="h6 shadow-lg card border p-2 mb-1"
-                                                    style="@if ($taskLog->status == 'In Progress') background-color:rgb(197, 199, 198); @else background-color: #FFDE75; @endif">
-                                                    <p class="h6"><strong>Open Task:</strong>{{ $taskLog->title }}</p>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @elseif (!isset($customTasksForTable[$day]) || $customTasksForTable[$day]->isEmpty())
-                                        <p class="h6 font-italic font-weight-bold">No tasks</p>
-                                    @endif
-
 
                                     @if ($day === $currentDay)
                                         <div class="flex-fill mt-auto">

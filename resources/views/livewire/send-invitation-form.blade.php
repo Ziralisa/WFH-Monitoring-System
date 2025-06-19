@@ -1,3 +1,16 @@
+<style>
+    .btnmain {
+        background-color: #0070ff;
+        color: white;
+        width: 935px;
+    }
+
+    .btnmain:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+</style>
+
 <div>
     @if (session()->has('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -18,7 +31,7 @@
         </div>
 
         <div>
-            <button type="submit" class="btn btn-primary w-100">
+            <button type="submit" class="btn btnmain">
                 Send Invitation
             </button>
         </div>
