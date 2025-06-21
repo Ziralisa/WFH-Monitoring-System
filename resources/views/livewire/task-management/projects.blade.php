@@ -9,7 +9,7 @@
         <h4 class="mb-0"><b>PROJECTS</b></h4>
 
         <!-- Buttons for Add Project and Add Task -->
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2 justify-content-end">
             <button type="button" class="btn btnproject" data-bs-toggle="modal" data-bs-target="#ProjectModal">Create New Project</button>
             <button type="button" class="btn btntask" data-bs-toggle="modal" data-bs-target="#TaskModal">Create New Task</button>
         </div>
@@ -105,7 +105,7 @@
 </div>
 
 <!-- DISPLAY LIST PROJECTS AND TASKS -->
-<div class="row mt-4">
+<div class="row mt-2">
     @forelse ($projects as $project)
         @php
             $today = \Carbon\Carbon::today();
@@ -127,7 +127,7 @@
         @endif
 
         <!--PROJECT DISPLAY-->
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="col-12 col-md-6 mb-4">
             <div class="project-card">
                 <h5><b>{{ $project->name }}</b>
                     <div class="dropdown positive-relative">
@@ -147,16 +147,16 @@
                         </svg>
                     </div>
                     <div class="dropdown-menu dropdown-menu-end shadow-sm small-dropdown text-center">
-                            <button class="btnform btnedit mb-2" data-bs-toggle="modal"
+                            <button class="btn btnedit mb-2" data-bs-toggle="modal"
                                 data-bs-target="#EditProjectModal-{{ $project->id }}">
-                                <i class="fas fa-edit" style="font-size: 17px; color: rgb(255, 191, 0);"></i>
+                                Edit
                             </button>
                             <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                                <button type="submit" class="btnform btnedit"
+                                <button type="submit" class="btn btnedit"
                                     onclick="return confirm('Are you sure you want to delete this project?')">
-                                    <i class="fas fa-trash-alt" style="font-size: 17px; color: rgb(234, 69, 33);"></i>
+                                    Delete
                                 </button>
                             </form>
                         
@@ -185,14 +185,14 @@
                                         <td>{{ $task->name }}</td>
                                         <td>{{ $task->task_description }}</td>
                                         <td class="center">
-                                            <button class="btnform btnedit" data-bs-toggle="modal"
+                                            <button class="btnform btntaskedit" data-bs-toggle="modal"
                                                 data-bs-target="#EditTaskModal-{{ $task->id }}">
                                                 <i class="fas fa-edit" style="font-size: 17px; color: rgb(255, 191, 0);"></i>
                                             </button>
                                             <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btnform btndelete"
+                                                <button type="submit" class="btnform btntaskdelete"
                                                     onclick="return confirm('Are you sure you want to delete this task?')">
                                                     <i class="fas fa-trash-alt" style="font-size: 17px; color: rgb(234, 69, 33);"></i>
                                                 </button>
@@ -294,7 +294,7 @@
 
 <style>
     .small-dropdown {
-        width: 80px !important;
+        width: 120px !important;
         padding: 5px !important;
         min-width: unset !important;
     }
@@ -336,25 +336,25 @@
     }
     
     .outer-border {
-        border: 1px solid rgb(255, 255, 255);
-        border-radius: 8px;
-        border-collapse: separate;
-        border-spacing: 0;
-        overflow: hidden; 
-        min-width: 600px;
-        width: 100%;
-        max-width: 1000px;
-        margin: 0 auto 30px auto;
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: 550px; /* Match project-card */
+    margin: 0 auto 30px auto;
     }
 
     .project-card {
         border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 16px;
+        border-radius: 15px;
+        padding: 20px;
         box-shadow: 0 2px 4px #ffffff;
         height: 100%;
         overflow-x: hidden;
         background-color: #ffffff;
+        max-width: 550px;
     }
 
     .project-card h3 {
@@ -362,37 +362,12 @@
     color: #2c3e50;
     }
 
-    .modern-table {
+    @media (max-width: 576px) {
+    .btnproject, .btntask {
         width: 100%;
-        border-collapse: collapse;
-        margin-top: 16px;
+        font-size: 0.8rem;
     }
-
-    .modern-table th,
-    .modern-table td {
-        padding: 12px 16px;
-        text-align: left;
-    }
-
-    .modern-table th {
-        background-color: #0070ff;
-        font-weight: bold;
-        color: #ffffff;
-        border-bottom: 2px solid #ddd;
-    }
-
-    .modern-table td {
-        border-bottom: 1px;
-    }
-
-    .modern-table tr:hover {
-        background-color: #f9f9f9;
-    }
-
-    .table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+}
 
     .btnproject, .btntask {
         background-color: #0070ff;
@@ -402,6 +377,8 @@
         border-radius: 7px;
         cursor: pointer;
         font-size: 12px;
+        white-space: nowrap;
+        
     }
 
     .btnproject:hover, .btntask:hover {
@@ -468,20 +445,20 @@
         border: none;
     }
 
-    .btnedit {
-        background-color: transparent;
+    .btnedit, .btndelete {
+        background-color: #0070ff;
+        color: white;
         border: none;
-        color: black;
+        padding: 8px 16px;
+        border-radius: 7px;
         cursor: pointer;
-        text-align: center;
+        font-size: 12px;
+        width: 100px;
     }
 
-    .btndelete {
-        background-color: transparent;
-        border: none;
-        color: black;
-        cursor: pointer;
-        text-align: center;
+    .btnedit:hover, .btndelete:hover {
+        background-color: #0070ff;
+        color: white;
     }
 
     .center {
@@ -489,6 +466,11 @@
         justify-content: center;
         align-items: center;
         height: 100%;
+    }
+
+    .btntaskedit, .btntaskdelete {
+        background-color: transparent;
+        border: none;
     }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

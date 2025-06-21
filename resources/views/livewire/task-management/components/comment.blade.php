@@ -85,7 +85,7 @@
                                 name="comment-content"
                                 class="fs-6 form-control me-2"
                                 rows="1" placeholder="Add a comment.."></textarea>
-                            <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+                            <button type="submit" class="btn btncomment btn-sm">Comment</button>
                         </div>
                         @error('commentContent') <span class="text-danger">{{ $message }}</span> @enderror
                         @if (session()->has('message'))
@@ -149,5 +149,20 @@
 #editCommentModal {
     z-index: 1060;
 }
+
+    .btncomment {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btncomment:hover {
+        background-color: #0070ff;
+        color: white;
+    }
 
 </style>

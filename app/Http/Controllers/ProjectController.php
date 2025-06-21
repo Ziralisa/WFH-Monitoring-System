@@ -11,24 +11,24 @@ class ProjectController extends Component
 {
     //----------------DISPLAY PROJECTS------------------
     public function index(Request $request)
-    {
-        $user = auth()->user();
+{
+    $user = auth()->user();
+    $sort = $request->query('sort', 'latest');
 
-        $projects = Project::with('tasks')
-        ->where('company_id', $user->company_id)
-        ->get();
-        return view('livewire.task-management.projects', compact('projects'));
+    // Apply sorting logic before returning view
+    $projectsQuery = Project::with('tasks')
+        ->where('company_id', $user->company_id);
 
-        $sort = $request->query('sort', 'latest');
-
-        if ($sort === 'oldest') {
-            $projects = Project::orderBy('created_at', 'asc')->get();
-        } else {
-            $projects = Project::orderBy('created_at', 'desc')->get();
-        }
-
-        return view('livewire.task-management.projects', compact('projects'));
+    if ($sort === 'oldest') {
+        $projectsQuery->orderBy('created_at', 'asc');
+    } else {
+        $projectsQuery->orderBy('created_at', 'desc');
     }
+
+    $projects = $projectsQuery->get();
+
+    return view('livewire.task-management.projects', compact('projects'));
+}
 
     //----------------STORE NEW PROJECT------------------
     public function storeProject(Request $request)
