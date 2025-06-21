@@ -10,12 +10,8 @@
 
         <!-- Buttons for Add Project and Add Task -->
         <div class="d-flex gap-2">
-            <button type="button" class="btn btnproject" data-bs-toggle="modal" data-bs-target="#ProjectModal">
-                Create New Project
-            </button>
-            <button type="button" class="btn btntask" data-bs-toggle="modal" data-bs-target="#TaskModal">
-                Create New Task
-            </button>
+            <button type="button" class="btn btnproject" data-bs-toggle="modal" data-bs-target="#ProjectModal">Create New Project</button>
+            <button type="button" class="btn btntask" data-bs-toggle="modal" data-bs-target="#TaskModal">Create New Task</button>
         </div>
     </div>
 
@@ -27,8 +23,15 @@
     </div>
 </div>
 
-        <!------------------------------------------------------------------------------------------------------------------------>
+<!--Project Modal (to create new project)-->
+<div class="modal fade" id="ProjectModal" tabindex="-1" aria-labelledby="ProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
+<<<<<<< HEAD
 
 
         <!--Project Modal (to create new project)-->
@@ -94,50 +97,42 @@
                             <button type="submit" class="btn btnproject">Create Project</button>
                         </div>
                     </form>
+=======
+                <div data-bs-dismiss="modal">
+                    <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+>>>>>>> 8758df5 (project)
                 </div>
             </div>
-        </div>
-
-        <!-- Task Modal (to create new task)-->
-        <div class="modal fade" id="TaskModal" tabindex="-1" aria-labelledby="TaskModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="TaskModalLabel">Add New Task</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <form action="{{ route('projects.store') }}" method="POST">
+            @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Project Name</label>
+                        <input type="text" name="name" class="form-control" required>
                     </div>
-                    <form action="{{ route('projects.tasks.store') }}" method="POST">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="project_id" class="form-label">Select Project</label>
-                                <select name="project_id" class="form-select" required>
-                                    <option value="">-- Select Project --</option>
-                                    @foreach ($projects as $project)
-                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Task Name</label>
-                                <input type="text" name="name" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="task_description" class="form-label">Description</label>
-                                <textarea name="task_description" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btnclose"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btntask">Create Task</button>
-                        </div>
-                    </form>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="start_date" class="mr-2 px-2">Start Date</label>
+                        <input type="date" name="start_date" id="start_date" class="mr-2 px-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end_date" class="mr-2 px-2">End Date</label>
+                        <input type="date" name="end_date" id="end_date" class="mr-2 px-3" required>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btnproject">Create Project</button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -166,6 +161,50 @@
 >>>>>>> 0e35d15 (Reapply "merge")
         <!-- DISPLAY LIST PROJECTS AND TASKS -->
         <div class="row mt-4">
+=======
+<!-- Task Modal (to create new task)-->
+<div class="modal fade" id="TaskModal" tabindex="-1" aria-labelledby="TaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="TaskModalLabel">Add New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div data-bs-dismiss="modal">
+                    <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                </div>
+            </div>
+            <form action="{{ route('projects.tasks.store') }}" method="POST">
+            @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="project_id" class="form-label">Select Project</label>
+                        <select name="project_id" class="form-select" required>
+                            <option value="">-- Select Project --</option>
+                            @foreach ($projects as $project)
+                                <option value="{{ $project->id }}">{{ $project->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Task Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="task_description" class="form-label">Description</label>
+                        <textarea name="task_description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btntask">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- DISPLAY LIST PROJECTS AND TASKS -->
+<div class="row mt-4">
+>>>>>>> 8758df5 (project)
     @forelse ($projects as $project)
         @php
             $today = \Carbon\Carbon::today();
@@ -202,9 +241,12 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> a2f031c (initial commit)
 =======
 
+=======
+>>>>>>> 8758df5 (project)
         <!--PROJECT DISPLAY-->
         <div class="col-12 col-md-6 col-lg-4 mb-4">
 >>>>>>> 270919a (merge)
@@ -224,22 +266,36 @@
 >>>>>>> 0e35d15 (Reapply "merge")
             <div class="project-card">
                 <h5><b>{{ $project->name }}</b>
-                    <span class="info-icon float-end" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
-                        <i class="fas fa-ellipsis-v" style="font-size:20px"></i>
-                    </span>
-                    <div class="dropdown-menu p-2 shadow-sm">
-                        <button class="btn btnproject d-block w-100 mb-2" data-bs-toggle="modal"
-                            data-bs-target="#EditProjectModal-{{ $project->id }}">
-                            <i class="fas fa-edit" style="font-size: 15px;"></i> Edit
-                        </button>
-                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                    <div class="dropdown positive-relative">
+                        <div class="info-icon float-end" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> 
+                                <path d="M12 13.75C12.9665 13.75 13.75 12.9665 13.75 12C13.75 11.0335 12.9665 10.25 12 10.25C11.0335 10.25 10.25 11.0335 10.25 
+                                    12C10.25 12.9665 11.0335 13.75 12 13.75Z" fill="#000000"></path> <path d="M12 6.75C12.9665 6.75 13.75 5.9665 13.75 5C13.75 
+                                    4.0335 12.9665 3.25 12 3.25C11.0335 3.25 10.25 4.0335 10.25 5C10.25 5.9665 11.0335 6.75 12 6.75Z" fill="#000000">
+                                </path> 
+                                <path d="M12 20.75C12.9665 20.75 13.75 19.9665 13.75 19C13.75 18.0335 12.9665 17.25 12 17.25C11.0335 17.25 10.25 18.0335 10.25 
+                                    19C10.25 19.9665 11.0335 20.75 12 20.75Z" fill="#000000">
+                                </path> 
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-end shadow-sm small-dropdown text-center">
+                            <button class="btnform btnedit mb-2" data-bs-toggle="modal"
+                                data-bs-target="#EditProjectModal-{{ $project->id }}">
+                                <i class="fas fa-edit" style="font-size: 17px; color: rgb(255, 191, 0);"></i>
+                            </button>
+                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btnclose d-block w-100"
-                                onclick="return confirm('Are you sure you want to delete this project?')">
-                                <i class="fas fa-trash-alt" style="font-size: 15px;"></i> Delete
-                            </button>
-                        </form>
+                                <button type="submit" class="btnform btnedit"
+                                    onclick="return confirm('Are you sure you want to delete this project?')">
+                                    <i class="fas fa-trash-alt" style="font-size: 17px; color: rgb(234, 69, 33);"></i>
+                                </button>
+                            </form>
+                        
                     </div>
                 </h5>
 
@@ -439,10 +495,10 @@
                                     </td>
 =======
                 @if($project->tasks->isNotEmpty())
-                    <div class="table-container">
-                        <table class="table modern-table">
+                    <div class="usertable table-responsive mt-3-mb-5">
+                        <table class="table align-items-center mb-0 modern-table outer-border">
                             <thead>
-                                <tr>
+                                <tr class="head text-center">
                                     <th style="width: 20%; text-align:center">Task</th>
                                     <th style="text-align: center">Description</th>
                                     <th style="width: 20%; text-align:center">Actions</th>
@@ -454,17 +510,17 @@
                                     <tr>
                                         <td>{{ $task->name }}</td>
                                         <td>{{ $task->task_description }}</td>
-                                        <td>
+                                        <td class="center">
                                             <button class="btnform btnedit" data-bs-toggle="modal"
                                                 data-bs-target="#EditTaskModal-{{ $task->id }}">
-                                                <i class="fas fa-edit" style="font-size: 15px;"></i>
+                                                <i class="fas fa-edit" style="font-size: 17px; color: rgb(255, 191, 0);"></i>
                                             </button>
                                             <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btnform btndelete"
                                                     onclick="return confirm('Are you sure you want to delete this task?')">
-                                                    <i class="fas fa-trash-alt" style="font-size: 15px;"></i>
+                                                    <i class="fas fa-trash-alt" style="font-size: 17px; color: rgb(234, 69, 33);"></i>
                                                 </button>
                                             </form>
                                         </td>
@@ -486,6 +542,9 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="EditTaskModalLabel">Edit Task</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div data-bs-dismiss="modal">
+                                        <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                    </div>
                                 </div>
                                 <form action="{{ route('tasks.update', $task->id) }}" method="POST">
                                     @csrf
@@ -502,8 +561,6 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btnclose"
-                                            data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btnproject">Update Task</button>
                                     </div>
                                 </form>
@@ -520,6 +577,10 @@
                             <div class="modal-header">
                                 <h5 class="modal-title" id="EditProjectModalLabel">Edit Project</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                <div data-bs-dismiss="modal">
+                                    <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                </div>
                             </div>
                             <form action="{{ route('projects.update', $project->id) }}" method="POST">
                                 @csrf
@@ -544,8 +605,6 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btnclose"
-                                        data-bs-dismiss="modal">Close</button>
                                     <button type="submit" class="btn btnproject">Update Project</button>
                                 </div>
                             </form>
@@ -572,6 +631,7 @@
     @endforelse
 </div>
 
+<<<<<<< HEAD
 >>>>>>> 270919a (merge)
 =======
             @endforeach
@@ -666,10 +726,26 @@
 >>>>>>> 1a6b553 (Revert "merge")
 =======
 >>>>>>> 0e35d15 (Reapply "merge")
+=======
+<style>
+    .small-dropdown {
+        width: 80px !important;
+        padding: 5px !important;
+        min-width: unset !important;
+    }
+>>>>>>> 8758df5 (project)
 
+    table th,
+    table td {
+        border: none !important;
+    }
 
-        <style>
+    .head {
+        background-color: #0070ff;
+        color: rgb(255, 255, 255);
+    }
 
+<<<<<<< HEAD
             .project-card {
                 border: 1px solid #ddd;
                 border-radius: 8px;
@@ -703,171 +779,192 @@
                 overflow-x: hidden;
                 background-color: #ffffff;
             }
+=======
+    tbody tr {
+        background-color: #f8f8f8;
+        color: black;
+    }
+>>>>>>> 8758df5 (project)
 
-            .project-card h3 {
-                margin: 0 0 8px;
-                color: #2c3e50;
-            }
+    table thead th:first-child {
+        border-top-left-radius: 8px;
+    }
 
-            .modern-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 16px;
-            }
+    table thead th:last-child {
+        border-top-right-radius: 8px;
+    }
 
-            .modern-table th,
-            .modern-table td {
-                padding: 12px 16px;
-                text-align: left;
-            }
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
 
-            .modern-table th {
-                background-color: #e4effe;
-                font-weight: bold;
-                color: #2c3e50;
-                border-bottom: 2px solid #ddd;
-            }
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    table tbody tr:hover {
+        background-color: #d4e2ff;
+        cursor: pointer;
+        color: #000000;
+    }
+    
+    .outer-border {
+        border: 1px solid rgb(255, 255, 255);
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden; 
+        min-width: 600px;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto 30px auto;
+    }
 
-            .modern-table td {
-                border-bottom: 1px solid #a5caff;
-            }
+    .project-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 4px #ffffff;
+        height: 100%;
+        overflow-x: hidden;
+        background-color: #ffffff;
+    }
 
-            .modern-table tr:hover {
-                background-color: #f9f9f9;
-            }
+    .project-card h3 {
+        margin: 0 0 8px;
+    color: #2c3e50;
+    }
 
-            .table-container {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+    }
 
+    .modern-table th,
+    .modern-table td {
+        padding: 12px 16px;
+        text-align: left;
+    }
 
+    .modern-table th {
+        background-color: #0070ff;
+        font-weight: bold;
+        color: #ffffff;
+        border-bottom: 2px solid #ddd;
+    }
 
-            .btnproject, .btntask {
-                background-color: #2657c1;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 7px;
-                cursor: pointer;
-                font-size: 10px;
-            }
+    .modern-table td {
+        border-bottom: 1px;
+    }
 
-            .btnproject:hover, .btntask:hover {
-                background-color: #2657c1;
-                color: white;
-            }
-            .button {
-                border-radius: 7px;
-                color: white;
-                padding: 3px 16px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 11px;
-                margin-right: 2px;
-                margin-left: 1px;
-                margin-bottom: 4px;
-                transition-duration: 0.4s;
-                cursor: pointer;
-            }
+    .modern-table tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .btnproject, .btntask {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnproject:hover, .btntask:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+
+    .button {
+        border-radius: 7px;
+        color: white;
+        padding: 3px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin-right: 2px;
+        margin-left: 1px;
+        margin-bottom: 4px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
             
-            .btnSortby {
-                background-color: white; 
-                color: black; 
-                border: 2px solid #2657c1;
-            }
+    .btnSortby {
+        background-color: white; 
+        color: black; 
+         border: 2px solid #0070ff;
+    }
 
-            .btnSortby:hover {
-                background-color: #2657c1;
-                color: white;
-            }        
+    .btnSortby:hover {
+        background-color: #0070ff;
+        color: white;
+    }        
+
+    .button1 {
+        border-radius: 7px;
+        color: white;
+        padding: 3px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 11px;
+        margin-right: 2px;
+        margin-left: 1px;
+        margin-bottom: 4px;
+        transition-duration: 0.4s;
+            cursor: pointer;
+    }
+
+    .border1 {
+        border-radius: 3px;
+        background-color: #04AA6D;
+        color: white;
+    }
+
+    .border1 {
+        border-radius: 3px;
+        background-color: white;
+        color: black;
+        border: 2px solid #04AA6D;
+    }
             
-            .btnedit {   
-                border-radius: 13px;
-                background-color: white; 
-                color: black; 
-                border: 2px solid #fcb83a;
-                padding: 8px 12px; 
-                font-size: 14px;
-                transition: 0.4s;
-                margin-right: 4px;
-            }
+    .button111 {
+        background-color: #04AA6D;
+        border: none;
+    }
 
-            .btndelete {   
-                border-radius: 13px;
-                background-color: white; 
-                color: black; 
-                border: 2px solid #d9534f;
-                padding: 8px 12px; 
-                font-size: 14px;
-                transition: 0.4s;
-                margin-right: 4px;
-            }
-            
-            .btnedit:hover {
-                background-color: #fcb83a;
-                color: white;
-            }
-            
-            .btndelete:hover {
-                background-color: #d9534f; /* or another red tone */
-                color: white;
-            }
+    .btnedit {
+        background-color: transparent;
+        border: none;
+        color: black;
+        cursor: pointer;
+        text-align: center;
+    }
 
-            .button1 {
-                border-radius: 7px;
-                color: white;
-                padding: 3px 16px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 11px;
-                margin-right: 2px;
-                margin-left: 1px;
-                margin-bottom: 4px;
-                transition-duration: 0.4s;
-                cursor: pointer;
-            }
+    .btndelete {
+        background-color: transparent;
+        border: none;
+        color: black;
+        cursor: pointer;
+        text-align: center;
+    }
 
-            .border1 {
-                border-radius: 3px;
-                background-color: #04AA6D;
-                color: white;
-            }
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-            .border1 {
-                border-radius: 3px;
-                background-color: white;
-                color: black;
-                border: 2px solid #04AA6D;
-            }
-            
-            .button111 {
-                background-color: #04AA6D;
-                border: none;
-            }
-
-            .btnclose {
-                background-color: #7f9dde;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 7px;
-                cursor: pointer;
-                font-size: 10px;
-            }
-
-            .btnclose:hover {
-                background-color: #7f9dde;
-                color: white;
-            }
-
-
-
-        </style>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        
-            
-        </x-layouts.base>
+</x-layouts.base>

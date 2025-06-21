@@ -139,15 +139,17 @@ class DailyTask extends Component
     //TAMBAH
     public function loadUnassignedAndAssignedTasks()
     {
-        $this->unassignedTasks = Task::where('task_assign', auth()->id())->whereNull('todo_date')->get();
-        $this->assignedTasks = Task::where('task_assign', auth()
-             ->id())
-             ->whereNull('completed_date')
-             ->where(function($query) {
-                 $query->whereNotNull('todo_date')
-                       ->orWhereNotNull('inprogress_date');
-             })
-             ->get();
+        $this->unassignedTasks = Task::where('task_assign', auth()->id())
+            ->whereNull('todo_date')
+            ->get();
+
+        $this->assignedTasks = Task::where('task_assign', auth()->id())
+            ->whereNull('completed_date')
+            ->where(function($query) {
+                $query->whereNotNull('todo_date')
+                      ->orWhereNotNull('inprogress_date');
+        })
+        ->get();
     }
 
     public function loadTaskLogs()

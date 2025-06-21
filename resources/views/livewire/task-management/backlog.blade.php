@@ -20,6 +20,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="SprintModal">New Sprint</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div data-bs-dismiss="modal">
+                            <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                        </div>
                     </div>
                     <form action="{{ route('create-sprint') }}" method="POST">
                         @csrf
@@ -50,7 +53,6 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btnclose" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btnproject">Submit</button>
                         </div>
                     </form>
@@ -1280,32 +1282,17 @@
         }
 
         .btnproject, .btntask {
-            background-color: #2657c1;
+            background-color: #0070ff;
             color: white;
             border: none;
             padding: 8px 16px;
             border-radius: 7px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 12px;
         }
 
         .btnproject:hover, .btntask:hover {
-            background-color: #2657c1;
-            color: white;
-        }
-
-        .btnclose {
-            background-color: #7f9dde;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 10px;
-        }
-
-        .btnclose:hover {
-            background-color: #7f9dde;
+            background-color: #0070ff;
             color: white;
         }
 
