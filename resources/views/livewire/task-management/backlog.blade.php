@@ -152,6 +152,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="EditSprintModalLabel">Edit Sprint</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div data-bs-dismiss="modal">
+                                    <svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                </div>
                     </div>
                     <form action="{{ route('sprints.edit', $sprint->id) }}" method="POST">
                         @csrf
@@ -175,7 +178,6 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                                <button type="button" class="btn btnclose" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btnproject">Update Sprint</button>
                         </div>
                     </form>
@@ -196,6 +198,7 @@
         @forelse($sprints as $sprint)
             <div class="sprint-card">
                 <h5><b>{{ $sprint->name }}</b>
+<<<<<<< HEAD
                     <span class="info-icon float-end" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
                         <i class="fas fa-ellipsis-v" style="font-size:20px"></i>
                     </span>
@@ -216,6 +219,38 @@
                                 <i class="fas fa-trash-alt" style="font-size: 15px;"></i> Delete
                         </button>
                     </form>
+=======
+                    <div class="dropdown positive-relative">
+                        <div class="info-icon float-end" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier"> 
+                                <path d="M12 13.75C12.9665 13.75 13.75 12.9665 13.75 12C13.75 11.0335 12.9665 10.25 12 10.25C11.0335 10.25 10.25 11.0335 10.25 
+                                    12C10.25 12.9665 11.0335 13.75 12 13.75Z" fill="#000000"></path> <path d="M12 6.75C12.9665 6.75 13.75 5.9665 13.75 5C13.75 
+                                    4.0335 12.9665 3.25 12 3.25C11.0335 3.25 10.25 4.0335 10.25 5C10.25 5.9665 11.0335 6.75 12 6.75Z" fill="#000000">
+                                </path> 
+                                <path d="M12 20.75C12.9665 20.75 13.75 19.9665 13.75 19C13.75 18.0335 12.9665 17.25 12 17.25C11.0335 17.25 10.25 18.0335 10.25 
+                                    19C10.25 19.9665 11.0335 20.75 12 20.75Z" fill="#000000">
+                                </path> 
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-end shadow-sm small-dropdown text-center">
+                            <button class="btn btndelete mb-2" data-bs-toggle="modal"
+                                data-bs-target="#EditSprintModal-{{ $sprint->id }}">
+                                Edit
+                            </button>
+                            <form action="{{ route('sprints.destroy', $sprint->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                                <button type="submit" class="btn btnedit"
+                                    onclick="return confirm('Are you sure you want to delete this project?')">
+                                    Delete
+                                </button>
+                            </form>
+                        
+>>>>>>> 919c1a7 (project: sprint edit)
                     </div>
                 </h5>
 =======
@@ -456,10 +491,10 @@
 >>>>>>> 270919a (merge)
                 @include('livewire.task-management.components.add-task')
 
-                <div class="table-container">
-                    <table class="table modern-table">
+                <div class="usertable table-responsive mt-3-mb-5">
+                    <table class="table align-items-center mb-0 modern-table outer-border">
                         <thead>
-                            <tr>
+                            <tr class="head text-center">
                                 <th style="width: 20%; text-align: center">Task</th>
                                 <th style="text-align: center">Description</th>
                                 <th style="text-align: center">Status</th>
@@ -913,9 +948,75 @@
 >>>>>>> 0e35d15 (Reapply "merge")
 
     <style>
+
+    .small-dropdown {
+        width: 120px !important;
+        padding: 5px !important;
+        min-width: unset !important;
+    }
+
+    table th,
+    table td {
+        border: none !important;
+    }
+
+    .outer-border {
+        border: 1px solid black;
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        width: 1000px;
+        margin: 0 auto 30px auto;
+    }
+
+    .head {
+        background-color: #0070ff;
+        color: rgb(255, 255, 255);
+    }
+
+    tbody tr {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    table thead th:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    table thead th:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    table tbody tr:hover {
+        background-color: #d4e2ff;
+        cursor: pointer;
+        color: #000000;
+    }
+    
+    .outer-border {
+        border: 1px solid rgb(255, 255, 255);
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden; 
+        min-width: 600px;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto 30px auto;
+    }
+
         .sprint-card {
             border: 1px solid #ddd;
             border-radius: 8px;
+<<<<<<< HEAD
             padding: 16px;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -938,6 +1039,9 @@
 >>>>>>> 1a6b553 (Revert "merge")
 =======
 >>>>>>> 0e35d15 (Reapply "merge")
+=======
+            padding: 30px;
+>>>>>>> 919c1a7 (project: sprint edit)
             margin-bottom: 24px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             height: 100%;
@@ -956,33 +1060,7 @@
             color: #7f8c8d;
         }
 
-        .modern-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-        }
-
-        .modern-table th,
-        .modern-table td {
-            padding: 12px 16px;
-            text-align: left;
-        }
-
-        .modern-table th {
-            background-color: #e4effe;
-            font-weight: bold;
-            color: #2c3e50;
-            border-bottom: 2px solid #ddd;
-        }
-
-        .modern-table td {
-            border-bottom: 1px solid #a5caff;
-        }
-
-        .modern-table tr:hover {
-            background-color: #f9f9f9;
-        }
-
+  
         .table-container {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;   /* Allows horizontal scrolling for smaller screens */
@@ -1296,6 +1374,22 @@
             color: white;
         }
 
+        .btnedit, .btndelete {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+        width: 100px;
+    }
+
+    .btnedit:hover, .btndelete:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+
     </style>
 
     <script>
@@ -1390,6 +1484,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 
+<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </div>
 =======
@@ -1408,3 +1503,8 @@
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </div>
 >>>>>>> 0e35d15 (Reapply "merge")
+=======
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+>>>>>>> 919c1a7 (project: sprint edit)
