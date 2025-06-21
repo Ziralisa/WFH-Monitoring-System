@@ -14,7 +14,7 @@
             <div class="form-group">
                 <label for="user-job-status" class="form-control-label">{{ __('Employment Status') }}</label>
                 <div class="@error('user.job_status')border border-danger rounded-3 @enderror">
-                    <select wire:model="user.job_status" class="form-control" id="user-job-status" disabled>
+                    <select wire:model="user.job_status" class="form-control" id="user-job-status">
                         <option value="">Select Employment Status</option>
                         <option value="0">Employed</option>
                         <option value="1">Resigned</option>
