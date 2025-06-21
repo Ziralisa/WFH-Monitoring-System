@@ -4,7 +4,7 @@
 
     <main class="main-content mt-1 border-radius-lg">
         <div class="container mt-4">
-            <h1 class="my-4">Attendance Status</h1>
+            <h4 class="my-4"><b>ATTENDANCE STATUS</b></h4>
 
             <!-- Filter Form (Week, Month, Year) -->
             <form method="GET" action="{{ url('/admin/attendance-status') }}" class="mb-4">
@@ -37,8 +37,8 @@
                     </div>
 
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                        <a href="{{ url('/admin/attendance-status') }}" class="btn btn-secondary">Reset</a>
+                        <button type="submit" class="btn btnfilter">Filter</button>
+                        <a href="{{ url('/admin/attendance-status') }}" class="btn btnreset">Reset</a>
                     </div>
                 </div>
             </form>
@@ -68,7 +68,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Weekly Status Distribution</h5>
+                            <h6 class="card-title"><b>Weekly Status Distribution</b></h6>
                             <div style="height: 250px;">
                                 <canvas id="weeklyPieChart" style="height: 100%;"></canvas>
                             </div>
@@ -79,7 +79,7 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Monthly Status Distribution</h5>
+                            <h6 class="card-title"><b>Monthly Status Distribution</b></h6>
                             <div style="height: 250px;">
                                 <canvas id="monthlyPieChart" style="height: 100%;"></canvas>
                             </div>
@@ -89,13 +89,13 @@
             </div>
 
             <!-- Attendance Records Table (Fixed Display) -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Attendance Records</h5>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead class="thead-light">
-                                <tr>
+            <div class="card mb-5">
+                <div class="card-body mt-3 ml-5">
+                    <h5 class="card-title text-center">Attendance Records</h5>
+                    <div class="usertable table-responsive mt-3 mb-3">
+                        <table class="table align-items-center mb-0 modern-table outer-border">
+                            <thead>
+                                <tr class="head text-center">
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Weekly Status</th>
@@ -166,6 +166,82 @@
 =======
 =======
 >>>>>>> 0e35d15 (Reapply "merge")
+
+    <style>
+    .btnfilter, .btnreset {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnfilter:hover, .btnreset:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+
+    table th,
+    table td {
+        border: none !important;
+        text-align: center;
+    }
+
+    .outer-border {
+        border: 1px solid black;
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        width: 1000px;
+        margin: 0 auto 30px auto;
+    }
+
+    .head {
+        background-color: #0070ff;
+        color: rgb(255, 255, 255);
+    }
+
+    tbody tr {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    table thead th:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    table thead th:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    table tbody tr:hover {
+        background-color: #d4e2ff;
+        cursor: pointer;
+        color: #000000;
+    }
+    
+    .outer-border {
+        border: 1px solid rgb(255, 255, 255);
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden; 
+        min-width: 600px;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto 30px auto;
+    }
+    </style>
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

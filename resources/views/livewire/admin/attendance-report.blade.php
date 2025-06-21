@@ -5,7 +5,7 @@
         @include('layouts.navbars.auth.nav')
 
         <div class="container mt-5">
-            <h1 class="my-4">Admin Attendance Report</h1>
+            <h4 class="my-4"><b>ADMIN ATTENDANCE REPORT</b></h4>
 
             @php
                 $complete = $late = $incomplete = 0;
@@ -76,8 +76,8 @@
                     </div>
 
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                        <a href="{{ route('attendance-report') }}" class="btn btn-secondary">Reset</a>
+                        <button type="submit" class="btn btnfilter">Filter</button>
+                        <a href="{{ route('attendance-report') }}" class="btn btnreset">Reset</a>
                     </div>
                 </div>
             </form>
@@ -85,7 +85,7 @@
             <!-- Bar Chart Container -->
             <div class="card mb-4 w-100">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">Attendance Status Overview ({{ request('year') ?? 'All Years' }})</h5>
+                    <h5 class="mb-0 text-center">Attendance Status Overview ({{ request('year') ?? 'All Years' }})</h5>
                 </div>
                 <div class="card-body">
                     <div style="width: 100%;">
@@ -109,13 +109,13 @@
             <!-- Attendance Records Table -->
             <div class="card mb-4">
                 <div class="card-header pb-0">
-                    <h5 class="mb-0">Attendance Records</h5>
+                    <h5 class="mb-0 text-center">Attendance Records</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                    <div class="usertable table-responsive mt-3 mb-3">
+                        <table class="table align-items-center mb-0 modern-table outer-border">
                             <thead>
-                                <tr>
+                                <tr class="head text-center">
                                     <th>Date</th>
                                     <th>Staff Name</th>
                                     <th>Clock In Time</th>
@@ -206,7 +206,7 @@
 
                     <!-- Export Button -->
                     <div class="mb-3">
-                        <a href="{{ route('report-pdf.pdf', request()->query()) }}" class="btn btn-danger">
+                        <a href="{{ route('report-pdf.pdf', request()->query()) }}" class="btn btndownload">
                             Download PDF
                         </a>
                     </div>
@@ -215,6 +215,96 @@
 
         </div>
     </main>
+
+        <style>
+    .btnfilter, .btnreset {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnfilter:hover, .btnreset:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+
+        .btndownload {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btndownload:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+
+    table th,
+    table td {
+        border: none !important;
+    }
+
+    .outer-border {
+        border: 1px solid black;
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        width: 1000px;
+        margin: 0 auto 30px auto;
+    }
+
+    .head {
+        background-color: #0070ff;
+        color: rgb(255, 255, 255);
+    }
+
+    tbody tr {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    table thead th:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    table thead th:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    table tbody tr:hover {
+        background-color: #d4e2ff;
+        cursor: pointer;
+        color: #000000;
+    }
+    
+    .outer-border {
+        border: 1px solid rgb(255, 255, 255);
+        border-radius: 8px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden; 
+        min-width: 600px;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto 30px auto;
+    }
+    </style>
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -1,3 +1,20 @@
+<style>
+    .btnclock {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnclock:hover {
+        background-color: #0070ff;
+        color: white;
+    }
+</style>
+
 <div class="container-fluid py-4">
     <div class="page-header min-height-250 border-radius-xl mt-4"
         style="background-image: url('../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
@@ -17,16 +34,16 @@
             <div class="d-flex justify-content-center align-items-center col p-3">
                 <button wire:click="clockIn"
                     @if($isClockInDisabled) disabled @endif
-                    class="btn btn-success btn-lg w-100 text-white"
-                    style="height: 125%;">
+                    class="btn btnclock btn-lg w-100 text-white"
+                    style="height: 100%; font-size: 15px;">
                     Clock-in
                 </button>
             </div>
             <div class="d-flex justify-content-center align-items-center col p-3">
                 <button wire:click="clockOut"
                     @if($isClockOutDisabled) disabled @endif
-                    class="btn btn-danger btn-lg w-100 text-white"
-                    style="height: 125%;">
+                    class="btn btnclock btn-lg w-100 text-white"
+                    style="height: 100%; font-size: 15px;">
                     Clock-out
                 </button>
             </div>
@@ -120,3 +137,4 @@
         });
     });
 </script>
+
