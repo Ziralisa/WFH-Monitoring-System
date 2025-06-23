@@ -123,9 +123,6 @@
                               <div class="text-center">
                                   <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</button>
                               </div>
-                              <p class="text-sm mt-3 mb-0">{{ __('Already have an account? ') }}<a
-                                      href="{{ route('login') }}"
-                                      class="text-dark font-weight-bolder">{{ __('Sign in') }}</a>
                               </p>
                           </form>
                       </div>
