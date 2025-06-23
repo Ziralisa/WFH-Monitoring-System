@@ -1,24 +1,106 @@
+<style>
+    .btnaction {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnaction:hover{
+        background-color: #0070ff;
+        color: white;
+    }
+
+        table th,
+    table td {
+        border: none !important;
+    }
+    
+    .head {
+        background-color: #0070ff;
+        color: rgb(255, 255, 255);
+    }
+
+    tbody tr {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    tbody th {
+        color: white;
+    }
+
+    table thead th:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    table thead th:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    table tbody tr:hover {
+        background-color: #d4e2ff;
+        cursor: pointer;
+        color: #000000;
+    }
+    
+    .outer-border {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: visible !important;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 30px auto;
+    }
+
+.dropdown-menu {
+    min-width: 120px;
+    padding: 10px;
+    z-index: 9999 !important;
+}
+
+.dropdown-menu-left {
+    right: 100%;  /* position to the left of the button */
+    left: auto;
+    top: 0;
+    transform: translateX(-10px); /* optional: small space */
+}
+</style>
+
+
 <h6 class="mx-4">Offline Staff</h6>
-<div class="table-responsive overflow-visible">
-    <table class="table align-items-center mb-0">
+<div class="usertable table-responsive mt-3-mb-5">
+    <table class="table align-items-center mb-0 modern-table outer-border">
         <thead>
-            <tr>
-                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+            <tr class="head text-center">
+                <th class="text-uppercase text-secondary text-xs font-weight-bolder text-white">
                     Name
                 </th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                     style="width: 15%;">
                     Online Status</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                     style="width: 15%;">
                     Last Online</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                     style="width: 15%;">
                     Clock In</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                     style="width: 15%;">
                     Contact</th>
-                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                     style="width: 15%;">
                     Action</th>
             </tr>
@@ -68,12 +150,13 @@
                         @endif
                     </td>
                     <td class="text-center">
-                        <div class="btn-group dropup">
-                            <button type="button" class="btn btn-warning btn-sm dropdown-toggle"
+                        <div class="dropdown position-relative d-inline-block">
+                            <button type="button" class="btn btnaction btn-sm dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Action
                             </button>
-                            <ul class="dropdown-menu px-2 py-3" aria-labelledby="dropdownMenuButton">
+                            <ul class="dropdown-menu dropdown-menu-left px-2 py-3" aria-labelledby="dropdownMenuButton">
+
                                 <li>
                                     <a class="dropdown-item border-radius-md"
                                         href="{{ route('view-user-profile', $user['id']) }}">View
@@ -99,3 +182,5 @@
         </tbody>
     </table>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+

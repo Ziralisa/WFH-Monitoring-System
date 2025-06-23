@@ -1,3 +1,72 @@
+<style>
+    .btnaction {
+        background-color: #0070ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .btnaction:hover{
+        background-color: #0070ff;
+        color: white;
+    }
+
+    table th,
+    table td {
+        border: none !important;
+    }
+    
+    .head {
+        background-color: #0070ff;
+        color: rgb(255, 255, 255);
+    }
+
+    tbody tr {
+        background-color: #f8f8f8;
+        color: black;
+    }
+
+    tbody th {
+        color: white;
+    }
+
+    table thead th:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    table thead th:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+    table tbody tr:hover {
+        background-color: #d4e2ff;
+        cursor: pointer;
+        color: #000000;
+    }
+    
+    .outer-border {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 30px auto;
+    }
+
+</style>
+
 <div class="mt-3 row">
     <div class="col-12">
         <div class="card mb-4">
@@ -5,29 +74,29 @@
                 <h6>Online Staff</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
-                <div class="table-responsive overflow-visible">
-                    <table class="table align-items-center mb-0">
+                <div class="usertable table-responsive mt-3-mb-5">
+                    <table class="table align-items-center mb-0 modern-table outer-border">
                         <thead>
-                            <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
+                            <tr class="head text-center">
+                                <th class="text-uppercase text-secondary text-xs font-weight-bolder text-white">Name
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                                     style="width: 15%;">
                                     Online Status
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                                     style="width: 15%;">
                                     Location Status
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                                     style="width: 15%;">
                                     Clock In
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                                     style="width: 15%;">
                                     Contact
                                 </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 p-0"
+                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder text-white p-0"
                                     style="width: 15%;">
                                     Action
                                 </th>
@@ -109,7 +178,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
-                                                <button type="button" class="btn btn-warning btn-sm dropdown-toggle"
+                                                <button type="button" class="btn btnaction btn-sm dropdown-toggle"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
                                                     Action
                                                 </button>
