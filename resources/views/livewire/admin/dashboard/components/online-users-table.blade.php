@@ -177,21 +177,23 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <div class="btn-group dropdown">
-                                                <button type="button" class="btn btnaction btn-sm dropdown-toggle"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                            <div class="dropdown positive-relative">
+                                                <button type="button" class="btn btnaction btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                     Action
                                                 </button>
-                                                <ul class="dropdown-menu px-2 py-3"
-                                                    aria-labelledby="dropdownMenuButton">
-                                                    <li>
-                                                        <a class="dropdown-item border-radius-md"
+                                            </div>
+                                            <div class="dropdown-menu dropdown-menu-end shadow-sm small-dropdown text-center">
+                                                <a class="dropdown-item border-radius-md"
                                                             href="@if ($user['id'] === auth()->user()->id) {{ route('user-profile') }}
                                                             @else
                                                                 {{ route('view-user-profile', $user['id']) }} @endif
                                                             ">View
                                                             Profile</a>
-                                                    </li>
+                                                
+                                            </div>
+                                        </td>
+
+                                            
                                                     <li>
                                                         {{-- <a class="dropdown-item border-radius-md"
                                                             href="{{ route('attendance-log', $user['id']) }}">View
