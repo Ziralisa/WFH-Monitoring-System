@@ -87,7 +87,7 @@
     }
 </style>
 <div class="mt-3">
-    <h4 class="m-4"><b>ROLES</b></h4>
+    <h4 class="m-4"><b>roles</b></h4>
         <div class="col-12">
             @include('components.alerts.success')
             <div class="card mb-4 mx-4">
